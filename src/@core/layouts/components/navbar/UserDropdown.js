@@ -83,7 +83,14 @@ const UserDropdown = () => {
         </DropdownItem>
         <DropdownItem tag={Link} to="/login">
           <Power size={14} className="me-75" />
-          <span className="align-middle">Logout</span>
+          <span
+            className="align-middle"
+            onClick={() => {
+              localStorage.removeItem("token");
+            }}
+          >
+            Logout
+          </span>
         </DropdownItem>
       </DropdownMenu>
     </UncontrolledDropdown>
