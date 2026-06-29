@@ -9,6 +9,7 @@ import { Facebook, Twitter, Mail, GitHub } from "react-feather";
 import InputPasswordToggle from "@components/input-password-toggle";
 
 // ** Reactstrap Imports
+import { useForm, Controller } from "react-hook-form";
 import {
   Row,
   Col,
@@ -31,7 +32,7 @@ const Login = () => {
   const { skin } = useSkin();
 
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
-
+  const {}
   return (
     <div className="auth-wrapper auth-cover">
       <Row className="auth-inner m-0">
@@ -184,10 +185,4 @@ const Login = () => {
               </Button>
             </div>
           </Col>
-        </Col>
-      </Row>
-    </div>
-  );
-};
-
-export default Login;
+        </Col>
