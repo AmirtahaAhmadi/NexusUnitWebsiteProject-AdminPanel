@@ -6,7 +6,7 @@ import BlankLayout from "@layouts/BlankLayout";
 import VerticalLayout from "@src/layouts/VerticalLayout";
 import HorizontalLayout from "@src/layouts/HorizontalLayout";
 import LayoutWrapper from "@src/@core/layouts/components/layout-wrapper";
-
+import Wizard from "../../pages/wizard";
 // ** Route Components
 import PublicRoute from "@components/routes/PublicRoute";
 
@@ -86,6 +86,11 @@ const Routes = [
     meta: {
       layout: "blank",
     },
+  },
+
+  {
+    path: "*",
+    element: <Wizard />,
   },
 ];
 

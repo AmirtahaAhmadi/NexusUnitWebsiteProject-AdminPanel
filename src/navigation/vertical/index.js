@@ -1,5 +1,5 @@
 import { Mail, Home, Airplay, Circle } from "react-feather";
-
+import { FileText } from "react-feather";
 export default [
   {
     id: "home",
@@ -26,5 +26,11 @@ export default [
         navLink: "/apps/invoice/list",
       },
     ],
+  },
+  {
+    id: "updateCourses",
+    title: "بروزرسانی کورس ها",
+    icon: <FileText size={20} />,
+    navLink: "/updateCourses",
   },
 ];
