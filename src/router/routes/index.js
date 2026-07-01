@@ -27,6 +27,10 @@ const DefaultRoute = "/home";
 
 const Home = lazy(() => import("../../pages/Home"));
 const SecondPage = lazy(() => import("../../pages/SecondPage"));
+const BlogList = lazy(() => import("../../views/blog/list"));
+const BlogEdit = lazy(() => import("../../views/blog/edit"));
+const BlogDetails = lazy(() => import("../../views/blog/details"));
+
 const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
@@ -52,6 +56,27 @@ const Routes = [
     path: "/second-page",
     element: <SecondPage />,
   },
+  {
+    path: "/pages/blog/list",
+    element: <BlogList />,
+  },
+  {
+    path: "/pages/blog/detail/:id",
+    element: <BlogDetails />,
+  },
+  {
+    path: "/pages/blog/detail",
+    element: <Navigate to="/pages/blog/detail/1" />,
+  },
+  {
+    path: "/pages/blog/edit/:id",
+    element: <BlogEdit />,
+  },
+  {
+    path: "/pages/blog/edit",
+    element: <Navigate to="/pages/blog/edit/1" />,
+  },
+
   {
     path: "/login",
     element: <Login />,
