@@ -28,6 +28,12 @@ export default [
     ],
   },
   {
+    id: "AllCourses",
+    title: "تمام کورسها",
+    icon: <FileText size={20} />,
+    navLink: "/AllCourses",
+  },
+  {
     id: "updateCourses",
     title: "بروزرسانی کورس ها",
     icon: <FileText size={20} />,

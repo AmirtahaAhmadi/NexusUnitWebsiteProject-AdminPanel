@@ -1,5 +1,6 @@
 import { Mail, Home } from "react-feather";
 import { FileText } from "react-feather";
+
 export default [
   {
     id: "home",
@@ -12,6 +13,12 @@ export default [
     title: "Second Page",
     icon: <Mail size={20} />,
     navLink: "/second-page",
+  },
+  {
+    id: "AllCourses",
+    title: "تمام کورسها",
+    icon: <FileText size={20} />,
+    navLink: "/AllCourses",
   },
   {
     id: "updateCourses",

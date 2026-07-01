@@ -7,6 +7,7 @@ import VerticalLayout from "@src/layouts/VerticalLayout";
 import HorizontalLayout from "@src/layouts/HorizontalLayout";
 import LayoutWrapper from "@src/@core/layouts/components/layout-wrapper";
 import Wizard from "../../pages/wizard";
+import BasicCards from "../../pages/basic";
 // ** Route Components
 import PublicRoute from "@components/routes/PublicRoute";
 
@@ -89,8 +90,12 @@ const Routes = [
   },
 
   {
-    path: "*",
+    path: "/updateCourses",
     element: <Wizard />,
+  },
+  {
+    path: "/AllCourses",
+    element: <BasicCards />,
   },
 ];
 
