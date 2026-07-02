@@ -29,7 +29,7 @@ const InputFloating = () => {
       <CardBody>
         <Row>
           <Col md="6" sm="12">
-            <div className="input-group">
+            <div className="input-group ">
               <Input
                 type="text"
                 placeholder="ای دی را وارد کنید"

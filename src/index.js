@@ -42,6 +42,7 @@ import "./assets/scss/style.scss";
 // ** Service Worker
 import * as serviceWorker from "./serviceWorker";
 
+import "./tailwind.css";
 // ** Lazy load app
 const LazyApp = lazy(() => import("./App"));
 
@@ -61,7 +62,7 @@ root.render(
         </ThemeContext>
       </Suspense>
     </Provider>
-  </BrowserRouter>
+  </BrowserRouter>,
 );
 
 // If you want your app to work offline and load faster, you can change

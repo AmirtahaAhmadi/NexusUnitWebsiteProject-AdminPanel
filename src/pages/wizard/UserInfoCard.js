@@ -46,7 +46,7 @@ const UserInfoCard = () => {
       <Card>
         <CardBody>
           {/* Avatar */}
-          <div className="text-center mb-2">
+          <div className="text-center mb-2 t-border t-border-red-500">
             <img
               src="https://i.pravatar.cc/110"
               alt="avatar"
@@ -63,7 +63,9 @@ const UserInfoCard = () => {
           </div>
 
           {/* Details */}
-          <h5 className="fw-bold border-bottom pb-50 mb-1">Details</h5>
+          <h5 className="fw-bold border-bottom pb-50 mb-1 t-bg-[#1f1f1f]">
+            Details
+          </h5>
 
           <ul className="list-unstyled">
             <li className="mb-75">
