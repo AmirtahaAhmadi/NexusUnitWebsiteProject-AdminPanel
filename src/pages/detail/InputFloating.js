@@ -8,12 +8,22 @@ import {
   Col,
   Button,
 } from "reactstrap";
-
+import { getcoursebyidAdminTeacherCall } from "../../core/Interceptor/Courses/getcoursebyidAdminTeacherCall";
+import { useEffect } from "react";
+import UserInfoCard from "../wizard/UserInfoCard";
 const InputFloating = () => {
+  const run = async () => {
+    const res = await getcoursebyidAdminTeacherCall("c15");
+    console.log("respond hey", res);
+  };
+  useEffect(() => {
+    run();
+  }, []);
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag="h4">پیدا کردن کورس موجود</CardTitle>
+        <CardTitle tag="h2">پیدا کردن کورس موجود</CardTitle>
       </CardHeader>
 
       <CardBody>
@@ -32,6 +42,7 @@ const InputFloating = () => {
           </Col>
         </Row>
       </CardBody>
+      <UserInfoCard />
     </Card>
   );
 };
