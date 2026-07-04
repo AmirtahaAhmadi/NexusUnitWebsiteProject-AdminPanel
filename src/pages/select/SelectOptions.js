@@ -38,7 +38,7 @@ import {
   FileText,
   Instagram,
 } from "react-feather";
-
+import { globalformData } from "../../redux/zustan/formdata";
 const colorOptions = [
   { value: "ocean", label: "Ocean", color: "#00B8D9", isFixed: true },
   { value: "blue", label: "Blue", color: "#0052CC", isFixed: true },
@@ -176,15 +176,89 @@ const formatGroupLabel = (data) => (
 );
 
 const SelectOptions = () => {
-  const [getdata, setgetdata] = useState([]);
-  const result = async () => {
-    run = await getCourseCreateDataCall();
-    setgetdata(run);
-    setSelectedDBVal(run);
-    console.log("runstep1", run);
+  const [getcreatdata, setgetcreatdata] = useState([]);
+
+  const run = async () => {
+    const run = await getCourseCreateDataCall();
+    if (run) {
+      setgetcreatdata(run);
+      console.log("getcreate", run);
+    }
   };
+
+  const [selectOptions, setSelectOptions] = useState({
+    courseTypes: [],
+    technologies: [],
+    statuses: [],
+    levels: [],
+    teachers: [],
+    terms: [],
+    classrooms: [],
+  });
+
   useEffect(() => {
-    result();
+    if (getcreatdata) {
+      setSelectOptions({
+        courseTypes:
+          getcreatdata.courseTypeDtos?.map((item) => ({
+            value: item.id,
+            label: item.typeName,
+          })) || [],
+
+        technologies:
+          getcreatdata.technologyDtos?.map((item) => ({
+            value: item.id,
+            label: item.techName,
+          })) || [],
+
+        statuses:
+          getcreatdata.statusDtos?.map((item) => ({
+            value: item.id,
+            label: item.statusName,
+          })) || [],
+
+        levels:
+          getcreatdata.courseLevelDtos?.map((item) => ({
+            value: item.id,
+            label: item.levelName,
+          })) || [],
+
+        teachers:
+          getcreatdata.teachers?.map((item) => ({
+            value: item.teacherId,
+            label: item.fullName,
+          })) || [],
+
+        terms:
+          getcreatdata.termDtos?.map((item) => ({
+            value: item.id,
+            label: item.termName,
+          })) || [],
+
+        classrooms:
+          getcreatdata.classRoomDtos?.map((item) => ({
+            value: item.id,
+            label: item.classRoomName,
+          })) || [],
+      });
+    }
+  }, [getcreatdata]);
+
+  const formData = globalformData((state) => state.formData);
+  const updateformdata = globalformData((state) => state.updateformdata);
+
+  // const [formData, setformData] = useState({
+  //   courseTypeId: ["online"],
+  //   technologyIds: [],
+  //   statusId: [],
+  //   levelId: [],
+  //   teacherId: [],
+  //   termId: [],
+  //   classRoomId: [],
+  // });
+
+  useEffect(() => {
+    run();
   }, []);
 
   // ** State
@@ -206,11 +280,11 @@ const SelectOptions = () => {
     }, 2000);
   };
 
-  const filterColors2 = (inputValue) => {
-    return colorOptions.filter((i) =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase()),
-    );
-  };
+  // const filterColors2 = (inputValue) => {
+  //   return colorOptions.filter((i) =>
+  //     i.label.toLowerCase().includes(inputValue.toLowerCase()),
+  //   );
+  // };
 
   const fixedOnChange = (value, { action, removedValue }) => {
     switch (action) {
@@ -262,121 +336,125 @@ const SelectOptions = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag="h4">Options</CardTitle>
+        <CardTitle tag="h4">گذینه ها</CardTitle>
       </CardHeader>
 
       <CardBody>
         <Row>
           <Col className="mb-1" md="6" sm="12">
-            <Label className="form-label">Multi Select</Label>
+            <Label className="form-label">تکنولوژی ها</Label>
             <Select
-              isClearable={false}
-              theme={selectThemeColors}
-              defaultValue={[colorOptions[2], colorOptions[3]]}
               isMulti
-              name="colors"
-              options={colorOptions}
+              theme={selectThemeColors}
+              options={selectOptions.technologies}
               className="react-select"
               classNamePrefix="select"
+              placeholder="انتخاب"
+              value={selectOptions.technologies.filter((item) =>
+                formData.technologyIds?.includes(item.value),
+              )}
+              onChange={(selectedOptions) =>
+                updateformdata({
+                  technologyIds: selectedOptions
+                    ? selectedOptions?.map((item) => item.value)
+                    : [],
+                })
+              }
             />
           </Col>
+
           <Col className="mb-1" md="6" sm="12">
-            <Label className="form-label">Grouped Select</Label>
+            <Label className="form-label">استاتوس</Label>
             <Select
-              isClearable={false}
               theme={selectThemeColors}
-              defaultValue={colorOptions[1]}
-              options={groupedOptions}
-              formatGroupLabel={formatGroupLabel}
+              options={selectOptions.statuses}
               className="react-select"
+              placeholder="انتخاب"
               classNamePrefix="select"
+              value={selectOptions.statuses.find(
+                (item) => item?.value === formData.statusId,
+              )}
+              onChange={(selectedOption) =>
+                updateformdata({
+                  statusId: selectedOption ? selectedOption.value : null,
+                })
+              }
             />
           </Col>
+
           <Col className="mb-1" md="6" sm="12">
-            <Label className="form-label">Animated Select</Label>
+            <Label className="form-label">سطح</Label>
             <Select
-              isClearable={false}
               theme={selectThemeColors}
-              closeMenuOnSelect={false}
-              components={animatedComponents}
-              defaultValue={[colorOptions[4], colorOptions[5]]}
-              isMulti
-              options={colorOptions}
+              options={selectOptions.levels}
               className="react-select"
+              placeholder="انتخاب"
               classNamePrefix="select"
+              value={selectOptions.levels.find(
+                (item) => item?.value === formData.levelId,
+              )}
+              onChange={(selectedOption) =>
+                updateformdata({
+                  levelId: selectedOption ? selectedOption.value : null,
+                })
+              }
             />
           </Col>
+
           <Col className="mb-1" md="6" sm="12">
-            <Label className="form-label">Fixed Options Select</Label>
+            <Label className="form-label">معلم</Label>
             <Select
-              isClearable={false}
-              value={fixedValue}
-              styles={styles}
-              isMulti
-              onChange={fixedOnChange}
               theme={selectThemeColors}
-              name="colors"
+              options={selectOptions.teachers}
               className="react-select"
               classNamePrefix="select"
-              options={colorOptions}
+              placeholder="انتخاب"
+              value={selectOptions.teachers.find(
+                (item) => item?.value === formData.teacherId,
+              )}
+              onChange={(selectedOption) =>
+                updateformdata({
+                  teacherId: selectedOption ? selectedOption.value : null,
+                })
+              }
             />
           </Col>
-          <Col md={6} xs={12} className="mb-1">
-            <Label className="form-label">Async Callback Select</Label>
-            <AsyncSelect
-              isClearable={false}
-              className="react-select"
-              classNamePrefix="select"
-              name="callback-react-select"
-              loadOptions={loadOptions}
-              defaultOptions
-              onInputChange={handleInputChange}
-              theme={selectThemeColors}
-            />
-          </Col>
-          <Col md={6} xs={12} className="mb-1">
-            <Label className="form-label">Async Promises Select</Label>
-            <AsyncSelect
-              isClearable={false}
-              className="react-select"
-              classNamePrefix="select"
-              loadOptions={promiseOptions}
-              cacheOptions
-              defaultOptions
-            />
-          </Col>
+
           <Col className="mb-1" md="6" sm="12">
-            <Label className="form-label">Creatable Select</Label>
-            <CreatableSelect
-              options={colorOptions}
-              className="react-select"
-              classNamePrefix="select"
-            />
-          </Col>
-          <Col className="mb-1" md="6" sm="12">
-            <Label className="form-label">Icons</Label>
+            <Label className="form-label">ترم</Label>
             <Select
-              options={iconOptions}
+              theme={selectThemeColors}
+              options={selectOptions.terms}
               className="react-select"
               classNamePrefix="select"
-              components={{
-                Option: OptionComponent,
-              }}
+              placeholder="انتخاب"
+              value={selectOptions.terms.find(
+                (item) => item?.value === formData.termId,
+              )}
+              onChange={(selectedOption) =>
+                updateformdata({
+                  termId: selectedOption ? selectedOption.value : null,
+                })
+              }
             />
           </Col>
+
           <Col className="mb-1" md="6" sm="12">
-            <Label className="form-label">Async Select With Database</Label>
-            <AsyncSelect
-              defaultOptions
-              isClearable={false}
-              value={selectedDBVal}
-              name="db-react-select"
+            <Label className="form-label">کلاس</Label>
+            <Select
+              theme={selectThemeColors}
+              options={selectOptions.classrooms}
               className="react-select"
               classNamePrefix="select"
-              onChange={handleDBChange}
-              theme={selectThemeColors}
-              loadOptions={loadOptionsDB}
-              onInputChange={handleDBInputChange}
+              placeholder="انتخاب"
+              value={selectOptions.classrooms.find(
+                (item) => item?.value === formData.classRoomId,
+              )}
+              onChange={(selectedOption) =>
+                updateformdata({
+                  classRoomId: selectedOption ? selectedOption.value : null,
+                })
+              }
             />
           </Col>
         </Row>

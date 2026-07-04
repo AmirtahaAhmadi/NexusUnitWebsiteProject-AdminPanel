@@ -10,6 +10,8 @@ import SocialLinks from "./steps/SocialLinks";
 import PersonalInfo from "./steps/PersonalInfo";
 import AddCourseDetail from "./steps/AddCourseDetail";
 import SelectOptions from "../select/SelectOptions";
+import AccountDetails from "./steps/Acountdetail";
+
 const WizardVertical = () => {
   // ** Ref
   const ref = useRef(null);
@@ -21,13 +23,13 @@ const WizardVertical = () => {
     {
       id: "account-details",
       title: "جزئیات کورس",
-      subtitle: "جزئیات کورس را وارد کنید",
+      subtitle: "انتخاب جزئیات",
       content: <AddCourseDetail stepper={stepper} type="wizard-vertical" />,
     },
     {
       id: "personal-info",
-      title: "Personal Info",
-      subtitle: "Add Personal Info",
+      title: "نوشتن اطلاعات",
+      subtitle: "اطلاعات را وارد کنید",
       content: <PersonalInfo stepper={stepper} type="wizard-vertical" />,
     },
     {

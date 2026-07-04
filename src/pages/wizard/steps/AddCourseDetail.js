@@ -6,8 +6,24 @@ import { ArrowLeft, ArrowRight } from "react-feather";
 import SelectOptions from "../../select/SelectOptions";
 // ** Reactstrap Imports
 import { Label, Row, Col, Input, Form, Button } from "reactstrap";
-
+import { useState } from "react";
+import { getCourseCreateDataCall } from "../../../core/Interceptor/Courses/getCreateStep1Call";
+import { useEffect } from "react";
 const AddCourseDetail = ({ stepper, type }) => {
+  const [getcreatdata, setgetcreatdata] = useState([]);
+
+  const run = async () => {
+    const run = await getCourseCreateDataCall();
+    if (run) {
+      setgetcreatdata(run);
+      console.log("getcreate", run);
+    }
+  };
+
+  useEffect(() => {
+    run();
+  }, []);
+
   return (
     <Fragment>
       {" "}

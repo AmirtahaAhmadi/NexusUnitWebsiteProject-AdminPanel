@@ -9,5 +9,6 @@ export const getcoursebyidAdminTeacherCall = async (id) => {
     }
   } catch (error) {
     console.error("error getCourseCreateDataCall:", error);
+    return false;
   }
 };
