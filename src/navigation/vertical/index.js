@@ -49,9 +49,15 @@ export default [
       },
       {
         id: "category",
-        title: "لیست کته گوری ها",
+        title: "لیست  دسته بندی ها",
         icon: <Circle size={12} />,
         navLink: "/pages/blog/category",
+      },
+       {
+        id: "categoryEdit",
+        title: "ایجاد دسته بندی جدید ",
+        icon: <Circle />,
+        navLink: "/pages/blog/add",
       },
     ],
   },

@@ -1,5 +1,6 @@
 // ** React Imports
 import { useState, useMemo, Fragment } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ** Table Columns
 import { columns } from "./columns";
@@ -25,18 +26,18 @@ import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { useForm, Controller } from "react-hook-form";
 import { ChevronDown, Edit, Trash } from "react-feather";
-
 // ** Styles
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { useEffect } from "react";
+import { getListNewsCategory } from "../../../core/Interceptor/Services/EditPageServices/get";
+import { updateNewsCategory } from "../../../core/Interceptor/Services/BlogCategoryPageServices/put";
 
 const CustomHeader = ({
-  role,
-  setShow,
+  onAddClick,
   searchTerm,
   rowsPerPage,
   handlePerPage,
   handleFilter,
-  handleAssignedToChange,
 }) => {
   return (
     <Row className="text-nowrap w-100 my-75 g-0 permission-header">
@@ -61,37 +62,22 @@ const CustomHeader = ({
       <Col xs={12} lg={8}>
         <div className="d-flex align-items-center justify-content-lg-end justify-content-start flex-md-nowrap flex-wrap mt-lg-0 mt-1">
           <div className="d-flex align-items-center me-1">
-          <label htmlFor="search-category">
-  جستجو:
-</label>
+            <label htmlFor="search-category">جستجو:</label>
             <Input
               type="text"
               value={searchTerm}
-id="search-category"              className="ms-50 w-100"
+              id="search-category"
+              className="ms-50 w-100"
               onChange={(e) => handleFilter(e.target.value)}
             />
           </div>
-          <div className="mt-50 width-200 me-1 mt-sm-0 mt-1">
-            <Input
-              type="select"
-              name="select"
-              value={role}
-              onChange={(e) => handleAssignedToChange(e.target.value)}
-            >
-           <option value="">انتخاب نقش</option>
-<option value="administrator">مدیر کل</option>
-<option value="manager">مدیر</option>
-<option value="user">کاربر</option>
-<option value="support">پشتیبانی</option>
-<option value="restricted-user">کاربر محدود</option>
-            </Input>
-          </div>
+
           <Button
             className="add-permission mt-sm-0 mt-1"
             color="primary"
-            onClick={() => setShow(true)}
+            onClick={onAddClick}
           >
-            افزودن دسترسی
+            افزودن دسته‌بندی
           </Button>
         </div>
       </Col>
@@ -100,35 +86,60 @@ id="search-category"              className="ms-50 w-100"
 };
 
 const Table = () => {
+  const navigate = useNavigate();
+
   const {
     reset,
     control,
-    setError,
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues: { permissionName: "" } });
-
+  } = useForm({
+    defaultValues: {
+      categoryName: "",
+      image: null,
+      iconAddress: "",
+      iconName: "",
+      googleTitle: "",
+      googleDescribe: "",
+    },
+  });
   const [allData, setAllData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [imgPreview, setImgPreview] = useState(null);
 
   const [show, setShow] = useState(false);
-  const [assignedTo, setAssignedTo] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const fetchCategories = async () => {
+    try {
+      setIsLoading(true);
+
+      const response = await getListNewsCategory();
+
+      setAllData(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const filteredData = useMemo(() => {
     return allData.filter((item) => {
       const matchesSearch = searchTerm
         ? item.name?.toLowerCase().includes(searchTerm.toLowerCase())
         : true;
-      const matchesRole = assignedTo
-        ? item.assignedTo?.includes(assignedTo)
-        : true;
-      return matchesSearch && matchesRole;
+      return matchesSearch;
     });
-  }, [allData, searchTerm, assignedTo]);
+  }, [allData, searchTerm]);
 
   const total = filteredData.length;
 
@@ -149,11 +160,6 @@ const Table = () => {
 
   const handleFilter = (val) => {
     setSearchTerm(val);
-    setCurrentPage(1);
-  };
-
-  const handleAssignedToChange = (val) => {
-    setAssignedTo(val);
     setCurrentPage(1);
   };
 
@@ -182,46 +188,63 @@ const Table = () => {
 
   const handleEditClick = (data) => {
     setSelected(data);
-    setValue("permissionName", data.name);
+
+    setValue("categoryName", data.categoryName || "");
+    setValue("googleTitle", data.googleTitle || "");
+    setValue(
+      "googleDescribe",
+      data.GoogleDescribe || data.googleDescribe || "",
+    );
+    setValue("iconAddress", data.iconAddress || "");
+    setValue("iconName", data.iconName || "");
+    setValue("image", null);
+
+    setImgPreview(data.iconAddress || data.image || null);
+
     setShow(true);
   };
 
   const handleModalClosed = () => {
     setSelected(null);
-    setValue("permissionName", "");
+    setImgPreview(null);
+    reset();
   };
 
-  const handleDelete = (id) => {
-    setAllData((prev) => prev.filter((item) => item.id !== id));
+  const onChangeImage = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setValue("image", file);
+
+    const reader = new FileReader();
+    reader.onload = () => setImgPreview(reader.result);
+    reader.readAsDataURL(file);
   };
 
-  const onSubmit = (data) => {
-    if (data.permissionName.length) {
-      if (selected !== null) {
-        setAllData((prev) =>
-          prev.map((item) =>
-            item.id === selected.id
-              ? { ...item, name: data.permissionName }
-              : item,
-          ),
-        );
-      } else {
-        setAllData((prev) => [
-          ...prev,
-          {
-            id: Date.now(),
-            name: data.permissionName,
-            assignedTo: [],
-            createdDate: new Date().toISOString(),
-          },
-        ]);
-      }
-      setShow(false);
-    } else {
-      setError("permissionName", {
-        type: "manual",
+  const onUpdate = async (data) => {
+    try {
+      await updateNewsCategory({
+        id: selected.id,
+        ...data,
       });
+
+      setAllData((prev) =>
+        prev.map((item) =>
+          item.id === selected.id ? { ...item, ...data } : item,
+        ),
+      );
+
+      setShow(false);
+      setSelected(null);
+      reset();
+    } catch (error) {
+      console.log(error);
     }
+  };
+
+ 
+  const handleAddClick = () => {
+    navigate("/pages/blog/category/add");
   };
 
   const updatedColumns = [
@@ -239,57 +262,122 @@ const Table = () => {
             >
               <Edit className="font-medium-2" />
             </Button>
-            <Button
-              size="sm"
-              color="transparent"
-              className="btn btn-icon"
-              onClick={() => handleDelete(row.id)}
-            >
-              <Trash className="font-medium-2" />
-            </Button>
+         
           </div>
         );
       },
     },
   ];
 
-  const handleDiscard = () => {
-    reset();
-    setShow(false);
-  };
-
-  const renderModalSubtitle = () => {
-    if (selected !== null) {
-      return "دسترسی را مطابق نیاز خود ویرایش کنید.";
-    } else {
-      return "دسترسی‌هایی که می‌توانید استفاده کرده و به کاربران خود اختصاص دهید.";
-    }
-  };
-
   const renderForm = () => {
-    if (selected === null) {
-      return (
-        <Row tag={Form} onSubmit={handleSubmit(onSubmit)}>
-          <Col xs={12}>
-            <Label className="form-label" for="permission-name">
-  نام دسته‌بندی
+    return (
+      <Fragment>
+        <Alert color="warning">
+          <h6 className="alert-heading">هشدار!</h6>
+          <div className="alert-body">
+            با ویرایش دسته‌بندی، ممکن است عملکرد بخش‌های مرتبط دچار مشکل شود.
+            لطفاً پیش از ادامه کاملاً مطمئن شوید.
+          </div>
+        </Alert>
+        <Row tag={Form} onSubmit={handleSubmit(onUpdate)}>
+          <Col xs={12} className="mb-2">
+            <Label className="form-label" for="edit-category-name">
+              نام دسته‌بندی *
             </Label>
             <Controller
               control={control}
-              id="permissionName"
-              name="permissionName"
+              name="categoryName"
+              rules={{ required: true }}
               render={({ field }) => (
                 <Input
-  placeholder="نام دسته‌بندی"
-                  invalid={errors.permissionName && true}
+                  id="edit-category-name"
+                  placeholder="نام دسته‌بندی"
+                  invalid={!!errors.categoryName}
                   {...field}
                 />
               )}
             />
-            {errors && errors.permissionName && (
-              <FormFeedback>لطفاً یک نام دسترسی معتبر وارد کنید</FormFeedback>
+            {errors.categoryName && (
+              <FormFeedback>لطفاً نام دسته‌بندی را وارد کنید</FormFeedback>
             )}
           </Col>
+
+          <Col xs={12} sm={6} className="mb-2">
+            <Label className="form-label" for="edit-google-title">
+              عنوان گوگل
+            </Label>
+            <Controller
+              control={control}
+              name="googleTitle"
+              render={({ field }) => (
+                <Input id="edit-google-title" {...field} />
+              )}
+            />
+          </Col>
+
+          <Col xs={12} sm={6} className="mb-2">
+            <Label className="form-label" for="edit-icon-name">
+              نام آیکون
+            </Label>
+            <Controller
+              control={control}
+              name="iconName"
+              render={({ field }) => <Input id="edit-icon-name" {...field} />}
+            />
+          </Col>
+
+          <Col xs={12} className="mb-2">
+            <Label className="form-label" for="edit-google-describe">
+              توضیح گوگل
+            </Label>
+            <Controller
+              control={control}
+              name="googleDescribe"
+              render={({ field }) => (
+                <Input
+                  id="edit-google-describe"
+                  type="textarea"
+                  rows="2"
+                  {...field}
+                />
+              )}
+            />
+          </Col>
+
+          <Col xs={12} sm={6} className="mb-2">
+            <Label className="form-label" for="edit-icon-address">
+              آدرس آیکون
+            </Label>
+            <Controller
+              control={control}
+              name="iconAddress"
+              render={({ field }) => (
+                <Input id="edit-icon-address" {...field} />
+              )}
+            />
+          </Col>
+
+          <Col xs={12} sm={6} className="mb-2">
+            <Label className="form-label" for="edit-category-image">
+              تصویر
+            </Label>
+            <Input
+              type="file"
+              id="edit-category-image"
+              accept=".jpg, .jpeg, .png, .gif"
+              onChange={onChangeImage}
+            />
+            {imgPreview && (
+              <img
+                src={imgPreview}
+                alt="پیش‌نمایش تصویر"
+                className="rounded mt-1"
+                width="100"
+                height="70"
+              />
+            )}
+          </Col>
+
           <Col xs={12} className="mt-75">
             <div className="form-check">
               <Input type="checkbox" id="core-perm-checkbox" />
@@ -298,68 +386,15 @@ const Table = () => {
               </Label>
             </div>
           </Col>
+
           <Col xs={12} className="text-center mt-2">
             <Button className="me-1" color="primary">
-ایجاد دسته‌بندی            </Button>
-            <Button outline type="reset" onClick={handleDiscard}>
-              انصراف
+              بروزرسانی
             </Button>
           </Col>
         </Row>
-      );
-    } else {
-      return (
-        <Fragment>
-        <Alert color="warning">
-  <h6 className="alert-heading">
-    توجه!
-  </h6>
-
-  <div className="alert-body">
-    با ویرایش نام دسته‌بندی، اطلاعات مرتبط با آن نیز تحت تأثیر قرار می‌گیرد. لطفاً پیش از ذخیره تغییرات، از صحت اطلاعات اطمینان حاصل کنید.
-  </div>
-</Alert>
-          <Row tag={Form} onSubmit={handleSubmit(onSubmit)}>
-            <Col xs={12} sm={9}>
-              <Label className="form-label" for="permission-name">
-                نام دسترسی
-              </Label>
-              <Controller
-                control={control}
-                id="permissionName"
-                name="permissionName"
-                render={({ field }) => (
-                  <Input
-                    placeholder="نام دسترسی"
-                    invalid={errors.permissionName && true}
-                    {...field}
-                  />
-                )}
-              />
-              {errors && errors.permissionName && (
-          <FormFeedback>
-  لطفاً نام دسته‌بندی را وارد کنید
-</FormFeedback>
-              )}
-            </Col>
-            <Col xs={12} sm={3} className="p-sm-0">
-              <Button className="mt-2" color="primary">
-                بروزرسانی
-              </Button>
-            </Col>
-            <Col xs={12} className="mt-75">
-              <div className="form-check">
-                <Input type="checkbox" id="core-perm-checkbox" />
-
-                <Label className="form-check-label" for="core-perm-checkbox">
-                  تنظیم به‌عنوان دسترسی اصلی
-                </Label>
-              </div>
-            </Col>
-          </Row>
-        </Fragment>
-      );
-    }
+      </Fragment>
+    );
   };
 
   return (
@@ -378,13 +413,11 @@ const Table = () => {
           data={dataToRender()}
           subHeaderComponent={
             <CustomHeader
-              setShow={setShow}
-              assignedTo={assignedTo}
+              onAddClick={handleAddClick}
               searchTerm={searchTerm}
               rowsPerPage={rowsPerPage}
               handleFilter={handleFilter}
               handlePerPage={handlePerPage}
-              handleAssignedToChange={handleAssignedToChange}
             />
           }
         />
@@ -399,17 +432,10 @@ const Table = () => {
           className="bg-transparent"
           toggle={() => setShow(!show)}
         ></ModalHeader>
-        <ModalBody
-          className={classnames({
-            "p-3 pt-0": selected !== null,
-            "px-sm-5 pb-5": selected === null,
-          })}
-        >
+        <ModalBody className="p-3 pt-0">
           <div className="text-center mb-2">
-            <h1 className="mb-1">
-              {selected !== null ? "ویرایش دسته‌بندی" : "افزودن دسته‌بندی"} دسترسی
-            </h1>
-            <p>{renderModalSubtitle()}</p>
+            <h1 className="mb-1">ویرایش دسته‌بندی</h1>
+            <p>دسترسی را مطابق نیاز خود ویرایش کنید.</p>
           </div>
 
           {renderForm()}

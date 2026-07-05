@@ -24,36 +24,33 @@ export const columns = [
     name: "نام دسته‌بندی",
     sortable: true,
     minWidth: "300px",
-    selector: row => row.name,
-    cell: ({ name }) => name
+
+    selector: (row) => row.categoryName,
+
+    cell: ({ categoryName }) => categoryName,
   },
 
   {
-    name: "نوع دسته‌بندی",
+    name: "عنوان گوگل",
     sortable: true,
-    minWidth: "250px",
+    minWidth: "350px",
 
-    cell: ({ categoryType }) => (
-      <Badge
-        pill
-        color={categoryColors[categoryType]}
-      >
-        {categoryLabels[categoryType]}
-      </Badge>
-    )
+    selector: (row) => row.googleTitle,
+
+    cell: ({ googleTitle }) => googleTitle,
   },
 
   {
-    name: "تاریخ ایجاد",
+    name: "توضیحات گوگل",
     sortable: true,
-    minWidth: "250px",
+    minWidth: "500px",
 
-    selector: row => row.createdDate,
+    selector: (row) => row.GoogleDescribe,
 
-    cell: ({ createdDate }) =>
-      new Date(createdDate).toLocaleDateString("fa-IR"),
-
-    sortFunction: (rowA, rowB) =>
-      new Date(rowB.createdDate) - new Date(rowA.createdDate)
+    cell: ({ GoogleDescribe }) => (
+      <span className="text-truncate d-inline-block" style={{ maxWidth: "450px" }}>
+        {GoogleDescribe}
+      </span>
+    ),
   }
 ];
