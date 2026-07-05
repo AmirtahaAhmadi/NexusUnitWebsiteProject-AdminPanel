@@ -107,7 +107,10 @@
     "recharts/prop-types": "^15.6.0",
     "styled-components/react-is": "^16.8.0",
     "react-hot-toast/goober/csstype": "^3.0.10",
-    "html-to-draftjs/immutable": "^4.0.0",
+    "draft-js/immutable": "3.8.2",
+    "html-to-draftjs/immutable": "3.8.2",
+    "react-draft-wysiwyg/immutable": "3.8.2",
+    "react-draft-wysiwyg/draftjs-utils/immutable": "3.8.2",
     "postcss-custom-properties/postcss": "^8.2",
     "@esbuild-plugins/node-globals-polyfill/esbuild": "^0.15.15"
   },
@@ -126,8 +129,17 @@
         "csstype": "^3.0.10"
       }
     },
+    "draft-js": {
+      "immutable": "3.8.2"
+    },
     "html-to-draftjs": {
-      "immutable": "^4.0.0"
+      "immutable": "3.8.2"
+    },
+    "react-draft-wysiwyg": {
+      "immutable": "3.8.2",
+      "draftjs-utils": {
+        "immutable": "3.8.2"
+      }
     },
     "postcss-custom-properties": {
       "postcss": "^8.2"

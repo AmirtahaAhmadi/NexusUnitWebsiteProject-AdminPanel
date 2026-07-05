@@ -28,8 +28,8 @@ const DefaultRoute = "/home";
 const Home = lazy(() => import("../../pages/Home"));
 const SecondPage = lazy(() => import("../../pages/SecondPage"));
 const BlogList = lazy(() => import("../../views/blog/list"));
-const BlogEdit = lazy(() => import("../../views/blog/edit"));
 const BlogDetails = lazy(() => import("../../views/blog/details"));
+const BlogEdit = lazy(() => import("../../views/blog/edit"));
 
 const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
@@ -68,6 +68,7 @@ const Routes = [
     path: "/pages/blog/detail",
     element: <Navigate to="/pages/blog/detail/1" />,
   },
+
   {
     path: "/pages/blog/edit/:id",
     element: <BlogEdit />,

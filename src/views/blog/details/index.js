@@ -14,6 +14,7 @@ import {
   MessageSquare,
   ThumbsUp,
   ThumbsDown,
+  Edit2,
 } from "react-feather";
 import images from "../../../assets/images/pages/Rectangle 34.png";
 import Users from "/src/assets/images/portrait/small/avatar-s-11.jpg";
@@ -64,7 +65,7 @@ import {
   GetNewsComments,
   NewsBlogDetail,
 } from "../../../core/Interceptor/Services/BlogDetailServices/get";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getUserProfileInfo } from "../../../core/Interceptor/Services/DashboardServices/get.js";
 
 const BlogDetails = () => {
@@ -72,6 +73,7 @@ const BlogDetails = () => {
   const [newsRate, setNewsRate] = useState(0);
   const [isRateLoading, setIsRateLoading] = useState(false);
   const { id } = useParams();
+  const navigate = useNavigate();
   const [replyTexts, setReplyTexts] = useState({});
   const [data, setData] = useState({});
   const [userInfo, setUserInfo] = useState({});
@@ -83,6 +85,11 @@ const BlogDetails = () => {
   const [BlogComment, setBlogComment] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [activeReplyId, setActiveReplyId] = useState(null);
+
+  // دکمه ویرایش خبر: کاربر را به صفحه ادیت همین خبر می‌برد
+  const handleEditNews = () => {
+    navigate(`/pages/blog/edit/${id}`);
+  };
 
   const fetchUserInfo = async () => {
     try {
@@ -567,8 +574,21 @@ const BlogDetails = () => {
                   <Card className="mb-3">
                     <CardImg src={images} className="img-fluid" top />
                     <CardBody>
-                      <CardTitle tag="h4"> {data.title}</CardTitle>
-                      <div className="d-flex">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <CardTitle tag="h4" className="mb-0">
+                          {" "}
+                          {data.title}
+                        </CardTitle>
+                        <Button
+                          color="primary"
+                          size="sm"
+                          onClick={handleEditNews}
+                        >
+                          <Edit2 size={15} className="me-50" />
+                          ویرایش خبر
+                        </Button>
+                      </div>
+                      <div className="d-flex mt-1">
                         <Avatar
                           className="me-50"
                           img={Users}
@@ -605,7 +625,7 @@ const BlogDetails = () => {
                           __html: data?.blog?.content,
                         }}
                       ></div>
-                   
+
                       <div className="d-flex">
                         <div>
                           <Avatar
@@ -673,31 +693,35 @@ const BlogDetails = () => {
                               className="text-body cursor-pointer"
                             />
                           </div>
-                             <div className="d-flex align-items-center item-center gap-1 "style={{marginRight:'20px',}}>
-                        <span className="me-1 fw-bold">امتیاز:</span>
-
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <span
-                            key={star}
-                            onClick={() => handleRateNews(star)}
-                            style={{
-                              cursor: "pointer",
-                              fontSize: "20px",
-                              color: star <= newsRate ? "#facc15" : "#d1d5db",
-                              transition: "0.2s",
-                            }}
+                          <div
+                            className="d-flex align-items-center item-center gap-1 "
+                            style={{ marginRight: "20px" }}
                           >
-                            ★
-                          </span>
-                        ))}
+                            <span className="me-1 fw-bold">امتیاز:</span>
 
-                        <span
-                          className="ms-2 text-muted"
-                          style={{ fontSize: "13px" }}
-                        >
-                          {newsRate}/5
-                        </span>
-                      </div>
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <span
+                                key={star}
+                                onClick={() => handleRateNews(star)}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "20px",
+                                  color:
+                                    star <= newsRate ? "#facc15" : "#d1d5db",
+                                  transition: "0.2s",
+                                }}
+                              >
+                                ★
+                              </span>
+                            ))}
+
+                            <span
+                              className="ms-2 text-muted"
+                              style={{ fontSize: "13px" }}
+                            >
+                              {newsRate}/5
+                            </span>
+                          </div>
                         </div>
                         <UncontrolledDropdown className="dropdown-icon-wrapper">
                           <DropdownToggle tag="span">

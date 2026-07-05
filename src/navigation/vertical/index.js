@@ -27,36 +27,26 @@ export default [
       },
     ],
   },
+
   {
-    id: "pages",
-    title: "Pages",
+    id: "blogList",
+    title: " وبلاگ ها",
     icon: <FileText size={20} />,
-    children: [
-      {
-        id: "blog",
-        title: "Blog",
-        icon: <Circle size={12} />,
-        children: [
-          {
-            id: "blogList",
-            title: "List",
-            permissions: ["admin", "editor"],
-            navLink: "/pages/blog/list",
+    permissions: ["admin", "editor"],
+    navLink: "/pages/blog/list",
+    children:[
+         {
+            id: 'blogList',
+            title: 'لیست وبلاگ ها',
+            icon: <Circle />,
+            navLink: '/pages/blog/list'
           },
-          {
-            id: "blogDetail",
-            title: "Detail",
-            permissions: ["admin", "editor"],
-            navLink: "/pages/blog/detail",
-          },
-          {
-            id: "blogEdit",
-            title: "Edit",
-            permissions: ["admin", "editor"],
-            navLink: "/pages/blog/edit",
-          },
-        ],
-      },
-    ],
+           {
+            id: 'blogEdit',
+            title: 'ایجاد وبلاگ ',
+            icon: <Circle />,
+            navLink: '/pages/blog/edit'
+          }
+    ]
   },
 ];

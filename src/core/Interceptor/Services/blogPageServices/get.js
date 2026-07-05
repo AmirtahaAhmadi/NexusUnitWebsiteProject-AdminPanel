@@ -6,14 +6,16 @@ export const getNewsWidthPagination = ({
   Query,
   SortingCol,
   SortType,
+  IsActive,
 }) => {
-  return apiClient.get("/News", {
+  return apiClient.get("/News/AdminNewsFilterList", {
     params: {
+      PageNumber: pageNumber,
       RowsOfPage: RowsOfPage,
-      pageNumber: pageNumber,
       Query: Query,
       SortingCol: SortingCol,
       SortType: SortType,
+      IsActive: IsActive,
     },
   });
 };
