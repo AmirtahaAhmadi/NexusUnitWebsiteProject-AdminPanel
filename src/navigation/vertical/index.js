@@ -34,19 +34,25 @@ export default [
     icon: <FileText size={20} />,
     permissions: ["admin", "editor"],
     navLink: "/pages/blog/list",
-    children:[
-         {
-            id: 'blogList',
-            title: 'لیست وبلاگ ها',
-            icon: <Circle />,
-            navLink: '/pages/blog/list'
-          },
-           {
-            id: 'blogEdit',
-            title: 'ایجاد وبلاگ ',
-            icon: <Circle />,
-            navLink: '/pages/blog/edit'
-          }
-    ]
+    children: [
+      {
+        id: "blogList",
+        title: "لیست وبلاگ ها",
+        icon: <Circle />,
+        navLink: "/pages/blog/list",
+      },
+      {
+        id: "blogEdit",
+        title: "ایجاد وبلاگ ",
+        icon: <Circle />,
+        navLink: "/pages/blog/edit",
+      },
+      {
+        id: "category",
+        title: "لیست کته گوری ها",
+        icon: <Circle size={12} />,
+        navLink: "/pages/blog/category",
+      },
+    ],
   },
 ];

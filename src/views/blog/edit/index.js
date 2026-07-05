@@ -59,7 +59,6 @@ const resolveImageUrl = (path) => {
   return `${API_BASE_URL}${normalizedPath}`;
 };
 
-// ** Styles
 import "@styles/base/plugins/forms/form-quill-editor.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/base/pages/page-blog.scss";
@@ -73,7 +72,6 @@ const toSafeArray = (value) => {
   return [];
 };
 
-// ** تبدیل خروجی Editor.js (بلاک‌ها) به HTML برای ارسال به بک‌اند
 const edjsParser = edjsHTML();
 
 const editorOutputToHtml = (outputData) => {
@@ -86,10 +84,6 @@ const editorOutputToHtml = (outputData) => {
   }
 };
 
-// ** داده اولیه Editor.js از HTML موجود
-// چون Editor.js به‌صورت پیش‌فرض HTML رو به بلاک تبدیل نمی‌کند،
-// محتوای موجود را به‌صورت یک بلاک Raw (HTML خام) بارگذاری می‌کنیم
-// تا محتوای قبلی از دست نرود و قابل ویرایش باشد.
 const htmlToEditorData = (html) => {
   if (!html || typeof html !== "string" || html.trim() === "") {
     return { blocks: [] };
@@ -121,7 +115,6 @@ const NewsEdit = () => {
   const [isActive, setIsActive] = useState(true);
   const [initialEditorData, setInitialEditorData] = useState(null);
   const [categoryOptions, setCategoryOptions] = useState([]);
-  // طبق مستندات CreateNews، دسته‌بندی تک‌انتخابی است (NewsCatregoryId)
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [featuredImg, setFeaturedImg] = useState(null);
   const [featuredFileId, setFeaturedFileId] = useState(null);
@@ -210,7 +203,6 @@ const NewsEdit = () => {
     fetchData();
   }, [id]);
 
-  // ** راه‌اندازی Editor.js بعد از آماده شدن داده اولیه
   useEffect(() => {
     if (isLoading || initialEditorData === null) return;
     if (isEditorReadyRef.current) return;

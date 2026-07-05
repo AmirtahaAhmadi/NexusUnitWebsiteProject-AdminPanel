@@ -30,6 +30,7 @@ const SecondPage = lazy(() => import("../../pages/SecondPage"));
 const BlogList = lazy(() => import("../../views/blog/list"));
 const BlogDetails = lazy(() => import("../../views/blog/details"));
 const BlogEdit = lazy(() => import("../../views/blog/edit"));
+const BlogCategory = lazy(() => import("../../views/blog/Category"));
 
 const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
@@ -76,6 +77,10 @@ const Routes = [
   {
     path: "/pages/blog/edit",
     element: <Navigate to="/pages/blog/edit/1" />,
+  },
+  {
+    element: <BlogCategory />,
+    path: "/pages/blog/category",
   },
 
   {
