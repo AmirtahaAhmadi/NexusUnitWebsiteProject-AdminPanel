@@ -9,21 +9,25 @@ import { Label, Row, Col, Input, Form, Button } from "reactstrap";
 import { useState } from "react";
 import { getCourseCreateDataCall } from "../../../core/Interceptor/Courses/getCreateStep1Call";
 import { useEffect } from "react";
+import { globalformData } from "../../../redux/zustan/formdata";
+import toast from "react-hot-toast";
 const AddCourseDetail = ({ stepper, type }) => {
-  const [getcreatdata, setgetcreatdata] = useState([]);
+  const formData = globalformData((state) => state.formData);
 
-  const run = async () => {
-    const run = await getCourseCreateDataCall();
-    if (run) {
-      setgetcreatdata(run);
-      console.log("getcreate", run);
+  const handleNext = () => {
+    const required = [
+      formData.CourseLvlId,
+      formData.TeacherId,
+      formData.TremId,
+      formData.ClassId,
+    ].every(Boolean);
+
+    if (!required) {
+      return toast.error("لطفا تمام گذینه ها را پر کنید");
     }
+
+    stepper.next();
   };
-
-  useEffect(() => {
-    run();
-  }, []);
-
   return (
     <Fragment>
       {" "}
@@ -39,7 +43,9 @@ const AddCourseDetail = ({ stepper, type }) => {
           <Button
             color="primary"
             className="btn-next"
-            onClick={() => stepper.next()}>
+            onClick={() => {
+              handleNext();
+            }}>
             <span className="align-middle d-sm-inline-block d-none">بعدی</span>
             <ArrowRight
               size={14}

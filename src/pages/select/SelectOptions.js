@@ -1,6 +1,6 @@
 // ** React Imports
 import { useEffect, useState } from "react";
-
+import { GetTeacherscall } from "../../core/Interceptor/Courses/GetTeacherscall";
 // ** Reactstrap Imports
 import {
   Card,
@@ -177,21 +177,35 @@ const formatGroupLabel = (data) => (
 
 const SelectOptions = () => {
   const [getcreatdata, setgetcreatdata] = useState([]);
-
+  const [getteachers, setgetteachers] = useState([]);
   const run = async () => {
     const run = await getCourseCreateDataCall();
     if (run) {
       setgetcreatdata(run);
-      console.log("getcreate", run);
+      // console.log("getcreate", run);
     }
   };
 
+  // const getallcoursetype = async () => {
+  //   const result = await getCourseTypescall();
+  //   if (result) {
+  //     setgetcoursetype(result);
+  //     console.log("getcoursetypes", result);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getallcoursetype();
+  // }, []);
+
+  useState(() => {}, []);
   const [selectOptions, setSelectOptions] = useState({
     courseTypes: [],
     technologies: [],
-    statuses: [],
+    // statuses: [],
     levels: [],
     teachers: [],
+
     terms: [],
     classrooms: [],
   });
@@ -211,11 +225,11 @@ const SelectOptions = () => {
             label: item.techName,
           })) || [],
 
-        statuses:
-          getcreatdata.statusDtos?.map((item) => ({
-            value: item.id,
-            label: item.statusName,
-          })) || [],
+        // statuses:
+        //   getcreatdata.statusDtos?.map((item) => ({
+        //     value: item.id,
+        //     label: item.statusName,
+        //   })) || [],
 
         levels:
           getcreatdata.courseLevelDtos?.map((item) => ({
@@ -334,14 +348,14 @@ const SelectOptions = () => {
   };
 
   return (
-    <Card>
+    <Card className="t-bg-transparent t-shadow-none">
       <CardHeader>
         <CardTitle tag="h4">گذینه ها</CardTitle>
       </CardHeader>
 
       <CardBody>
         <Row>
-          <Col className="mb-1" md="6" sm="12">
+          {/* <Col className="mb-1" md="6" sm="12">
             <Label className="form-label">تکنولوژی ها</Label>
             <Select
               isMulti
@@ -361,9 +375,9 @@ const SelectOptions = () => {
                 })
               }
             />
-          </Col>
+          </Col> */}
 
-          <Col className="mb-1" md="6" sm="12">
+          {/* <Col className="mb-1" md="6" sm="12">
             <Label className="form-label">استاتوس</Label>
             <Select
               theme={selectThemeColors}
@@ -380,7 +394,7 @@ const SelectOptions = () => {
                 })
               }
             />
-          </Col>
+          </Col> */}
 
           <Col className="mb-1" md="6" sm="12">
             <Label className="form-label">سطح</Label>
@@ -391,18 +405,18 @@ const SelectOptions = () => {
               placeholder="انتخاب"
               classNamePrefix="select"
               value={selectOptions.levels.find(
-                (item) => item?.value === formData.levelId,
+                (item) => item?.value === formData.CourseLvlId,
               )}
               onChange={(selectedOption) =>
                 updateformdata({
-                  levelId: selectedOption ? selectedOption.value : null,
+                  CourseLvlId: selectedOption ? selectedOption.value : null,
                 })
               }
             />
           </Col>
 
           <Col className="mb-1" md="6" sm="12">
-            <Label className="form-label">معلم</Label>
+            <Label className="form-label">مدرس</Label>
             <Select
               theme={selectThemeColors}
               options={selectOptions.teachers}
@@ -414,7 +428,8 @@ const SelectOptions = () => {
               )}
               onChange={(selectedOption) =>
                 updateformdata({
-                  teacherId: selectedOption ? selectedOption.value : null,
+                  TeacherId: selectedOption?.value,
+                  TeacherName: selectedOption?.label,
                 })
               }
             />
@@ -429,11 +444,11 @@ const SelectOptions = () => {
               classNamePrefix="select"
               placeholder="انتخاب"
               value={selectOptions.terms.find(
-                (item) => item?.value === formData.termId,
+                (item) => item?.value === formData.TremId,
               )}
               onChange={(selectedOption) =>
                 updateformdata({
-                  termId: selectedOption ? selectedOption.value : null,
+                  TremId: selectedOption ? selectedOption.value : null,
                 })
               }
             />
@@ -448,15 +463,33 @@ const SelectOptions = () => {
               classNamePrefix="select"
               placeholder="انتخاب"
               value={selectOptions.classrooms.find(
-                (item) => item?.value === formData.classRoomId,
+                (item) => item?.value === formData.id,
               )}
               onChange={(selectedOption) =>
                 updateformdata({
-                  classRoomId: selectedOption ? selectedOption.value : null,
+                  ClassId: selectedOption ? selectedOption.value : null,
                 })
               }
             />
           </Col>
+          {/* <Col className="mb-1" md="6" sm="12">
+            <Label className="form-label">نوع فعالیت</Label>
+            <Select
+              theme={selectThemeColors}
+              options={selectOptions.classrooms}
+              className="react-select"
+              classNamePrefix="select"
+              placeholder="انتخاب"
+              value={selectOptions.classrooms.find(
+                (item) => item?.value === formData.id,
+              )}
+              onChange={(selectedOption) =>
+                updateformdata({
+                  ClassId: selectedOption ? selectedOption.value : null,
+                })
+              }
+            />
+          </Col> */}
         </Row>
       </CardBody>
     </Card>

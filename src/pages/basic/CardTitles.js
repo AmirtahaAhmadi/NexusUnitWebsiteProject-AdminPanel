@@ -24,6 +24,7 @@ import ProductsSearchbar from "./productSeachBar/ProductSearchbar";
 import { useSelector } from "react-redux";
 import ReactPaginate from "../pagination";
 import IconTextPagination from "../pagination/PaginationIconText";
+import UserProjectsList from "../CourseList/view/UserProjectsList";
 const CardTitles = () => {
   const [loading, setloading] = useState(false);
   const query = useSelector((value) => value.courses.searchQuery);
@@ -45,7 +46,7 @@ const CardTitles = () => {
       query,
     );
     if (result) {
-      console.log("res", result);
+      // console.log("res", result);
       settotalcount(result.totalCount);
       setgetcourse(result.courseDtos);
       setloading(false);
@@ -67,111 +68,112 @@ const CardTitles = () => {
       {loading ? (
         <div>در حال پیدا کردن</div>
       ) : (
-        getcourse?.map((el) => (
-          <Col lg="4" md="6" key={el.courseId}>
-            <Card>
-              <CardImg top src={rec} alt="Card cap" />
-              <CardBody>
-                <CardTitle tag="h4">{el.title}</CardTitle>
-                <CardText>{el.describe}</CardText>
-                <div className="d-flex flex-row justify-content-between align-items-center w-[80%]">
-                  <div>
-                    <div
-                      className="d-flex flex-row   w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>موجودی:</div>
-                      <div>{el.capacity}</div>
-                    </div>
-                    <div
-                      className="d-flex flex-row  w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>نام مدرس:</div>
-                      <div>{el.fullName}</div>
-                    </div>
+        <UserProjectsList getcourse={getcourse} />
+        // getcourse?.map((el) => (
+        //   <Col lg="4" md="6" key={el.courseId}>
+        //     {/* <Card>
+        //       <CardImg top src={rec} alt="Card cap" />
+        //       <CardBody>
+        //         <CardTitle tag="h4">{el.title}</CardTitle>
+        //         <CardText>{el.describe}</CardText>
+        //         <div className="d-flex flex-row justify-content-between align-items-center w-[80%]">
+        //           <div>
+        //             <div
+        //               className="d-flex flex-row   w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>موجودی:</div>
+        //               <div>{el.capacity}</div>
+        //             </div>
+        //             <div
+        //               className="d-flex flex-row  w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>نام مدرس:</div>
+        //               <div>{el.fullName}</div>
+        //             </div>
 
-                    <div
-                      className="d-flex flex-row   w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div className="text-bold">تاریخ شروع:</div>
-                      <div className="text-[12px]">
-                        {dateToLocal(el.startTime)}
-                      </div>
-                    </div>
+        //             <div
+        //               className="d-flex flex-row   w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div className="text-bold">تاریخ شروع:</div>
+        //               <div className="text-[12px]">
+        //                 {dateToLocal(el.startTime)}
+        //               </div>
+        //             </div>
 
-                    <div
-                      className="d-flex flex-row w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>نوع فعالیت:</div>
-                      {el.isActive ? <div>فعال</div> : <div>غیرفعال</div>}
-                    </div>
+        //             <div
+        //               className="d-flex flex-row w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>نوع فعالیت:</div>
+        //               {el.isActive ? <div>فعال</div> : <div>غیرفعال</div>}
+        //             </div>
 
-                    <div
-                      className="d-flex flex-row  w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>کد کورس:</div>
-                      {el.courseId}
-                    </div>
+        //             <div
+        //               className="d-flex flex-row  w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>کد کورس:</div>
+        //               {el.courseId}
+        //             </div>
 
-                    <div
-                      className="d-flex flex-row  w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>کد استاتوس</div>
-                      {el.statusId}
-                    </div>
-                  </div>
+        //             <div
+        //               className="d-flex flex-row  w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>کد استاتوس</div>
+        //               {el.statusId}
+        //             </div>
+        //           </div>
 
-                  <div>
-                    <div
-                      className="d-flex flex-row   w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>قیمت:</div>
-                      <div>{el.cost}</div>
-                    </div>
-                    <div
-                      className="d-flex flex-row   w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>اخرین بروزرسانی:</div>
-                      <div className="text-[12px]">
-                        {dateToLocal(el.lastUpdate)}
-                      </div>
-                    </div>
-                    <div
-                      className="d-flex flex-row   w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>تاریخ پایان:</div>
-                      <div className="text-[12px]">
-                        {dateToLocal(el.endTime)}
-                      </div>
-                    </div>
-                    <div
-                      className="d-flex flex-row   w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>حذف شده:</div>
-                      {el.isDelete ? <div>بله</div> : <div>خیر</div>}
-                    </div>
+        //           <div>
+        //             <div
+        //               className="d-flex flex-row   w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>قیمت:</div>
+        //               <div>{el.cost}</div>
+        //             </div>
+        //             <div
+        //               className="d-flex flex-row   w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>اخرین بروزرسانی:</div>
+        //               <div className="text-[12px]">
+        //                 {dateToLocal(el.lastUpdate)}
+        //               </div>
+        //             </div>
+        //             <div
+        //               className="d-flex flex-row   w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>تاریخ پایان:</div>
+        //               <div className="text-[12px]">
+        //                 {dateToLocal(el.endTime)}
+        //               </div>
+        //             </div>
+        //             <div
+        //               className="d-flex flex-row   w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>حذف شده:</div>
+        //               {el.isDelete ? <div>بله</div> : <div>خیر</div>}
+        //             </div>
 
-                    <div
-                      className="d-flex flex-row  w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>کد سطح:</div>
-                      {el.courseLvlId}
-                    </div>
+        //             <div
+        //               className="d-flex flex-row  w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>کد سطح:</div>
+        //               {el.courseLvlId}
+        //             </div>
 
-                    <div
-                      className="d-flex flex-row  w-100 mb-2"
-                      style={{ gap: "3px" }}>
-                      <div>کد استاد:</div>
-                      {el.teacherId}
-                    </div>
-                  </div>
-                </div>
-                <Button color="primary" outline>
-                  Go Somewhere
-                </Button>
-              </CardBody>
-            </Card>
-          </Col>
-        ))
+        //             <div
+        //               className="d-flex flex-row  w-100 mb-2"
+        //               style={{ gap: "3px" }}>
+        //               <div>کد استاد:</div>
+        //               {el.teacherId}
+        //             </div>
+        //           </div>
+        //         </div>
+        //         <Button color="primary" outline>
+        //           Go Somewhere
+        //         </Button>
+        //       </CardBody>
+        //     </Card> */}
+        //   </Col>
+        // ))
       )}
       {!loading && totalcount == 0 && <div>موردی یافت نشد</div>}
       {!loading && totalcount > 0 && (

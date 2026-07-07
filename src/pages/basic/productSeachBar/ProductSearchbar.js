@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { Row, Col, InputGroup, Input, InputGroupText } from "reactstrap";
 import { useEffect, useState } from "react";
 
-const ProductsSearchbar = () => {
+const ProductsSearchbar = ({ getcourse }) => {
   const dispatch = useDispatch();
   const [value, setvalue] = useState("");
   useEffect(() => {
