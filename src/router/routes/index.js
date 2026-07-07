@@ -25,7 +25,10 @@ const TemplateTitle = "%s - Vuexy React Admin Template";
 // ** Default Route
 const DefaultRoute = "/ecommerce";
 
-const DashboardEcommerce = lazy(() => import("../../Component/dashboard/ecommerce"));
+const Buildings = lazy(() => import("../../views/Bilding"));
+const DashboardEcommerce = lazy(() =>
+  import("../../Component/dashboard/ecommerce"),
+);
 const SecondPage = lazy(() => import("../../pages/SecondPage"));
 const BlogList = lazy(() => import("../../views/blog/list"));
 const BlogDetails = lazy(() => import("../../views/blog/details"));
@@ -47,8 +50,8 @@ const Routes = [
     element: <Navigate replace to={DefaultRoute} />,
   },
   {
-    path: '/ecommerce',
-    element: <DashboardEcommerce />
+    path: "/ecommerce",
+    element: <DashboardEcommerce />,
   },
   {
     path: "/sample",
@@ -86,6 +89,10 @@ const Routes = [
   {
     path: "/pages/blog/add",
     element: <AddCategory />,
+  },
+  {
+    element: <Buildings />,
+    path: "/pages/Buildings/list",
   },
   {
     path: "/login",

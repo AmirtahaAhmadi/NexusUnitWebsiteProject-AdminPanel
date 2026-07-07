@@ -61,4 +61,19 @@ export default [
       },
     ],
   },
+  {
+    id: "Buildings",
+    title: "  ساختمان ها و دپارتمان ها",
+    icon: <Home size={20} />,
+    permissions: ["admin", "editor"],
+    navLink: "/pages/Buildings",
+    children: [
+      {
+        id: "Buildings",
+        title: "   ساختمان ها  ",
+        icon: <Circle size={20} />,
+        navLink: "/pages/Buildings/list",
+      },
+    ],
+  },
 ];
