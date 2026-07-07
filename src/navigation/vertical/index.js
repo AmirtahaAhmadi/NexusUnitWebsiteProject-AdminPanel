@@ -2,10 +2,10 @@ import { Mail, Home, Airplay, Circle, FileText } from "react-feather";
 
 export default [
   {
-    id: "home",
-    title: "Home",
+    id: "eCommerceDash",
+    title: "داشبورد",
     icon: <Home size={20} />,
-    navLink: "/home",
+    navLink: "/ecommerce",
   },
   {
     id: "secondPage",
@@ -53,7 +53,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/pages/blog/category",
       },
-       {
+      {
         id: "categoryEdit",
         title: "ایجاد دسته بندی جدید ",
         icon: <Circle />,
