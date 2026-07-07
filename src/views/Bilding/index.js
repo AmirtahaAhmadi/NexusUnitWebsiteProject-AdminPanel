@@ -1,7 +1,12 @@
 import { useEffect, useState, Fragment } from "react";
 
+import Swal from "sweetalert2";
 import { columns } from "./columns";
-
+import { createBuilding } from "../../core/Interceptor/Services/BildingPageServices/post";
+import {
+  updateBuilding,
+  setBuildingActive,
+} from "../../core/Interceptor/Services/BildingPageServices/put";
 import { getBuildings } from "../../core/Interceptor/Services/BildingPageServices/get";
 import {
   Alert,
@@ -22,7 +27,7 @@ import classnames from "classnames";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { useForm, Controller } from "react-hook-form";
-import { ChevronDown, Edit, Trash } from "react-feather";
+import { ChevronDown, Edit,  X } from "react-feather";
 
 // ** Styles
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -89,8 +94,15 @@ const Table = () => {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues: { buildingName: "" } });
-
+  } = useForm({
+    defaultValues: {
+      id: 0,
+      buildingName: "",
+      floor: 1,
+      latitude: "",
+      longitude: "",
+    },
+  });
   const [show, setShow] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -105,11 +117,9 @@ const Table = () => {
     try {
       const response = await getBuildings();
       setAllBuildings(response.data);
-      console.log("دیتای دریافتی",response.data);
-      
-
-    } catch (eror) {
-      console.error("خطا در دریافت لیست ساختمان‌ها:", err);
+      console.log("دیتای دریافتی", response.data);
+    } catch (erorr) {
+      console.error("خطا در دریافت لیست ساختمان‌ها:", error);
     } finally {
       setLoading(false);
     }
@@ -168,34 +178,104 @@ const Table = () => {
       />
     );
   };
-
   const handleEditClick = (row) => {
     setSelected(row);
+
+    setValue("id", row.id);
     setValue("buildingName", row.buildingName);
+    setValue("floor", row.floor);
+    setValue("latitude", row.latitude);
+    setValue("longitude", row.longitude);
+
     setShow(true);
   };
+  const handleDeleteClick = async (row) => {
+    const result = await Swal.fire({
+      title: "آیا مطمئن هستید؟",
+      text: row.active
+        ? "این ساختمان غیرفعال خواهد شد."
+        : "این ساختمان دوباره فعال خواهد شد.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#7367f0",
+      cancelButtonColor: "#ea5455",
+      confirmButtonText: row.active ? "بله، غیرفعال شود" : "بله، فعال شود",
+      cancelButtonText: "انصراف",
+      reverseButtons: true,
+      focusCancel: true,
+    });
 
-  const handleModalClosed = () => {
-    setSelected(null);
-    setValue("buildingName", "");
-  };
+    if (!result.isConfirmed) return;
 
-  const onSubmit = (formValues) => {
-    if (formValues.buildingName.length) {
-      if (selected !== null) {
-      } else {
-      }
-      setShow(false);
-    } else {
-      setError("buildingName", {
-        type: "manual",
+    try {
+      await setBuildingActive({
+        id: row.id,
+        active: !row.active,
       });
+
+      await fetchBuildings();
+
+      Swal.fire({
+        title: selected
+          ? "ساختمان با موفقیت ویرایش شد."
+          : "ساختمان با موفقیت ایجاد شد.",
+        icon: "success",
+        draggable: true,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "خطا",
+        text: "عملیات با خطا مواجه شد.",
+      });
+
+      console.log(err);
     }
   };
 
-  const handleDeleteClick = (id) => {
+  const handleModalClosed = () => {
+    reset();
+    setSelected(null);
   };
 
+  const onSubmit = async (formValues) => {
+    try {
+      const body = {
+        id: selected ? selected.id : 0,
+        buildingName: formValues.buildingName,
+        floor: Number(formValues.floor),
+        latitude: formValues.latitude,
+        longitude: formValues.longitude,
+        active: selected ? selected.active : true,
+      };
+
+      if (selected) {
+        await updateBuilding(body);
+      } else {
+        await createBuilding(body);
+      }
+
+      await fetchBuildings();
+
+      Swal.fire({
+        title: selected
+          ? "ساختمان با موفقیت ویرایش شد."
+          : "ساختمان با موفقیت ایجاد شد.",
+        icon: "success",
+        draggable: true,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      reset();
+      setSelected(null);
+      setShow(false);
+    } catch (error) {
+      console.log(error.response?.data);
+    }
+  };
   const updatedColumns = [
     ...columns,
     {
@@ -215,9 +295,9 @@ const Table = () => {
               size="sm"
               color="transparent"
               className="btn btn-icon"
-              onClick={() => handleDeleteClick(row.id)}
+              onClick={() => handleDeleteClick(row)}
             >
-              <Trash className="font-medium-2" />
+              <X className="font-medium-2 text-danger" />
             </Button>
           </div>
         );
@@ -227,6 +307,7 @@ const Table = () => {
 
   const handleDiscard = () => {
     reset();
+    setSelected(null);
     setShow(false);
   };
 
@@ -262,6 +343,32 @@ const Table = () => {
               <FormFeedback>لطفاً یک نام ساختمان معتبر وارد کنید</FormFeedback>
             )}
           </Col>
+          <Col xs={12} className="mt-1">
+            <Label>طبقه</Label>
+            <Controller
+              control={control}
+              name="floor"
+              render={({ field }) => <Input type="number" {...field} />}
+            />
+          </Col>
+
+          <Col xs={12} className="mt-1">
+            <Label>Latitude</Label>
+            <Controller
+              control={control}
+              name="latitude"
+              render={({ field }) => <Input {...field} />}
+            />
+          </Col>
+
+          <Col xs={12} className="mt-1">
+            <Label>Longitude</Label>
+            <Controller
+              control={control}
+              name="longitude"
+              render={({ field }) => <Input {...field} />}
+            />
+          </Col>
           <Col xs={12} className="mt-75">
             <div className="form-check">
               <Input type="checkbox" id="core-building-checkbox" />
@@ -271,7 +378,7 @@ const Table = () => {
             </div>
           </Col>
           <Col xs={12} className="text-center mt-2">
-            <Button className="me-1" color="primary">
+            <Button type="submit" className="me-1" color="primary">
               ایجاد ساختمان
             </Button>
             <Button outline type="reset" onClick={handleDiscard}>
@@ -314,7 +421,7 @@ const Table = () => {
               )}
             </Col>
             <Col xs={12} sm={3} className="p-sm-0">
-              <Button className="mt-2" color="primary">
+              <Button type="submit" className="mt-2" color="primary">
                 به‌روزرسانی
               </Button>
             </Col>

@@ -70,9 +70,27 @@ export default [
     children: [
       {
         id: "Buildings",
-        title: "   ساختمان ها  ",
+        title: "  مدیریت ساختمان ها  ",
         icon: <Circle size={20} />,
         navLink: "/pages/Buildings/list",
+      },
+      {
+        id: "department",
+        title: "  مدیریت  دپارتمان ها ",
+        icon: <Circle size={12} />,
+        navLink: "/pages/Buildings/department",
+      },
+        {
+        id: "classroomManagement",
+        title: "  مدیریت  کلاس ها ها ",
+        icon: <Circle size={12} />,
+        navLink: "/pages/Buildings/ClassroomManagement",
+      },
+      {
+        id: "TermManagement",
+        title: "  مدیریت  کلاس  ها ",
+        icon: <Circle size={12} />,
+        navLink: "/pages/Buildings/TermManagement",
       },
     ],
   },
