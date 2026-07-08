@@ -18,6 +18,7 @@ import {
   ModalHeader,
   ModalBody,
   FormFeedback,
+  Spinner,
 } from "reactstrap";
 
 // ** Third party Components
@@ -421,6 +422,12 @@ const Table = () => {
           columns={updatedColumns}
           sortIcon={<ChevronDown />}
           className="react-dataTable"
+          progressPending={isLoading}
+          progressComponent={
+            <div className="d-flex w-100 align-items-center justify-content-center py-5">
+              <Spinner color="primary" />
+            </div>
+          }
           paginationComponent={CustomPagination}
           data={dataToRender()}
           subHeaderComponent={

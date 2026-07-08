@@ -27,6 +27,7 @@ import {
   ModalHeader,
   ModalBody,
   FormFeedback,
+  Spinner,
 } from "reactstrap";
 
 import classnames from "classnames";
@@ -192,7 +193,6 @@ const Table = () => {
     setValue("endDate", row.endDate?.slice(0, 10));
     setShow(true);
   };
- 
 
   const handleModalClosed = () => {
     reset();
@@ -250,7 +250,6 @@ const Table = () => {
             >
               <Edit className="font-medium-2" />
             </Button>
-         
           </div>
         );
       },
@@ -443,6 +442,11 @@ const Table = () => {
           sortIcon={<ChevronDown />}
           className="react-dataTable"
           progressPending={loading}
+          progressComponent={
+            <div className="d-flex w-100 align-items-center justify-content-center py-5">
+              <Spinner color="primary" />
+            </div>
+          }
           paginationComponent={CustomPagination}
           data={data}
           subHeaderComponent={

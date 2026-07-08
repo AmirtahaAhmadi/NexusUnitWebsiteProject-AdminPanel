@@ -7,6 +7,7 @@ import { createClassRoom } from "../../../core/Interceptor/Services/ClassroomMan
 import { updateClassRoom } from "../../../core/Interceptor/Services/ClassroomManagementpageServices/put";
 
 import {
+  Alert,
   Row,
   Col,
   Label,
@@ -17,6 +18,7 @@ import {
   ModalHeader,
   ModalBody,
   FormFeedback,
+  Spinner,
 } from "reactstrap";
 
 // Third party
@@ -347,7 +349,7 @@ const Table = () => {
   return (
     <Fragment>
       <div className="react-dataTable">
-        <DataTable
+         <DataTable
           noHeader
           pagination
           subHeader
@@ -357,6 +359,11 @@ const Table = () => {
           sortIcon={<ChevronDown />}
           className="react-dataTable"
           progressPending={loading}
+          progressComponent={
+            <div className="d-flex w-100 align-items-center justify-content-center py-5">
+              <Spinner color="primary" />
+            </div>
+          }
           paginationComponent={CustomPagination}
           data={data}
           subHeaderComponent={

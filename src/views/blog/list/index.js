@@ -399,9 +399,10 @@ const BlogList = () => {
                       </Link>
                     </td>
                     <td data-label="دسته بندی">
-                      {(item.category?.categoryName || item.newsCatregoryName) ? (
+                      {item.category?.categoryName || item.newsCatregoryName ? (
                         <Badge color="light-secondary" pill>
-                          {item.category?.categoryName || item.newsCatregoryName}
+                          {item.category?.categoryName ||
+                            item.newsCatregoryName}
                         </Badge>
                       ) : (
                         <small className="text-muted">-</small>
@@ -570,7 +571,9 @@ const BlogList = () => {
           </Row>
 
           {isLoading ? (
-            <div className="text-center py-3">در حال بارگذاری...</div>
+            <div className="d-flex w-100 align-items-center justify-content-center py-5">
+              <Spinner color="primary" />
+            </div>
           ) : data.length > 0 ? (
             <div className="blog-list-wrapper" ref={blogRef}>
               {renderRenderList()}

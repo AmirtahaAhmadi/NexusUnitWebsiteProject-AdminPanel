@@ -45,6 +45,7 @@ import {
   DropdownItem,
   DropdownToggle,
   UncontrolledDropdown,
+  Spinner,
 } from "reactstrap";
 import {
   addComment,
@@ -331,8 +332,16 @@ const BlogDetails = () => {
     ));
   };
   const renderComments = () => {
-    if (!BlogComment?.length) return <div>کامنتی وجود ندارد</div>;
-
+    if (isLoadingComment) {
+      return (
+        <div
+          className="d-flex w-100 align-items-center justify-content-center"
+          style={{ minHeight: "150px" }}
+        >
+          <Spinner color="primary" />
+        </div>
+      );
+    }
     return BlogComment.map((comment) => {
       return (
         <Card className="mb-3" key={comment.id || comment.userFullName}>
@@ -553,7 +562,14 @@ const BlogDetails = () => {
     });
   };
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div
+        className="d-flex w-100 align-items-center justify-content-center"
+        style={{ minHeight: "300px" }}
+      >
+        <Spinner color="primary" />
+      </div>
+    );
   }
 
   if (!data || Object.keys(data).length === 0) {
