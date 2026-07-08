@@ -1,7 +1,7 @@
 // ** React Imports
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import Swal from "sweetalert2";
 // ** Third Party Components
 import toast from "react-hot-toast";
 import { useForm, Controller } from "react-hook-form";
@@ -69,11 +69,22 @@ const AddCategory = () => {
         image: imgFile,
       });
 
-      toast.success("دسته‌بندی با موفقیت ایجاد شد");
+      Swal.fire({
+        title: "دسته‌بندی با موفقیت ایجاد شد",
+        icon: "success",
+        draggable: true,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
       handleBackToList();
     } catch (error) {
       console.error("API ERROR:", error);
-      toast.error("خطا در ایجاد دسته‌بندی");
+      Swal.fire({
+        title: "خطا در ایجاد دسته‌بندی",
+        icon: "error",
+        draggable: true,
+      });
     } finally {
       setIsSaving(false);
     }

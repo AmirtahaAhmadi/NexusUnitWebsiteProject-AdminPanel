@@ -95,13 +95,6 @@ const EcommerceDashboard = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      navigate("/login", { replace: true });
-      return;
-    }
-
     fetchData();
   }, []);
 

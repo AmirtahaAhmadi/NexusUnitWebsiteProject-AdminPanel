@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 // ** Table Columns
 import { columns } from "./columns";
-
+import Swal from "sweetalert2";
 // ** Reactstrap Imports
 import {
   Alert,
@@ -237,12 +237,25 @@ const Table = () => {
       setShow(false);
       setSelected(null);
       reset();
+
+      Swal.fire({
+        title: "دسته‌بندی با موفقیت بروزرسانی شد",
+        icon: "success",
+        draggable: true,
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (error) {
       console.log(error);
+
+      Swal.fire({
+        title: "خطا در بروزرسانی دسته‌بندی",
+        icon: "error",
+        draggable: true,
+      });
     }
   };
 
- 
   const handleAddClick = () => {
     navigate("/pages/blog/category/add");
   };
@@ -262,7 +275,6 @@ const Table = () => {
             >
               <Edit className="font-medium-2" />
             </Button>
-         
           </div>
         );
       },

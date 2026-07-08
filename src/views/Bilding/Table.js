@@ -4,7 +4,10 @@ import { useEffect, useState, Fragment } from "react";
 // ** Table Columns
 import { columns } from "./columns";
 
-import { getBuildings } from "../../core/Interceptor/Services/BildingPageServices/get";
+import { getDepartments } from "../../../core/Interceptor/Services/DepartmentsPageServices/get";
+import { createDepartment } from "../../../core/Interceptor/Services/DepartmentsPageServices/post";
+import { updateDepartment } from "../../../core/Interceptor/Services/DepartmentsPageServices/put";
+import { getBuildings } from "../../../core/Interceptor/Services/BildingPageServices/get";
 
 // ** Reactstrap Imports
 import {
@@ -77,7 +80,7 @@ const CustomHeader = ({
             color="primary"
             onClick={() => setShow(true)}
           >
-            افزودن ساختمان
+            افزودن دپارتمان
           </Button>
         </div>
       </Col>
@@ -93,45 +96,58 @@ const Table = () => {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues: { buildingName: "" } });
+  } = useForm({
+    defaultValues: {
+      depName: "",
+      buildingId: "",
+    },
+  });
 
   const [show, setShow] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const [allDepartments, setAllDepartments] = useState([]);
   const [allBuildings, setAllBuildings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(null);
 
-  const fetchBuildings = async () => {
+  const fetchDepartments = async () => {
     setLoading(true);
-    try {
-      const response = await getBuildings();
-      setAllBuildings(response.data);
 
-      console.log("allBuildings", allBuildings);
-      console.log("filteredBuildings", filteredBuildings);
-      console.log("data", data);
-      console.log("دیتای دریافتی", response.data);
+    try {
+      const response = await getDepartments();
+      setAllDepartments(response.data);
+      console.log("دیتای دپارتمان‌ها", response.data);
     } catch (error) {
-      console.error("خطا در دریافت لیست ساختمان‌ها:", error);
+      console.error("خطا در دریافت لیست دپارتمان‌ها:", error);
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchBuildings = async () => {
+    try {
+      const response = await getBuildings();
+      setAllBuildings(response.data);
+    } catch (error) {
+      console.error("خطا در دریافت لیست ساختمان‌ها:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchDepartments();
     fetchBuildings();
   }, []);
 
-  const filteredBuildings = allBuildings.filter((b) =>
-    (b.buildingName || "").toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredDepartments = allDepartments.filter((d) =>
+    (d.depName || "").toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const total = filteredBuildings.length;
+  const total = filteredDepartments.length;
 
-  const data = filteredBuildings.slice(
+  const data = filteredDepartments.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,
   );
@@ -177,25 +193,37 @@ const Table = () => {
 
   const handleEditClick = (row) => {
     setSelected(row);
-    setValue("buildingName", row.buildingName);
+    setValue("depName", row.depName);
+    setValue("buildingId", row.buildingId);
     setShow(true);
   };
 
   const handleModalClosed = () => {
     setSelected(null);
-    setValue("buildingName", "");
+    reset();
   };
 
-  const onSubmit = (formValues) => {
-    if (formValues.buildingName.length) {
-      if (selected !== null) {
+  const onSubmit = async (formValues) => {
+    try {
+      const body = {
+        depName: formValues.depName,
+        buildingId: Number(formValues.buildingId),
+      };
+
+      if (selected) {
+        body.id = selected.id;
+        await updateDepartment(body);
       } else {
+        await createDepartment(body);
       }
+
+      await fetchDepartments();
+
       setShow(false);
-    } else {
-      setError("buildingName", {
-        type: "manual",
-      });
+      reset();
+    } catch (error) {
+      // لاگ کامل پاسخ سرور برای دیدن پیام دقیق خطای اعتبارسنجی
+      console.log("جزئیات خطای سرور:", error?.response?.data);
     }
   };
 
@@ -237,7 +265,7 @@ const Table = () => {
 
   const renderModalSubtitle = () => {
     if (selected !== null) {
-      return "ساختمان را مطابق نیاز خود ویرایش کنید.";
+      return "دپارتمان را مطابق نیاز خود ویرایش کنید.";
     } else {
       return "ساختمان‌هایی که می‌توانید تعریف کرده و به کاربران خود اختصاص دهید.";
     }
@@ -248,36 +276,53 @@ const Table = () => {
       return (
         <Row tag={Form} onSubmit={handleSubmit(onSubmit)}>
           <Col xs={12}>
-            <Label className="form-label" for="building-name">
-              نام ساختمان
+            <Label className="form-label" for="dep-name">
+              نام دپارتمان
             </Label>
             <Controller
               control={control}
-              id="buildingName"
-              name="buildingName"
+              name="depName"
               render={({ field }) => (
                 <Input
-                  placeholder="نام ساختمان"
-                  invalid={errors.buildingName && true}
+                  placeholder="نام دپارتمان"
+                  invalid={errors.depName && true}
                   {...field}
                 />
               )}
             />
-            {errors && errors.buildingName && (
-              <FormFeedback>لطفاً یک نام ساختمان معتبر وارد کنید</FormFeedback>
+            {errors && errors.depName && (
+              <FormFeedback>لطفاً یک نام دپارتمان معتبر وارد کنید</FormFeedback>
             )}
           </Col>
-          <Col xs={12} className="mt-75">
-            <div className="form-check">
-              <Input type="checkbox" id="core-building-checkbox" />
-              <Label className="form-check-label" for="core-building-checkbox">
-                تنظیم به عنوان ساختمان اصلی
-              </Label>
-            </div>
+          <Col xs={12} className="mt-1">
+            <Label className="form-label" for="building-id">
+              ساختمان
+            </Label>
+            <Controller
+              control={control}
+              name="buildingId"
+              render={({ field }) => (
+                <Input
+                  type="select"
+                  invalid={errors.buildingId && true}
+                  {...field}
+                >
+                  <option value="">انتخاب کنید</option>
+                  {allBuildings.map((building) => (
+                    <option key={building.id} value={building.id}>
+                      {building.buildingName}
+                    </option>
+                  ))}
+                </Input>
+              )}
+            />
+            {errors && errors.buildingId && (
+              <FormFeedback>لطفاً یک ساختمان معتبر انتخاب کنید</FormFeedback>
+            )}
           </Col>
           <Col xs={12} className="text-center mt-2">
             <Button className="me-1" color="primary">
-              ایجاد ساختمان
+              ایجاد دپارتمان
             </Button>
             <Button outline type="reset" onClick={handleDiscard}>
               انصراف
@@ -291,30 +336,29 @@ const Table = () => {
           <Alert color="warning">
             <h6 className="alert-heading">هشدار!</h6>
             <div className="alert-body">
-              با ویرایش نام ساختمان، ممکن است عملکرد سیستم ساختمان‌ها دچار مشکل
-              شود. لطفاً پیش از ادامه، کاملاً از این کار مطمئن باشید.
+              با ویرایش نام دپارتمان، ممکن است عملکرد سیستم دچار مشکل شود.
+              لطفاً پیش از ادامه، کاملاً از این کار مطمئن باشید.
             </div>
           </Alert>
           <Row tag={Form} onSubmit={handleSubmit(onSubmit)}>
             <Col xs={12} sm={9}>
-              <Label className="form-label" for="building-name">
-                نام ساختمان
+              <Label className="form-label" for="dep-name">
+                نام دپارتمان
               </Label>
               <Controller
                 control={control}
-                id="buildingName"
-                name="buildingName"
+                name="depName"
                 render={({ field }) => (
                   <Input
-                    placeholder="نام ساختمان"
-                    invalid={errors.buildingName && true}
+                    placeholder="نام دپارتمان"
+                    invalid={errors.depName && true}
                     {...field}
                   />
                 )}
               />
-              {errors && errors.buildingName && (
+              {errors && errors.depName && (
                 <FormFeedback>
-                  لطفاً یک نام ساختمان معتبر وارد کنید
+                  لطفاً یک نام دپارتمان معتبر وارد کنید
                 </FormFeedback>
               )}
             </Col>
@@ -323,17 +367,31 @@ const Table = () => {
                 به‌روزرسانی
               </Button>
             </Col>
-            <Col xs={12} className="mt-75">
-              <div className="form-check">
-                <Input type="checkbox" id="core-building-checkbox" />
-
-                <Label
-                  className="form-check-label"
-                  for="core-building-checkbox"
-                >
-                  تنظیم به عنوان ساختمان اصلی
-                </Label>
-              </div>
+            <Col xs={12} className="mt-1">
+              <Label className="form-label" for="building-id">
+                ساختمان
+              </Label>
+              <Controller
+                control={control}
+                name="buildingId"
+                render={({ field }) => (
+                  <Input
+                    type="select"
+                    invalid={errors.buildingId && true}
+                    {...field}
+                  >
+                    <option value="">انتخاب کنید</option>
+                    {allBuildings.map((building) => (
+                      <option key={building.id} value={building.id}>
+                        {building.buildingName}
+                      </option>
+                    ))}
+                  </Input>
+                )}
+              />
+              {errors && errors.buildingId && (
+                <FormFeedback>لطفاً یک ساختمان معتبر انتخاب کنید</FormFeedback>
+              )}
             </Col>
           </Row>
         </Fragment>
@@ -385,7 +443,7 @@ const Table = () => {
         >
           <div className="text-center mb-2">
             <h1 className="mb-1">
-              {selected !== null ? "ویرایش ساختمان" : "افزودن ساختمان جدید"}
+              {selected !== null ? "ویرایش دپارتمان" : "افزودن دپارتمان جدید"}
             </h1>
             <p>{renderModalSubtitle()}</p>
           </div>
