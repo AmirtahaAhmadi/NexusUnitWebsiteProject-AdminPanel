@@ -2,9 +2,6 @@
 import { useSkin } from "@hooks/useSkin";
 import { Link, useNavigate } from "react-router-dom";
 
-// ** Icons Imports
-import { Facebook, Twitter, Mail, GitHub } from "react-feather";
-
 // ** Reactstrap Imports
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -73,7 +70,7 @@ const Login = () => {
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
 
   return (
-    <div className="auth-wrapper auth-cover">
+    <div className="auth-wrapper auth-cover" >
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28">
@@ -195,14 +192,9 @@ const Login = () => {
               </div>
 
               <div className="mb-1">
-                <div className="d-flex justify-content-between">
-                  <Label className="form-label" for="login-password">
-                    رمز عبور
-                  </Label>
-                  <Link to="/forgot-password">
-                    <small>فراموشی رمز عبور؟</small>
-                  </Link>
-                </div>
+                <Label className="form-label" for="login-password">
+                  رمز عبور
+                </Label>
                 <Controller
                   name="password"
                   control={control}
@@ -249,32 +241,6 @@ const Login = () => {
                 {isSubmitting ? "در حال ورود..." : "ورود"}
               </Button>
             </Form>
-
-            <p className="text-center mt-2">
-              <span className="me-25">New on our platform?</span>
-              <Link to="/register">
-                <span>Create an account</span>
-              </Link>
-            </p>
-
-            <div className="divider my-2">
-              <div className="divider-text">or</div>
-            </div>
-
-            <div className="auth-footer-btn d-flex justify-content-center">
-              <Button color="facebook">
-                <Facebook size={14} />
-              </Button>
-              <Button color="twitter">
-                <Twitter size={14} />
-              </Button>
-              <Button color="google">
-                <Mail size={14} />
-              </Button>
-              <Button className="me-0" color="github">
-                <GitHub size={14} />
-              </Button>
-            </div>
           </Col>
         </Col>
       </Row>

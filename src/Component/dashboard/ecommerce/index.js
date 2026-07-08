@@ -1,5 +1,6 @@
 // ** React Imports
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ** Reactstrap Imports
 import { Row, Col } from "reactstrap";
@@ -36,6 +37,8 @@ import {
 } from "../../../core/Interceptor/Services/DashboardServices/get";
 
 const EcommerceDashboard = () => {
+  const navigate = useNavigate();
+
   const [myCourses, setMyCourses] = useState([]);
   const [myReserve, setMyReserve] = useState([]);
   const [favoriteCourses, setFavoriteCourses] = useState([]);
@@ -47,6 +50,7 @@ const EcommerceDashboard = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -91,6 +95,13 @@ const EcommerceDashboard = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
     fetchData();
   }, []);
 
