@@ -48,9 +48,10 @@ import {
   activeDeactiveNews,
 } from "../../../core/Interceptor/Services/EditPageServices/put";
 import { deleteNewsFile } from "../../../core/Interceptor/Services/EditPageServices/delete";
+import { createNews } from "../../../core/Interceptor/Services/blogPageServices/post";
 
 const API_BASE_URL =
-  import.meta.env?.VITE_API_BASE_URL || "http://188.121.104.25:3001";
+  import.meta.env?.VITE_API_BASE_URL || "http://162.19.253.202:3001";
 
 const resolveImageUrl = (path) => {
   if (!path) return null;
@@ -77,7 +78,9 @@ const edjsParser = edjsHTML();
 const editorOutputToHtml = (outputData) => {
   try {
     const htmlArray = edjsParser.parse(outputData);
-    return Array.isArray(htmlArray) ? htmlArray.join("") : String(htmlArray ?? "");
+    return Array.isArray(htmlArray)
+      ? htmlArray.join("")
+      : String(htmlArray ?? "");
   } catch (error) {
     console.error("خطا در تبدیل خروجی ادیتور به HTML:", error);
     return "";
@@ -104,6 +107,8 @@ const NewsEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const isNew = id === "new";
+
   const [data, setData] = useState(null);
   const [title, setTitle] = useState("");
   const [googleTitle, setGoogleTitle] = useState("");
@@ -129,6 +134,32 @@ const NewsEdit = () => {
 
   useEffect(() => {
     if (!id) return;
+
+    if (isNew) {
+      const fetchCategoriesOnly = async () => {
+        setIsLoading(true);
+        try {
+          const categoryRes = await getListNewsCategory();
+          const rawCategories =
+            categoryRes.data?.categories ?? categoryRes.data ?? [];
+          const categories = toSafeArray(rawCategories).map((c) => ({
+            value: c.id,
+            label: c.categoryName,
+          }));
+          setCategoryOptions(categories);
+        } catch (error) {
+          console.error("API ERROR (categories):", error);
+          toast.error("خطا در دریافت دسته‌بندی‌ها");
+        } finally {
+          setData({});
+          setInitialEditorData({ blocks: [] });
+          setIsLoading(false);
+        }
+      };
+
+      fetchCategoriesOnly();
+      return;
+    }
 
     const fetchData = async () => {
       setIsLoading(true);
@@ -228,13 +259,15 @@ const NewsEdit = () => {
     editorRef.current = editor;
 
     return () => {
-      if (editorRef.current && typeof editorRef.current.destroy === "function") {
+      if (
+        editorRef.current &&
+        typeof editorRef.current.destroy === "function"
+      ) {
         editorRef.current.destroy();
       }
       editorRef.current = null;
       isEditorReadyRef.current = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, initialEditorData]);
 
   const onChangeImage = (e) => {
@@ -250,6 +283,7 @@ const NewsEdit = () => {
   };
 
   const handleToggleActive = async () => {
+    if (isNew) return;
     try {
       await activeDeactiveNews(id, !isActive);
       setIsActive((prev) => !prev);
@@ -298,29 +332,46 @@ const NewsEdit = () => {
         htmlContent = editorOutputToHtml(outputData);
       }
 
-      await updateNews({
-        id,
-        title,
-        googleTitle,
-        googleDescribe,
-        miniDescribe,
-        describe: htmlContent,
-        keyword,
-        isSlider,
-        newsCategoryId: selectedCategory.value,
-        image: newImageFile,
-      });
+      if (isNew) {
+        await createNews({
+          title,
+          googleTitle,
+          googleDescribe,
+          miniDescribe,
+          describe: htmlContent,
+          keyword,
+          isSlider,
+          newsCategoryId: selectedCategory.value,
+          image: newImageFile,
+        });
 
-      const currentSlug = data?.shortLink ?? data?.url ?? data?.slug ?? "";
-      if (slug && slug !== currentSlug) {
-        await setUrlForNews(id, slug);
+        toast.success("خبر جدید با موفقیت ایجاد شد");
+      } else {
+        await updateNews({
+          id,
+          title,
+          googleTitle,
+          googleDescribe,
+          miniDescribe,
+          describe: htmlContent,
+          keyword,
+          isSlider,
+          newsCategoryId: selectedCategory.value,
+          image: newImageFile,
+        });
+
+        const currentSlug = data?.shortLink ?? data?.url ?? data?.slug ?? "";
+        if (slug && slug !== currentSlug) {
+          await setUrlForNews(id, slug);
+        }
+
+        toast.success("تغییرات با موفقیت ذخیره شد");
       }
 
-      toast.success("تغییرات با موفقیت ذخیره شد");
       navigate("/pages/blog/list");
     } catch (error) {
       console.error("API ERROR:", error);
-      toast.error("خطا در ذخیره تغییرات");
+      toast.error(isNew ? "خطا در ایجاد خبر جدید" : "خطا در ذخیره تغییرات");
     } finally {
       setIsSaving(false);
     }
@@ -333,8 +384,12 @@ const NewsEdit = () => {
   return (
     <div className="blog-edit-wrapper">
       <Breadcrumbs
-        title="ویرایش خبر"
-        data={[{ title: "صفحات" }, { title: "وبلاگ" }, { title: "ویرایش" }]}
+        title={isNew ? "افزودن بلاگ جدید" : "ویرایش خبر"}
+        data={[
+          { title: "صفحات" },
+          { title: "وبلاگ" },
+          { title: isNew ? "افزودن" : "ویرایش" },
+        ]}
       />
       {isLoading ? (
         <div className="text-center py-3">
@@ -345,32 +400,37 @@ const NewsEdit = () => {
           <Col sm="12">
             <Card>
               <CardBody>
-                <div className="d-flex align-items-center justify-content-between flex-wrap gap-1">
-                  <div className="d-flex">
-                    <div>
-                      <Avatar
-                        className="me-75"
-                        img={data.avatar}
-                        imgWidth="38"
-                        imgHeight="38"
-                      />
+                {!isNew && (
+                  <div className="d-flex align-items-center justify-content-between flex-wrap gap-1">
+                    <div className="d-flex">
+                      <div>
+                        <Avatar
+                          className="me-75"
+                          img={data.avatar}
+                          imgWidth="38"
+                          imgHeight="38"
+                        />
+                      </div>
+                      <div>
+                        <h6 className="mb-25">{data.userFullName}</h6>
+                        <CardText className="mb-0">{data.createdTime}</CardText>
+                      </div>
                     </div>
-                    <div>
-                      <h6 className="mb-25">{data.userFullName}</h6>
-                      <CardText className="mb-0">{data.createdTime}</CardText>
-                    </div>
+                    <Button
+                      color={isActive ? "success" : "secondary"}
+                      outline
+                      size="sm"
+                      onClick={handleToggleActive}
+                    >
+                      {isActive ? "فعال" : "غیرفعال"}
+                    </Button>
                   </div>
-                  <Button
-                    color={isActive ? "success" : "secondary"}
-                    outline
-                    size="sm"
-                    onClick={handleToggleActive}
-                  >
-                    {isActive ? "فعال" : "غیرفعال"}
-                  </Button>
-                </div>
+                )}
 
-                <Form className="mt-2" onSubmit={(e) => e.preventDefault()}>
+                <Form
+                  className={isNew ? "" : "mt-2"}
+                  onSubmit={(e) => e.preventDefault()}
+                >
                   <Row>
                     <Col md="6" className="mb-2">
                       <Label className="form-label" for="news-edit-title">
@@ -452,16 +512,18 @@ const NewsEdit = () => {
                         onChange={(e) => setMiniDescribe(e.target.value)}
                       />
                     </Col>
-                    <Col md="6" className="mb-2">
-                      <Label className="form-label" for="news-edit-slug">
-                        اسلاگ (URL)
-                      </Label>
-                      <Input
-                        id="news-edit-slug"
-                        value={slug}
-                        onChange={(e) => setSlug(e.target.value)}
-                      />
-                    </Col>
+                    {!isNew && (
+                      <Col md="6" className="mb-2">
+                        <Label className="form-label" for="news-edit-slug">
+                          اسلاگ (URL)
+                        </Label>
+                        <Input
+                          id="news-edit-slug"
+                          value={slug}
+                          onChange={(e) => setSlug(e.target.value)}
+                        />
+                      </Col>
+                    )}
                     <Col md="6" className="mb-2 d-flex align-items-end">
                       <FormGroup switch className="mb-0">
                         <Input
@@ -543,7 +605,7 @@ const NewsEdit = () => {
                         onClick={handleSave}
                       >
                         {isSaving && <Spinner size="sm" className="me-50" />}
-                        ذخیره تغییرات
+                        {isNew ? "ایجاد خبر" : "ذخیره تغییرات"}
                       </Button>
                       <Button
                         color="secondary"

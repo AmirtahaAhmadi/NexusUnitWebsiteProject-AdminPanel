@@ -258,7 +258,7 @@ const Table = () => {
   };
 
   const handleAddClick = () => {
-    navigate("/pages/blog/category/add");
+    navigate("/pages/blog/add");
   };
 
   const updatedColumns = [

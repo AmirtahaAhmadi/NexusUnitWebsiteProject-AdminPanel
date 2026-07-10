@@ -204,8 +204,7 @@ const BlogList = () => {
   };
 
   const handleAddNewBlog = () => {
-    resetAddForm();
-    setIsAddModalOpen(true);
+    navigate(`/pages/blog/edit/new`);
   };
 
   const toggleAddModal = () => {

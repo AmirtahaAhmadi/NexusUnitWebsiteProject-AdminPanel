@@ -1,6 +1,5 @@
 import apiClient from "../../interceptor";
 
-
 export const createNews = ({
   title,
   googleTitle,
@@ -13,23 +12,22 @@ export const createNews = ({
   image,
 }) => {
   const formData = new FormData();
-  formData.append("Title", title ?? "");
-  formData.append("GoogleTitle", googleTitle ?? "");
-  formData.append("GoogleDescribe", googleDescribe ?? "");
-  formData.append("MiniDescribe", miniDescribe ?? "");
-  formData.append("Describe", describe ?? "");
-  formData.append("Keyword", keyword ?? "");
+
+  formData.append("Title", title || "");
+  formData.append("GoogleTitle", googleTitle || "");
+  formData.append("GoogleDescribe", googleDescribe || "");
+  formData.append("MiniDescribe", miniDescribe || "");
+  formData.append("Describe", describe || "");
+  formData.append("Keyword", keyword || "");
   formData.append("IsSlider", isSlider ? "true" : "false");
 
-  if (newsCategoryId !== undefined && newsCategoryId !== null) {
+  if (newsCategoryId) {
     formData.append("NewsCatregoryId", newsCategoryId);
   }
 
-  if (image) {
+  if (image instanceof File) {
     formData.append("Image", image);
   }
 
-  return apiClient.post("/News/CreateNews", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  return apiClient.post("/News/CreateNews", formData);
 };

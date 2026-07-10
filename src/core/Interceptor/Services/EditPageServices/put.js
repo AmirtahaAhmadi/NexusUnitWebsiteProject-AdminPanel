@@ -30,9 +30,7 @@ export const updateNews = ({
     formData.append("Image", image);
   }
 
-  return apiClient.put("/News/UpdateNews", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  return apiClient.put("/News/UpdateNews", formData);
 };
 
 export const updateNewsFile = (fileId, newsId, file) => {
@@ -41,9 +39,7 @@ export const updateNewsFile = (fileId, newsId, file) => {
   formData.append("NewsId", newsId);
   formData.append("File", file);
 
-  return apiClient.put("/News/UpdateNewsFile", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  return apiClient.put("/News/UpdateNewsFile", formData);
 };
 
 export const activeDeactiveNews = (newsId, isActive) => {

@@ -88,7 +88,7 @@ export default [
       },
       {
         id: "TermManagement",
-        title: "  مدیریت  کلاس  ها ",
+        title: "  مدیریت    ترم ها ",
         icon: <Circle size={12} />,
         navLink: "/pages/Buildings/TermManagement",
       },

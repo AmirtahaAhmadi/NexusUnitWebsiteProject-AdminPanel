@@ -82,13 +82,13 @@ export default [
       },
         {
         id: "classroomManagement",
-        title: "  مدیریت  کلاس ها ها ",
+        title: "  مدیریت  کلاس  ها ",
         icon: <Circle size={12} />,
         navLink: "/pages/Buildings/ClassroomManagement",
       },
       {
         id: "TermManagement",
-        title: "  مدیریت  کلاس  ها ",
+        title: "  مدیریت    ترم ها ",
         icon: <Circle size={12} />,
         navLink: "/pages/Buildings/TermManagement",
       },
