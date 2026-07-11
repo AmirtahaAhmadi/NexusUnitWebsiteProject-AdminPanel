@@ -1,2 +1,11 @@
 @import '../node_modules/prismjs/themes/prism-tomorrow';
 @import './assets/scss/app.scss';
+
+@font-face {
+  font-family: YekanBakh;
+  src: url("./assets/fonts/YekanBakh-VF.ttf");
+}
+
+* {
+  font-family: YekanBakh;
+}

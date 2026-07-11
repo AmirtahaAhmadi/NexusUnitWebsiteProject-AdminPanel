@@ -1,4 +1,4 @@
-import { Mail, Home, Airplay, Circle } from "react-feather";
+import { Mail, Home, Airplay, Circle, User } from "react-feather";
 
 export default [
   {
@@ -26,5 +26,11 @@ export default [
         navLink: "/apps/invoice/list",
       },
     ],
+  },
+  {
+    id: "list",
+    title: "مدیریت کاربران",
+    icon: <User size={20} />,
+    navLink: "/apps/user/list",
   },
 ];
