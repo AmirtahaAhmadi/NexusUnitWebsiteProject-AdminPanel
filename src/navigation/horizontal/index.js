@@ -7,26 +7,33 @@ export default [
     icon: <Home size={20} />,
     navLink: "/ecommerce",
   },
-  {
-    id: "secondPage",
-    title: "Second Page",
-    icon: <Mail size={20} />,
-    navLink: "/second-page",
-  },
-  {
-    id: "smaplePage",
-    title: "Sample Page",
-    icon: <Airplay size={20} />,
-    // navLink: "/sample",
-    children: [
-      {
-        id: "invoiceList",
-        title: "List",
-        icon: <Circle size={12} />,
-        navLink: "/apps/invoice/list",
+    {
+        id: 'calendar',
+        title: 'Calendar',
+        icon: <Calendar />,
+        navLink: '/apps/calendar'
       },
-    ],
-  },
+
+  // {
+  //   id: "secondPage",
+  //   title: "Second Page",
+  //   icon: <Mail size={20} />,
+  //   navLink: "/second-page",
+  // },
+  // {
+  //   id: "smaplePage",
+  //   title: "Sample Page",
+  //   icon: <Airplay size={20} />,
+  //   // navLink: "/sample",
+  //   children: [
+  //     {
+  //       id: "invoiceList",
+  //       title: "List",
+  //       icon: <Circle size={12} />,
+  //       navLink: "/apps/invoice/list",
+  //     },
+  //   ],
+  // },
 
   {
     id: "blogList",

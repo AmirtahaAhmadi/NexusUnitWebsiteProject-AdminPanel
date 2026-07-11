@@ -26,13 +26,16 @@ const TemplateTitle = "%s - Vuexy React Admin Template";
 const DefaultRoute = "/ecommerce";
 
 const TermManagement = lazy(() => import("../../views/Bilding/TermManagement"));
-const ClassroomManagement = lazy(() => import("../../views/Bilding/ClassroomManagement"));
+const ClassroomManagement = lazy(() =>
+  import("../../views/Bilding/ClassroomManagement"),
+);
 const Department = lazy(() => import("../../views/Bilding/Deportment"));
 const Buildings = lazy(() => import("../../views/Bilding"));
 const DashboardEcommerce = lazy(() =>
   import("../../Component/dashboard/ecommerce"),
 );
-const SecondPage = lazy(() => import("../../pages/SecondPage"));
+const Calendar = lazy(() => import("../../views/apps/calendar"));
+
 const BlogList = lazy(() => import("../../views/blog/list"));
 const BlogDetails = lazy(() => import("../../views/blog/details"));
 const BlogEdit = lazy(() => import("../../views/blog/edit"));
@@ -43,7 +46,6 @@ const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
-const Sample = lazy(() => import("../../pages/Sample"));
 
 // ** Merge Routes
 const Routes = [
@@ -56,13 +58,9 @@ const Routes = [
     path: "/ecommerce",
     element: <DashboardEcommerce />,
   },
-  {
-    path: "/sample",
-    element: <Sample />,
-  },
-  {
-    path: "/second-page",
-    element: <SecondPage />,
+ {
+    element: <Calendar />,
+    path: '/apps/calendar'
   },
   {
     path: "/pages/blog/list",
