@@ -3,12 +3,11 @@ import { Fragment, useState, useEffect, useCallback } from 'react'
 
 // ** Third Party Components
 import toast from 'react-hot-toast'
-import classnames from 'classnames'
-import { Row, Col } from 'reactstrap'
+import { Button } from 'reactstrap'
+import { Plus } from 'react-feather'
 
 // ** Calendar App Component Imports
 import Calendar from './Calendar'
-import SidebarLeft from './SidebarLeft'
 import AddEventSidebar from './AddEventSidebar'
 
 // ** Real API Services
@@ -19,6 +18,11 @@ import { useRTL } from '@hooks/useRTL'
 
 // ** Styles
 import '@styles/react/apps/app-calendar.scss'
+
+// بک‌اند ممکنه نام فیلد active رو با casing/نام متفاوتی برگردونه؛
+// این تابع همه‌ی حالت‌های محتمل رو پوشش می‌ده تا آیتم قفل‌شده درست سبز بشه.
+const getActiveFlag = item =>
+  Boolean(item.active ?? item.Active ?? item.isActive ?? item.IsActive ?? false)
 
 const mapScheduleToEvent = item => {
   const start = item.startDate && item.startTime ? `${item.startDate.split('T')[0]}T${item.startTime}` : item.startDate
@@ -33,7 +37,7 @@ const mapScheduleToEvent = item => {
     allDay: false,
     display: 'block',
     extendedProps: {
-      active: item.active,
+      active: getActiveFlag(item),
       courseGroupId: item.courseGroupId,
       weekNumber: item.weekNumber,
       rowEffect: item.rowEffect,
@@ -46,7 +50,6 @@ const CalendarComponent = () => {
   // ** States
   const [calendarApi, setCalendarApi] = useState(null)
   const [addSidebarOpen, setAddSidebarOpen] = useState(false)
-  const [leftSidebarOpen, setLeftSidebarOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState({})
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(false)
@@ -57,8 +60,6 @@ const CalendarComponent = () => {
   const [isRtl] = useRTL()
 
   const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen)
-
-  const toggleSidebar = val => setLeftSidebarOpen(val)
 
   const blankEvent = {
     title: '',
@@ -75,41 +76,25 @@ const CalendarComponent = () => {
 
   const selectEvent = event => setSelectedEvent(event)
 
- const fetchAdminSchedules = useCallback(async () => {
-  if (!dateRange.startDate || !dateRange.endDate) return;
+  const fetchAdminSchedules = useCallback(async () => {
+    if (!dateRange.startDate || !dateRange.endDate) return
 
-  setLoading(true);
+    setLoading(true)
 
-  try {
-    console.log("Date Range:", dateRange);
-    console.log("CourseId:", courseId);
+    try {
+      const response = await getAdminScheduals(dateRange.startDate, dateRange.endDate, courseId)
 
-    const response = await getAdminScheduals(
-      dateRange.startDate,
-      dateRange.endDate,
-      courseId
-    );
+      const list = response?.data?.data || response?.data || []
 
-    console.log("API Response:", response);
-    console.log("API Data:", response.data);
+      const mappedEvents = list.map(mapScheduleToEvent)
 
-    const list = response?.data?.data || response?.data || [];
-
-    console.log("Schedule List:", list);
-
-    const mappedEvents = list.map(mapScheduleToEvent);
-
-    console.log("Mapped Events:", mappedEvents);
-
-    setEvents(mappedEvents);
-  } catch (error) {
-    console.log("Calendar Error:", error);
-    console.log("Response Error:", error?.response?.data);
-    toast.error("خطا در دریافت برنامه‌ها");
-  } finally {
-    setLoading(false);
-  }
-}, [dateRange, courseId]);
+      setEvents(mappedEvents)
+    } catch (error) {
+      toast.error('خطا در دریافت برنامه‌ها')
+    } finally {
+      setLoading(false)
+    }
+  }, [dateRange, courseId])
 
   useEffect(() => {
     fetchAdminSchedules()
@@ -123,38 +108,48 @@ const CalendarComponent = () => {
     fetchAdminSchedules()
   }
 
+  // آپدیت آنی رنگ رویداد در تقویم.
+  // نکته‌ی مهم: فقط عوض کردن آرایه‌ی events در state ری‌اکت تضمین نمی‌کنه که
+  // FullCalendar کلاسِ رویدادِ از‌قبل‌رندرشده رو دوباره محاسبه کنه. راه مطمئن،
+  // استفاده از خودِ متد رسمی FullCalendar (getEventById + setExtendedProp) است
+  // که رندر آن رویداد را بلافاصله و تضمین‌شده به‌روز می‌کند.
+  const updateEventActiveState = (eventId, active) => {
+    const idStr = String(eventId)
+
+    const liveEvent = calendarApi?.getEventById(idStr)
+    if (liveEvent) {
+      liveEvent.setExtendedProp('active', active)
+    }
+
+    // هماهنگ نگه داشتن state داخلی برای رفتچ‌ها و رندرهای بعدی
+    setEvents(prev =>
+      prev.map(ev =>
+        ev.id === idStr ? { ...ev, extendedProps: { ...ev.extendedProps, active } } : ev
+      )
+    )
+  }
+
   return (
     <Fragment>
       <div className='app-calendar overflow-hidden border'>
-        <Row className='g-0'>
-          <Col
-            id='app-calendar-sidebar'
-            className={classnames('col app-calendar-sidebar flex-grow-0 overflow-hidden d-flex flex-column', {
-              show: leftSidebarOpen
-            })}
-          >
-            <SidebarLeft toggleSidebar={toggleSidebar} handleAddEventSidebar={handleAddEventSidebar} />
-          </Col>
-          <Col className='position-relative'>
-            <Calendar
-              isRtl={isRtl}
-              blankEvent={blankEvent}
-              calendarApi={calendarApi}
-              toggleSidebar={toggleSidebar}
-              setCalendarApi={setCalendarApi}
-              events={events}
-              selectEvent={selectEvent}
-              onDatesSet={handleDatesSet}
-              handleAddEventSidebar={handleAddEventSidebar}
-            />
-          </Col>
-          <div
-            className={classnames('body-content-overlay', {
-              show: leftSidebarOpen === true
-            })}
-            onClick={() => toggleSidebar(false)}
-          ></div>
-        </Row>
+        <div className='d-flex justify-content-end p-1'>
+          <Button color='primary' onClick={handleAddEventSidebar}>
+            <Plus size={15} className='me-50' />
+            <span className='align-middle'>افزودن جلسه</span>
+          </Button>
+        </div>
+        <div className='position-relative'>
+          <Calendar
+            isRtl={isRtl}
+            blankEvent={blankEvent}
+            calendarApi={calendarApi}
+            setCalendarApi={setCalendarApi}
+            events={events}
+            selectEvent={selectEvent}
+            onDatesSet={handleDatesSet}
+            handleAddEventSidebar={handleAddEventSidebar}
+          />
+        </div>
       </div>
       <AddEventSidebar
         open={addSidebarOpen}
@@ -163,6 +158,7 @@ const CalendarComponent = () => {
         refetchEvents={refetchEvents}
         currentCurseId={courseId}
         handleAddEventSidebar={handleAddEventSidebar}
+        onLockToggled={updateEventActiveState}
       />
     </Fragment>
   )

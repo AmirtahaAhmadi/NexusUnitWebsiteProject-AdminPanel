@@ -43,6 +43,7 @@ const AddEventSidebar = (props) => {
     refetchEvents,
     currentCurseId,
     handleAddEventSidebar,
+    onLockToggled, // جدید: برای آپدیت آنی رنگ رویداد در تقویم بدون رفتچ کامل
   } = props;
   const isEditMode = !isObjEmpty(selectedEvent) && !!selectedEvent.id;
 
@@ -77,8 +78,6 @@ const AddEventSidebar = (props) => {
     const loadData = async () => {
       try {
         const teachersRes = await getTeachers();
-        console.log("Teachers =>", teachersRes.data);
-
         setTeachers(teachersRes.data);
 
         const coursesRes = await getCoursesWithPagination({
@@ -86,11 +85,8 @@ const AddEventSidebar = (props) => {
           PageNumber: 1,
         });
 
-        console.log("Courses =>", coursesRes.data);
-
         setCourses(coursesRes.data.courseFilterDtos);
       } catch (e) {
-        console.log("loadData Error =>", e);
         toast.error("خطا در دریافت اطلاعات");
       }
     };
@@ -178,6 +174,10 @@ const AddEventSidebar = (props) => {
     try {
       await lockToRiase(checked, selectedEvent.id);
       toast.success(checked ? "حضور و غیاب قفل شد" : "حضور و غیاب باز شد");
+
+      // آپدیت آنی رنگ رویداد در تقویم (بدون نیاز به منتظر ماندن برای رفتچ کامل)
+      onLockToggled?.(selectedEvent.id, checked);
+
       refetchEvents();
     } catch (error) {
       setActiveLock(!checked);
