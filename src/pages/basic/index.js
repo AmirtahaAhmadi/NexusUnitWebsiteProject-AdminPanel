@@ -18,8 +18,8 @@ const BasicCards = () => {
   return (
     <Fragment>
       <Breadcrumbs
-        title="تمام کورس ها"
-        data={[{ title: "منو" }, { title: "کورس ها" }]}
+        title="تمام دوره ها"
+        data={[{ title: "منو" }, { title: "تمام دوره ها" }]}
       />
       <CardTitles />
     </Fragment>

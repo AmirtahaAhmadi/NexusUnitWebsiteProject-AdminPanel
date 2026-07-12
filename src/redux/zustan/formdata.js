@@ -18,7 +18,7 @@ const initialState = {
   ImageAddress: "",
   TumbImageAddress: "",
   Image: "",
-  CourseTypeId: "1234",
+  CourseTypeId: "123",
   TremId: "",
   ClassId: "",
   CourseLvlId: "",

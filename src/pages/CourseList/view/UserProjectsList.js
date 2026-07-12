@@ -4,7 +4,6 @@ import { Card, CardHeader, Progress } from "reactstrap";
 // ** Third Party Components
 import { ChevronDown } from "react-feather";
 import DataTable from "react-data-table-component";
-
 // ** Custom Components
 import Avatar from "@components/avatar";
 
@@ -14,7 +13,7 @@ import vueLabel from "@src/assets/images/icons/brands/vue-label.png";
 import htmlLabel from "@src/assets/images/icons/brands/html-label.png";
 import reactLabel from "@src/assets/images/icons/brands/react-label.png";
 import sketchLabel from "@src/assets/images/icons/brands/sketch-label.png";
-import ShowingMoreOfcourseinfo from "./showingMoreOfcourseinfo";
+
 // ** Styles
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { useEffect, useState } from "react";
@@ -210,7 +209,7 @@ export const columns = [
               اصلاح
             </span>
 
-            {row?.title && <ShowingMoreOfcourseinfo array={row.courseId} />}
+            {/* {row?.title && <ShowingMoreOfcourseinfo array={row.courseId} />} */}
           </div>
         </div>
       );

@@ -8,18 +8,21 @@ import {
   Col,
   Button,
 } from "reactstrap";
-import { getcoursebyidAdminTeacherCall } from "../../core/Interceptor/Courses/getcoursebyidAdminTeacherCall";
+import { getcoursebyidAdminTeacherCall } from "../../../core/Interceptor/Courses/getcoursebyidAdminTeacherCall";
 import { useEffect, useState } from "react";
-import UserInfoCard from "../wizard/UserInfoCard";
-const InputFloating = () => {
+import UserInfoCard from "../../wizard/UserInfoCard";
+import { GetJobByIdCall } from "../../../core/Interceptor/Courses/getjobbyidcall";
+import Showsinglejobstab from "./Showsinglejobstab";
+const Editjob = () => {
   const [loading, setloading] = useState(false);
   const [loaded, setloaded] = useState(false);
   const [showpro, getshowpro] = useState(false);
   const [valueToSend, setvalueToSend] = useState("");
   const [getcourse, setgetcourse] = useState([]);
+  const [state, setstate] = useState(true);
   const run = async () => {
     setloading(true);
-    const res = await getcoursebyidAdminTeacherCall(valueToSend);
+    const res = await GetJobByIdCall(valueToSend);
     console.log("respond hey", res);
     if (res) {
       setgetcourse(res);
@@ -36,14 +39,14 @@ const InputFloating = () => {
   const clickhander = () => {
     run();
   };
-  // useEffect(() => {
-  //   console.log("valuesd", valueToSend);
-  // }, [valueToSend]);
+  useEffect(() => {
+    console.log("valuesd", valueToSend);
+  }, [valueToSend]);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag="h2">پیدا کردن دوره موجود</CardTitle>
+        <CardTitle tag="h2">پیدا کردن شغل موجود</CardTitle>
       </CardHeader>
       <CardBody>
         <Row>
@@ -70,7 +73,7 @@ const InputFloating = () => {
       </CardBody>
       {loading && <div className="t-p-5">در حال جست و جو</div>}
       {!loading && getcourse && showpro > 0 && (
-        <UserInfoCard getcourse={getcourse} />
+        <Showsinglejobstab array={valueToSend} state={true} />
       )}
 
       {!loading && loaded && !getcourse && (
@@ -80,4 +83,4 @@ const InputFloating = () => {
   );
 };
 
-export default InputFloating;
+export default Editjob;

@@ -22,7 +22,7 @@ const WizardVertical = () => {
   const steps = [
     {
       id: "account-details",
-      title: "جزئیات کورس",
+      title: "جزئیات دوره",
       subtitle: "انتخاب جزئیات",
       content: <AddCourseDetail stepper={stepper} type="wizard-vertical" />,
     },
@@ -34,16 +34,16 @@ const WizardVertical = () => {
     },
     {
       id: "step-address",
-      title: "Address",
-      subtitle: "Add Address",
+      title: "انتخاب تکنولوژی",
+      subtitle: "حداقل یکی را انتخاب کنید",
       content: <Address stepper={stepper} type="wizard-vertical" />,
     },
-    {
-      id: "social-links",
-      title: "Social Links",
-      subtitle: "Add Social Links",
-      content: <SocialLinks stepper={stepper} type="wizard-vertical" />,
-    },
+    // {
+    //   id: "social-links",
+    //   title: "Social Links",
+    //   subtitle: "Add Social Links",
+    //   content: <SocialLinks stepper={stepper} type="wizard-vertical" />,
+    // },
   ];
 
   return (

@@ -6,18 +6,20 @@ import { ArrowLeft, ArrowRight } from "react-feather";
 
 // ** Reactstrap Imports
 import { Label, Row, Col, Form, Input, Button } from "reactstrap";
-
+import toast from "react-hot-toast";
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 import { globalformData } from "../../../redux/zustan/formdata";
 // import { postCreatestep2call } from "../../../core/Interceptor/Courses/postCreatestep2call";
 import { postCreatestep2 } from "../../../core/Interceptor/Courses/postCreatestep2";
 import { generate12DigitNumber } from "../../../core/Interceptor/Courses/generate12digitnumber";
-
+import { CCstep2id } from "../../../redux/zustan/CCstep2id";
 const PersonalInfo = ({ stepper, type }) => {
   const formData = globalformData((state) => state.formData);
   const updateformdata = globalformData((state) => state.updateformdata);
-
+  const updatetheid = CCstep2id((state) => state.updatetheid);
+  const theid = CCstep2id((state) => state.theid);
+  const resetFormData = globalformData((state) => state.resetFormData);
   useEffect(() => {
     console.log("formData", formData);
   }, [formData]);
@@ -33,20 +35,56 @@ const PersonalInfo = ({ stepper, type }) => {
     },
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log("this is the id", theid);
+  }, [theid]);
 
   const handleSubmit = async () => {
-    updateformdata({
-      GoogleSchema: schema,
-    });
+    // const required = [
+    //   formData.Title,
+    //   formData.Describe,
+    //   formData.Capacity,
+    //   formData.CourseTypeId,
+    //   formData.TremId,
+    //   formData.ClassId,
+    //   formData.CourseLvlId,
+    //   formData.TeacherId,
+    //   formData.Cost,
+    //   formData.Image,
+    //   formData.StartTime,
+    //   formData.EndTime,
+    // ].every(Boolean);
 
+    // if (!required) {
+    //   return toast.error("لطفا تمام گذینه ها را پر کنید");
+    // }
+
+    // updateformdata({
+    //   GoogleSchema: JSON.stringify(schema),
+    // });
     try {
       const response = await postCreatestep2(formData);
-      console.log("course created:", response.data);
+      console.log("course created bjhbjhb:", response.data);
+      if (response.data.id) {
+        updatetheid(response.data.id);
+        resetFormData();
+        stepper?.next();
+      }
     } catch (error) {
       console.error("submit error:", error);
     }
   };
+
+  //   {id: '1ee1e4b2-0c11-44cc-8444-fcc99747ebd7', success: true, message: 'دوره شما ساخته شد'}
+  // id
+  // :
+  // "1ee1e4b2-0c11-44cc-8444-fcc99747ebd7"
+  // message
+  // :
+  // "دوره شما ساخته شد"
+  // success
+  // :
+  // true
 
   return (
     <Fragment>
@@ -397,16 +435,16 @@ const PersonalInfo = ({ stepper, type }) => {
           <Button
             color="primary"
             className="btn-prev"
-            onClick={() => stepper.previous()}>
+            onClick={() => stepper?.previous()}>
             <ArrowLeft size={14} className="align-middle me-sm-25 me-0" />
             <span className="align-middle d-sm-inline-block d-none">قبلی</span>
           </Button>
 
           <Button color="primary" className="btn-next">
             <span
-              // onClick={() => {
-              //   handleSubmit();
-              // }}
+              onClick={() => {
+                handleSubmit();
+              }}
               className="align-middle d-sm-inline-block d-none">
               ارسال اطلاعات
             </span>

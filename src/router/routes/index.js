@@ -8,12 +8,16 @@ import HorizontalLayout from "@src/layouts/HorizontalLayout";
 import LayoutWrapper from "@src/@core/layouts/components/layout-wrapper";
 import Wizard from "../../pages/wizard";
 import BasicCards from "../../pages/basic";
+import Jobstitleanddata from "../../pages/basic/jobs/jobstitleanddata";
+import Alljobsmenu from "../../pages/basic/jobs/Alljobsmenu";
+import Updatejobsmenu from "../../pages/basic/jobs/updatejobsmenu";
 // ** Route Components
 import PublicRoute from "@components/routes/PublicRoute";
-
 // ** Utils
 import { isObjEmpty } from "@utils";
-
+import Assistance from "../../pages/basic/jobs/assistance";
+import CourseSettingMenu from "../../pages/CourseSetting/CourseSettingMenu";
+import JobsTable from "../../pages/basic/jobs/JobsTable";
 const getLayout = {
   blank: <BlankLayout />,
   vertical: <VerticalLayout />,
@@ -96,6 +100,22 @@ const Routes = [
   {
     path: "/AllCourses",
     element: <BasicCards />,
+  },
+  {
+    path: "/jobs",
+    element: <Alljobsmenu />,
+  },
+  {
+    path: "/updatejobs",
+    element: <Updatejobsmenu />,
+  },
+  // {
+  //   path: "/assistance",
+  //   element: <Assistance />,
+  // },
+  {
+    path: "/techupdate",
+    element: <CourseSettingMenu />,
   },
 ];
 

@@ -175,14 +175,14 @@ const formatGroupLabel = (data) => (
   </div>
 );
 
-const SelectOptions = () => {
+const SelectOptionsForTech = () => {
   const [getcreatdata, setgetcreatdata] = useState([]);
   const [getteachers, setgetteachers] = useState([]);
   const run = async () => {
     const run = await getCourseCreateDataCall();
     if (run) {
       setgetcreatdata(run);
-      console.log("getcreate", run);
+      // console.log("getcreate", run);
     }
   };
 
@@ -202,7 +202,7 @@ const SelectOptions = () => {
   const [selectOptions, setSelectOptions] = useState({
     courseTypes: [],
     technologies: [],
-    statuses: [],
+    // statuses: [],
     levels: [],
     teachers: [],
 
@@ -225,11 +225,11 @@ const SelectOptions = () => {
             label: item.techName,
           })) || [],
 
-        statuses:
-          getcreatdata.statusDtos?.map((item) => ({
-            value: item.id,
-            label: item.statusName,
-          })) || [],
+        // statuses:
+        //   getcreatdata.statusDtos?.map((item) => ({
+        //     value: item.id,
+        //     label: item.statusName,
+        //   })) || [],
 
         levels:
           getcreatdata.courseLevelDtos?.map((item) => ({
@@ -355,7 +355,7 @@ const SelectOptions = () => {
 
       <CardBody>
         <Row>
-          {/* <Col className="mb-1" md="6" sm="12">
+          <Col className="mb-1" md="6" sm="12">
             <Label className="form-label">تکنولوژی ها</Label>
             <Select
               isMulti
@@ -375,9 +375,9 @@ const SelectOptions = () => {
                 })
               }
             />
-          </Col> */}
-          {/* 
-          <Col className="mb-1" md="6" sm="12">
+          </Col>
+
+          {/* <Col className="mb-1" md="6" sm="12">
             <Label className="form-label">استاتوس</Label>
             <Select
               theme={selectThemeColors}
@@ -396,7 +396,7 @@ const SelectOptions = () => {
             />
           </Col> */}
 
-          <Col className="mb-1" md="6" sm="12">
+          {/* <Col className="mb-1" md="6" sm="12">
             <Label className="form-label">سطح</Label>
             <Select
               theme={selectThemeColors}
@@ -471,7 +471,7 @@ const SelectOptions = () => {
                 })
               }
             />
-          </Col>
+          </Col> */}
           {/* <Col className="mb-1" md="6" sm="12">
             <Label className="form-label">نوع فعالیت</Label>
             <Select
@@ -495,4 +495,4 @@ const SelectOptions = () => {
     </Card>
   );
 };
-export default SelectOptions;
+export default SelectOptionsForTech;

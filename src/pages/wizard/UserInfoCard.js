@@ -166,7 +166,7 @@ const UserInfoCard = ({ getcourse }) => {
 
               <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
                 <div>تعداد پرداخت‌ها:</div>
-                {/* <div>{getcourse1.payments?.length || 0}</div> */}
+
                 <div className="t-px-3 t-py-2 t-text-[#f8f8f8] t-text-[14px] t-rounded-[8px] t-bg-[#7367f0] t-cursor-pointer">
                   مشاهده
                 </div>
@@ -209,7 +209,6 @@ const UserInfoCard = ({ getcourse }) => {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="d-flex justify-content-center pt-2">
             <Button color="primary" onClick={() => setShow(true)}>
               اصلاح
@@ -225,7 +224,6 @@ const UserInfoCard = ({ getcourse }) => {
         </CardBody>
       </Card>
 
-      {/* Modal */}
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

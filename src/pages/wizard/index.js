@@ -17,10 +17,9 @@ import BreadCrumbs from "@components/breadcrumbs";
 const Wizard = () => {
   return (
     <Fragment>
-
       <BreadCrumbs
-        title="بروزرسانی کورس ها"
-        data={[{ title: "منو" }, { title: "بروز رسانی کورسها" }]}
+        title="بروزرسانی دوره ها"
+        data={[{ title: "منو" }, { title: "بروز رسانی دوره ها" }]}
       />
       <InputFloating />
       <Row>
