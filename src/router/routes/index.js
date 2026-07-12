@@ -58,9 +58,9 @@ const Routes = [
     path: "/ecommerce",
     element: <DashboardEcommerce />,
   },
- {
+  {
     element: <Calendar />,
-    path: '/apps/calendar'
+    path: "/apps/calendar",
   },
   {
     path: "/pages/blog/list",
@@ -81,7 +81,7 @@ const Routes = [
   },
   {
     path: "/pages/blog/edit",
-    element: <Navigate to="/pages/blog/edit/1" />,
+    element: <Navigate to="/pages/blog/edit/b28b240b-2248-4b73-a6d5-5e9ab72e09dc" />,
   },
   {
     element: <Category />,

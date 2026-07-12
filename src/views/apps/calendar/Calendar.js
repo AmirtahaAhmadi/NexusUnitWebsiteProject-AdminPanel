@@ -1,5 +1,5 @@
 // ** React Import
-import { useEffect, useRef, memo } from 'react'
+import { useEffect, useRef, useState, memo } from 'react'
 
 // ** Full Calendar & Plugins
 import '@fullcalendar/react/dist/vdom'
@@ -11,29 +11,57 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
 // ** Third Party Components
-import { Menu } from 'react-feather'
+import { Menu, ChevronLeft, ChevronRight } from 'react-feather'
 import { Card, CardBody } from 'reactstrap'
+
+// ** Jalali Utils
+import {
+  gregorianToJalali,
+  getJalaliMonthRange,
+  getJalaliMonthTitle,
+  shiftJalaliMonth,
+  toPersianDigits
+} from './jalali'
 
 const Calendar = props => {
   const calendarRef = useRef(null)
 
   const {
     isRtl,
-    calendarsColor,
     calendarApi,
     setCalendarApi,
     handleAddEventSidebar,
     blankEvent,
     toggleSidebar,
     events,
-    selectEvent
+    selectEvent,
+    onDatesSet
   } = props
+
+  const [jalaliCursor, setJalaliCursor] = useState(() => {
+    const { jy, jm } = gregorianToJalali(new Date())
+    return { jy, jm }
+  })
+
+  const [isMonthView, setIsMonthView] = useState(true)
 
   useEffect(() => {
     if (calendarApi === null) {
       setCalendarApi(calendarRef.current.getApi())
     }
   }, [calendarApi, setCalendarApi])
+
+  useEffect(() => {
+    if (calendarApi && isMonthView) {
+      const { start, end } = getJalaliMonthRange(jalaliCursor.jy, jalaliCursor.jm)
+      calendarApi.changeView('dayGridMonth', { start, end })
+    }
+  }, [calendarApi, jalaliCursor, isMonthView])
+
+  const handlePrevMonth = () => setJalaliCursor(prev => shiftJalaliMonth(prev.jy, prev.jm, -1))
+  const handleNextMonth = () => setJalaliCursor(prev => shiftJalaliMonth(prev.jy, prev.jm, 1))
+
+  const jalaliTitle = getJalaliMonthTitle(jalaliCursor.jy, jalaliCursor.jm)
 
   const calendarOptions = {
     locale: faLocale,
@@ -51,36 +79,52 @@ const Calendar = props => {
     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
 
     initialView: 'dayGridMonth',
+    initialDate: getJalaliMonthRange(jalaliCursor.jy, jalaliCursor.jm).start,
 
     headerToolbar: {
-      start: 'sidebarToggle prev,next title',
+      start: 'sidebarToggle jalaliPrev jalaliTitle jalaliNext',
       end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
     },
 
-    editable: true,
-    eventResizableFromStart: true,
+    dayCellContent: arg => {
+      const { jd } = gregorianToJalali(arg.date)
+      return { html: `<span>${toPersianDigits(jd)}</span>` }
+    },
+
+    viewDidMount(arg) {
+      setIsMonthView(arg.view.type === 'dayGridMonth')
+    },
+
+    editable: false,
+    eventResizableFromStart: false,
     dragScroll: true,
     dayMaxEvents: 2,
     navLinks: true,
 
     eventClassNames({ event }) {
-      const colorName = calendarsColor[event._def.extendedProps.calendar]
-
-      return [`bg-light-${colorName}`]
+      const isActive = event._def.extendedProps?.active
+      return [isActive ? 'bg-light-success' : 'bg-light-warning']
     },
 
-    // ** کلیک روی یک رویداد موجود -> باز کردن سایدبار برای ویرایش
     eventClick({ event: clickedEvent }) {
       selectEvent(clickedEvent)
       handleAddEventSidebar()
     },
 
-    // ** کلیک روی یک روز خالی -> باز کردن سایدبار برای افزودن رویداد جدید
     dateClick(info) {
       blankEvent.start = info.date
       blankEvent.end = info.date
       selectEvent(blankEvent)
       handleAddEventSidebar()
+    },
+
+    datesSet(info) {
+      if (onDatesSet) {
+        onDatesSet({
+          startDate: info.startStr,
+          endDate: info.endStr
+        })
+      }
     },
 
     customButtons: {
@@ -89,6 +133,18 @@ const Calendar = props => {
         click() {
           toggleSidebar(true)
         }
+      },
+      jalaliPrev: {
+        text: <ChevronRight size={16} />,
+        click: handlePrevMonth
+      },
+      jalaliTitle: {
+        text: jalaliTitle,
+        click: () => {}
+      },
+      jalaliNext: {
+        text: <ChevronLeft size={16} />,
+        click: handleNextMonth
       }
     },
 

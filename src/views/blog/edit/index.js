@@ -164,6 +164,7 @@ const NewsEdit = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        console.log("Route id:", id);
         const [categoryRes, newsRes] = await Promise.all([
           getListNewsCategory(),
           getNewsById(id),

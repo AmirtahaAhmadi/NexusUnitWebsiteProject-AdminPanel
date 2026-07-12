@@ -1,4 +1,4 @@
-import { Mail, Home, Airplay, Circle, FileText } from "react-feather";
+import { Mail, Home, Calendar, Airplay, Circle, FileText } from "react-feather";
 
 export default [
   {
@@ -7,12 +7,12 @@ export default [
     icon: <Home size={20} />,
     navLink: "/ecommerce",
   },
-    {
-        id: 'calendar',
-        title: 'Calendar',
-        icon: <Calendar />,
-        navLink: '/apps/calendar'
-      },
+  {
+    id: "calendar",
+    title: "تقویم",
+    icon: <Calendar />,
+    navLink: "/apps/calendar",
+  },
 
   // {
   //   id: "secondPage",
@@ -87,7 +87,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/pages/Buildings/department",
       },
-        {
+      {
         id: "classroomManagement",
         title: "  مدیریت  کلاس  ها ",
         icon: <Circle size={12} />,

@@ -1,7 +1,8 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect, useCallback } from 'react'
 
 // ** Third Party Components
+import toast from 'react-hot-toast'
 import classnames from 'classnames'
 import { Row, Col } from 'reactstrap'
 
@@ -10,26 +11,35 @@ import Calendar from './Calendar'
 import SidebarLeft from './SidebarLeft'
 import AddEventSidebar from './AddEventSidebar'
 
+// ** Real API Services
+import { getAdminScheduals } from '../../../core/Interceptor/Services/CalenderPageServieces/ger'
+
 // ** Custom Hooks
 import { useRTL } from '@hooks/useRTL'
 
 // ** Styles
 import '@styles/react/apps/app-calendar.scss'
 
-const calendarsColor = {
-  Business: 'primary',
-  Holiday: 'success',
-  Personal: 'danger',
-  Family: 'warning',
-  ETC: 'info'
-}
+const mapScheduleToEvent = item => {
+  const start = item.startDate && item.startTime ? `${item.startDate.split('T')[0]}T${item.startTime}` : item.startDate
 
-export const calendarsLabelFa = {
-  Business: 'کاری',
-  Holiday: 'تعطیلات',
-  Personal: 'شخصی',
-  Family: 'خانواده',
-  ETC: 'متفرقه'
+  const end = item.startDate && item.endTime ? `${item.startDate.split('T')[0]}T${item.endTime}` : item.startDate
+
+  return {
+    id: String(item.id),
+    title: item.courseName || item.title || `دوره ${item.courseGroupId ?? ''}`,
+    start,
+    end,
+    allDay: false,
+    display: 'block',
+    extendedProps: {
+      active: item.active,
+      courseGroupId: item.courseGroupId,
+      weekNumber: item.weekNumber,
+      rowEffect: item.rowEffect,
+      raw: item
+    }
+  }
 }
 
 const CalendarComponent = () => {
@@ -39,61 +49,79 @@ const CalendarComponent = () => {
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState({})
   const [events, setEvents] = useState([])
-  const [selectedCalendars, setSelectedCalendars] = useState(Object.keys(calendarsColor))
+  const [loading, setLoading] = useState(false)
+  const [dateRange, setDateRange] = useState({ startDate: null, endDate: null })
 
-  // ** Hooks
+  const [courseId, setCourseId] = useState(undefined)
+
   const [isRtl] = useRTL()
 
   const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen)
 
   const toggleSidebar = val => setLeftSidebarOpen(val)
 
-  // ** شیء خالی رویداد
   const blankEvent = {
     title: '',
     start: '',
     end: '',
     allDay: false,
-    url: '',
     extendedProps: {
-      calendar: '',
-      guests: [],
-      location: '',
-      description: ''
+      active: false,
+      courseGroupId: '',
+      weekNumber: '',
+      rowEffect: ''
     }
   }
 
   const selectEvent = event => setSelectedEvent(event)
 
-  const addEvent = event => {
-    setEvents(prev => [...prev, { ...event, id: `${Date.now()}` }])
-  }
+ const fetchAdminSchedules = useCallback(async () => {
+  if (!dateRange.startDate || !dateRange.endDate) return;
 
-  const updateEvent = updatedEvent => {
-    setEvents(prev => prev.map(event => (event.id === updatedEvent.id ? { ...event, ...updatedEvent } : event)))
-  }
+  setLoading(true);
 
-  const removeEvent = eventId => {
-    setEvents(prev => prev.filter(event => event.id !== eventId))
-  }
+  try {
+    console.log("Date Range:", dateRange);
+    console.log("CourseId:", courseId);
 
-  const updateFilter = filterLabel => {
-    setSelectedCalendars(prev =>
-      prev.includes(filterLabel) ? prev.filter(f => f !== filterLabel) : [...prev, filterLabel]
-    )
-  }
+    const response = await getAdminScheduals(
+      dateRange.startDate,
+      dateRange.endDate,
+      courseId
+    );
 
-  const updateAllFilters = checked => {
-    setSelectedCalendars(checked ? Object.keys(calendarsColor) : [])
+    console.log("API Response:", response);
+    console.log("API Data:", response.data);
+
+    const list = response?.data?.data || response?.data || [];
+
+    console.log("Schedule List:", list);
+
+    const mappedEvents = list.map(mapScheduleToEvent);
+
+    console.log("Mapped Events:", mappedEvents);
+
+    setEvents(mappedEvents);
+  } catch (error) {
+    console.log("Calendar Error:", error);
+    console.log("Response Error:", error?.response?.data);
+    toast.error("خطا در دریافت برنامه‌ها");
+  } finally {
+    setLoading(false);
+  }
+}, [dateRange, courseId]);
+
+  useEffect(() => {
+    fetchAdminSchedules()
+  }, [fetchAdminSchedules])
+
+  const handleDatesSet = ({ startDate, endDate }) => {
+    setDateRange({ startDate, endDate })
   }
 
   const refetchEvents = () => {
-    if (calendarApi !== null) {
-      calendarApi.refetchEvents()
-    }
+    fetchAdminSchedules()
   }
-
-  const filteredEvents = events.filter(event => selectedCalendars.includes(event.extendedProps?.calendar))
 
   return (
     <Fragment>
@@ -105,13 +133,7 @@ const CalendarComponent = () => {
               show: leftSidebarOpen
             })}
           >
-            <SidebarLeft
-              toggleSidebar={toggleSidebar}
-              handleAddEventSidebar={handleAddEventSidebar}
-              selectedCalendars={selectedCalendars}
-              updateFilter={updateFilter}
-              updateAllFilters={updateAllFilters}
-            />
+            <SidebarLeft toggleSidebar={toggleSidebar} handleAddEventSidebar={handleAddEventSidebar} />
           </Col>
           <Col className='position-relative'>
             <Calendar
@@ -119,10 +141,10 @@ const CalendarComponent = () => {
               blankEvent={blankEvent}
               calendarApi={calendarApi}
               toggleSidebar={toggleSidebar}
-              calendarsColor={calendarsColor}
               setCalendarApi={setCalendarApi}
-              events={filteredEvents}
+              events={events}
               selectEvent={selectEvent}
+              onDatesSet={handleDatesSet}
               handleAddEventSidebar={handleAddEventSidebar}
             />
           </Col>
@@ -136,14 +158,10 @@ const CalendarComponent = () => {
       </div>
       <AddEventSidebar
         open={addSidebarOpen}
-        calendarApi={calendarApi}
-        refetchEvents={refetchEvents}
-        calendarsColor={calendarsColor}
         selectedEvent={selectedEvent}
         selectEvent={selectEvent}
-        addEvent={addEvent}
-        updateEvent={updateEvent}
-        removeEvent={removeEvent}
+        refetchEvents={refetchEvents}
+        currentCurseId={courseId}
         handleAddEventSidebar={handleAddEventSidebar}
       />
     </Fragment>

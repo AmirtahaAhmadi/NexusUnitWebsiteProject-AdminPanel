@@ -204,7 +204,9 @@ const BlogList = () => {
   };
 
   const handleAddNewBlog = () => {
-    navigate(`/pages/blog/edit/new`);
+    handleUpdate({
+      id: "b28b240b-2248-4b73-a6d5-5e9ab72e09dc",
+    });
   };
 
   const toggleAddModal = () => {
@@ -562,7 +564,7 @@ const BlogList = () => {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </InputGroup>
-              <Button color="primary" onClick={handleAddNewBlog}>
+              <Button color="primary" onClick={() => handleUpdate(data[0])}>
                 <Plus size={15} className="me-50" />
                 افزودن بلاگ جدید
               </Button>
