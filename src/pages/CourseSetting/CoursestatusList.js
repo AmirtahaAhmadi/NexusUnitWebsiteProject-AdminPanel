@@ -28,7 +28,9 @@ import UserProjectsList from "../CourseList/view/UserProjectsList";
 import Courselevellistinside from "./Courselevellistinside";
 import { GetCourselevelcall } from "../../core/Interceptor/Courses/GetCourselevelcall";
 import { useRefresh } from "../../redux/zustan/refreshCourselvl";
-const CourseLevelList = () => {
+import { GetStatusCall } from "../../core/Interceptor/Courses/GetStatusCall";
+import CoursestatusListInside from "./CoursestatusListInside";
+const CoursestatusList = () => {
   const refreshWatch = useRefresh((state) => state.refresh);
   const [loading, setloading] = useState(false);
   const query = useSelector((value) => value.courses.searchQuery);
@@ -42,7 +44,7 @@ const CourseLevelList = () => {
   const [getcourse, setgetcourse] = useState([]);
   const run = async () => {
     setloading(true);
-    const result = await GetCourselevelcall(
+    const result = await GetStatusCall(
       page,
       rowsofpage,
       sortingcol,
@@ -72,7 +74,7 @@ const CourseLevelList = () => {
       {loading ? (
         <div>در حال پیدا کردن</div>
       ) : (
-        <Courselevellistinside getcourse={getcourse} />
+        <CoursestatusListInside getcourse={getcourse} />
         // getcourse?.map((el) => (
         //   <Col lg="4" md="6" key={el.courseId}>
         //     {/* <Card>
@@ -194,4 +196,4 @@ const CourseLevelList = () => {
   );
 };
 
-export default CourseLevelList;
+export default CoursestatusList;

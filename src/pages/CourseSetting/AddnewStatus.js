@@ -11,12 +11,11 @@ import {
   Label,
   Row,
 } from "reactstrap";
-import { Createjobcall } from "../../../core/Interceptor/Courses/Createjobcall";
-import { Getjobscall } from "../../../core/Interceptor/Courses/getjobscall";
-import { Getallassistancework } from "../../../core/Interceptor/Courses/Getallassistancework";
-import { Getassistans } from "../../../core/Interceptor/Courses/GetallassistanceCall";
+
+import { useRefresh } from "../../redux/zustan/refreshCourselvl";
 import toast from "react-hot-toast";
-const Addnewjob = () => {
+import { CreateNewStatusCall } from "../../core/Interceptor/Courses/CreateNewStatusCall";
+const AddnewStatus = () => {
   //    '7OVVhTYiXDGLXj0l8Ph36'
   // const getassist = async () => {
   //   const result = await Getassistans();
@@ -25,58 +24,55 @@ const Addnewjob = () => {
   //   console.log("GetallassistanceCall", result);
   // };
   const [ezafeshod, setezafeshod] = useState(false);
-
+  const refreshWatch = useRefresh((state) => state.refresh);
+  const refreshValue = useRefresh((state) => state.setRefresh);
   const [newwork, setnewwork] = useState({
-    worktitle: "",
-    workDescribe: "",
-    assistanceId: "",
-    workDate: "",
+    statusName: "",
+    describe: "",
+    statusNumber: "",
   });
 
   const handleSubmit = async () => {
-    const fixdate = {
-      ...newwork,
-      workDate: new Date(newwork.workDate).toISOString(),
-    };
-
-    const res = await Createjobcall(fixdate);
+    const res = await CreateNewStatusCall(newwork);
     if (res) {
-      toast.success("شغل اضافه شد");
+      refreshValue();
+      toast.success(" استاتوس اضافه شد");
       setnewwork({
-        worktitle: "",
-        workDescribe: "",
-        assistanceId: "",
-        workDate: "",
+        statusName: "",
+        describe: "",
+        statusNumber: "",
       });
+    } else {
+      toast.error("خطا");
     }
   };
 
-  // useEffect(() => {
-  //   getassist();
-  // }, []);
+  useEffect(() => {
+    // getassist();
+    console.log(refreshWatch, "refreshValue");
+  }, [refreshWatch]);
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle tag="h4">ایجاد شغل جدید</CardTitle>
-      </CardHeader>
-
+    <Card className="t-shadow-none">
       <CardBody>
-        <Form className="t-p-4">
+        <Form className="t-p-6">
+          <div tag="h4" className="t-my-5 t-text-[18px]">
+            استاتوس جدید
+          </div>
           <Row className="g-2">
             <Col md="6">
               <Label for="worktitle" className="mb-50">
-                نام شغل
+                نام استاتوس
               </Label>
               <Input
                 type="text"
                 name="worktitle"
                 id="worktitle"
-                placeholder="نام شغل"
-                value={newwork.worktitle}
+                placeholder="نام استاتوس را وارد کنید"
+                value={newwork.statusName}
                 onChange={(e) => {
                   setnewwork((prev) => ({
                     ...prev,
-                    worktitle: e.target.value,
+                    statusName: e.target.value,
                   }));
                 }}
               />
@@ -84,55 +80,37 @@ const Addnewjob = () => {
 
             <Col md="6">
               <Label for="workDescribe" className="mb-50">
-                توضیح کورس
+                توضیح
               </Label>
               <Input
                 type="text"
                 name="workDescribe"
                 id="workDescribe"
-                placeholder="توضیح کورس"
-                value={newwork.workDescribe}
+                placeholder="توضیح را وارد کنید"
+                value={newwork.describe}
                 onChange={(e) => {
                   setnewwork((prev) => ({
                     ...prev,
-                    workDescribe: e.target.value,
-                  }));
-                }}
-              />
-            </Col>
-
-            <Col md="6">
-              <Label for="assistanceId" className="mb-50">
-                ای دی مشاور
-              </Label>
-              <Input
-                type="text"
-                name="assistanceId"
-                id="assistanceId"
-                placeholder="ای دی مشاور"
-                value={newwork.assistanceId}
-                onChange={(e) => {
-                  setnewwork((prev) => ({
-                    ...prev,
-                    assistanceId: e.target.value,
+                    describe: e.target.value,
                   }));
                 }}
               />
             </Col>
             <Col md="6">
-              <Label for="workDate" className="mb-50">
-                تاریخ
+              <Label for="workDescribe" className="mb-50">
+                شناسه
               </Label>
-
               <Input
-                type="datetime-local"
-                name="workDate"
-                id="workDate"
-                value={newwork.workDate}
+                type="number"
+                name="workDescribe"
+                id="workDescribe "
+                placeholder="فقط اعداد مجاز هستند"
+                className="t-text-left"
+                value={newwork.statusNumber}
                 onChange={(e) => {
                   setnewwork((prev) => ({
                     ...prev,
-                    workDate: e.target.value,
+                    statusNumber: e.target.value,
                   }));
                 }}
               />
@@ -158,10 +136,8 @@ const Addnewjob = () => {
                 type="reset"
                 onClick={() =>
                   setnewwork({
-                    worktitle: "",
-                    workDescribe: "",
-                    assistanceId: "",
-                    workDate: "",
+                    id: "",
+                    levelName: "",
                   })
                 }>
                 پاک کردن
@@ -174,4 +150,4 @@ const Addnewjob = () => {
   );
 };
 
-export default Addnewjob;
+export default AddnewStatus;

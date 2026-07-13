@@ -17,7 +17,7 @@ import sketchLabel from "@src/assets/images/icons/brands/sketch-label.png";
 // ** Styles
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { useEffect, useState } from "react";
-
+import ShowingMoreOfcourseinfo from "../ShowingMoreofCourseInfo";
 const projectsArr = [
   {
     progress: 60,
@@ -209,7 +209,7 @@ export const columns = [
               اصلاح
             </span>
 
-            {/* {row?.title && <ShowingMoreOfcourseinfo array={row.courseId} />} */}
+            {row?.title && <ShowingMoreOfcourseinfo array={row.courseId} />}
           </div>
         </div>
       );

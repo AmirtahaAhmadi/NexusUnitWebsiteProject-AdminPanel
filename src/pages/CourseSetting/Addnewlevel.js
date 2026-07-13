@@ -11,7 +11,9 @@ import {
   Label,
   Row,
 } from "reactstrap";
-
+import { CreateCourseLevelCall } from "../../core/Interceptor/Courses/CreateCourseLevelCall";
+import { useRefresh } from "../../redux/zustan/refreshCourselvl";
+import toast from "react-hot-toast";
 const Addnewlevel = () => {
   //    '7OVVhTYiXDGLXj0l8Ph36'
   // const getassist = async () => {
@@ -21,49 +23,51 @@ const Addnewlevel = () => {
   //   console.log("GetallassistanceCall", result);
   // };
   const [ezafeshod, setezafeshod] = useState(false);
-
+  const refreshWatch = useRefresh((state) => state.refresh);
+  const refreshValue = useRefresh((state) => state.setRefresh);
   const [newwork, setnewwork] = useState({
-    worktitle: "",
-    workDescribe: "",
-    assistanceId: "",
-    workDate: "",
+    id: "",
+    levelName: "",
   });
 
   const handleSubmit = async () => {
-    const fixdate = {
-      ...newwork,
-      workDate: new Date(newwork.workDate).toISOString(),
-    };
-
-    const res = await Createjobcall(fixdate);
+    const res = await CreateCourseLevelCall(newwork);
+    if (res) {
+      refreshValue();
+      toast.success("سطح اضافه شد");
+      setnewwork({
+        id: "",
+        levelName: "",
+      });
+    }
   };
 
-  // useEffect(() => {
-  //   getassist();
-  // }, []);
+  useEffect(() => {
+    // getassist();
+    console.log(refreshWatch, "refreshValue");
+  }, [refreshWatch]);
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle tag="h4">سطح جدید</CardTitle>
-      </CardHeader>
-
+    <Card className="t-shadow-none">
       <CardBody>
-        <Form className="t-p-8">
+        <Form className="t-p-6">
+          <div tag="h4" className="t-my-5 t-text-[18px]">
+            سطح جدید
+          </div>
           <Row className="g-2">
             <Col md="6">
               <Label for="worktitle" className="mb-50">
-                نام شغل
+                نام سطح
               </Label>
               <Input
                 type="text"
                 name="worktitle"
                 id="worktitle"
-                placeholder="نام شغل"
-                value={newwork.worktitle}
+                placeholder="نام سطح را وارد کنید"
+                value={newwork.levelName}
                 onChange={(e) => {
                   setnewwork((prev) => ({
                     ...prev,
-                    worktitle: e.target.value,
+                    levelName: e.target.value,
                   }));
                 }}
               />
@@ -71,55 +75,18 @@ const Addnewlevel = () => {
 
             <Col md="6">
               <Label for="workDescribe" className="mb-50">
-                توضیح کورس
+                شناسه
               </Label>
               <Input
                 type="text"
                 name="workDescribe"
                 id="workDescribe"
-                placeholder="توضیح کورس"
-                value={newwork.workDescribe}
+                placeholder="شناسه را وارد کنید"
+                value={newwork.id}
                 onChange={(e) => {
                   setnewwork((prev) => ({
                     ...prev,
-                    workDescribe: e.target.value,
-                  }));
-                }}
-              />
-            </Col>
-
-            <Col md="6">
-              <Label for="assistanceId" className="mb-50">
-                ای دی مشاور
-              </Label>
-              <Input
-                type="text"
-                name="assistanceId"
-                id="assistanceId"
-                placeholder="ای دی مشاور"
-                value={newwork.assistanceId}
-                onChange={(e) => {
-                  setnewwork((prev) => ({
-                    ...prev,
-                    assistanceId: e.target.value,
-                  }));
-                }}
-              />
-            </Col>
-            <Col md="6">
-              <Label for="workDate" className="mb-50">
-                تاریخ
-              </Label>
-
-              <Input
-                type="datetime-local"
-                name="workDate"
-                id="workDate"
-                value={newwork.workDate}
-                onChange={(e) => {
-                  setnewwork((prev) => ({
-                    ...prev,
-                    workDate: e.target.value,
+                    id: e.target.value,
                   }));
                 }}
               />
@@ -145,10 +112,8 @@ const Addnewlevel = () => {
                 type="reset"
                 onClick={() =>
                   setnewwork({
-                    worktitle: "",
-                    workDescribe: "",
-                    assistanceId: "",
-                    workDate: "",
+                    id: "",
+                    levelName: "",
                   })
                 }>
                 پاک کردن

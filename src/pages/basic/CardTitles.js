@@ -25,6 +25,7 @@ import { useSelector } from "react-redux";
 import ReactPaginate from "../pagination";
 import IconTextPagination from "../pagination/PaginationIconText";
 import UserProjectsList from "../CourseList/view/UserProjectsList";
+
 const CardTitles = () => {
   const [loading, setloading] = useState(false);
   const query = useSelector((value) => value.courses.searchQuery);

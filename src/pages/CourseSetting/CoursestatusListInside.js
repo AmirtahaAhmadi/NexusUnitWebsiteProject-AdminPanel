@@ -17,7 +17,7 @@ export const columns = [
     minWidth: "180px",
     selector: (row) => row.levelName,
     cell: (row) => {
-      return <span className="fw-bolder text-dark">{row.levelName}</span>;
+      return <span className="fw-bolder text-dark">{row.statusName}</span>;
     },
   },
 
@@ -38,7 +38,7 @@ export const columns = [
         <div className="d-flex flex-row t-gap-5">
           <span
             onClick={() => console.log("Edit Level ID:", row.id)}
-            className="text-truncate fw-bolder t-p-3 t-cursor-pointer t-bg-[#f3f2f7] t-rounded-[8px] hover:t-bg-[#6256e2] hover:t-text-[#f8f8f8] t-duration-300 t-transition-all">
+            className=" text-truncate fw-bolder t-p-3 t-cursor-pointer t-bg-[#f3f2f7] t-rounded-[8px] hover:t-bg-[#6256e2] hover:t-text-[#f8f8f8] t-duration-300 t-transition-all">
             اصلاح
           </span>
         </div>
@@ -47,7 +47,7 @@ export const columns = [
   },
 ];
 
-const Courselevellistinside = ({ getcourse }) => {
+const CoursestatusListInside = ({ getcourse }) => {
   const [levels, setLevels] = useState([]);
 
   useEffect(() => {
@@ -55,10 +55,12 @@ const Courselevellistinside = ({ getcourse }) => {
       setLevels(getcourse);
     }
   }, [getcourse]);
-
+  useEffect(() => {
+    console.log("statusName", levels);
+  }, [levels]);
   return (
     <div>
-      <div className="react-dataTable user-view-account-projects t-p-6 t-shadow-none t-max-h-[500px] t-overflow-y-auto hide-scrollbar">
+      <div className="react-dataTable user-view-account-projects t-p-6 t-shadow-none t-max-h-[500px] t-overflow-y-auto hide-scrollbar ">
         <DataTable
           noHeader
           responsive
@@ -72,4 +74,4 @@ const Courselevellistinside = ({ getcourse }) => {
   );
 };
 
-export default Courselevellistinside;
+export default CoursestatusListInside;

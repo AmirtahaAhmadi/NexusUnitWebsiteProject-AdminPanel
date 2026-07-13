@@ -1,2 +1,11 @@
 @import "../node_modules/prismjs/themes/prism-tomorrow";
 @import "./assets/scss/app.scss";
+
+.hide-scrollbar {
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
