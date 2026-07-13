@@ -4,8 +4,8 @@ import { columns } from "./columns";
 import Swal from "sweetalert2";
 import { getClassRooms } from "../../../core/Interceptor/Services/ClassroomManagementpageServices/get";
 import { createClassRoom } from "../../../core/Interceptor/Services/ClassroomManagementpageServices/post";
+import { getBuildings } from "../../../core/Interceptor/Services/BildingPageServices/get";
 import { updateClassRoom } from "../../../core/Interceptor/Services/ClassroomManagementpageServices/put";
-
 import {
   Alert,
   Row,
@@ -98,17 +98,12 @@ const Table = () => {
     },
   });
   const [show, setShow] = useState(false);
-
+  const [buildings, setBuildings] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
-
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
   const [allClassRooms, setAllClassRooms] = useState([]);
-
   const [loading, setLoading] = useState(false);
-
   const [selected, setSelected] = useState(null);
 
   const fetchClassRooms = async () => {
@@ -124,8 +119,17 @@ const Table = () => {
       setLoading(false);
     }
   };
+  const fetchBuildings = async () => {
+    try {
+      const response = await getBuildings();
+      setBuildings(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     fetchClassRooms();
+    fetchBuildings();
   }, []);
 
   const filteredDepartments = allClassRooms.filter((item) =>
@@ -202,11 +206,11 @@ const Table = () => {
 
         await updateClassRoom(updateBody);
       } else {
-      const createBody = {
-  classRoomName: values.classRoomName,
-  capacity: Number(values.capacity),
-  buildingId: values.buildingId,
-};
+        const createBody = {
+          classRoomName: values.classRoomName,
+          capacity: Number(values.capacity),
+          buildingId: values.buildingId,
+        };
 
         console.log("CREATE BODY =>", createBody);
 
@@ -314,16 +318,17 @@ const Table = () => {
             <Controller
               control={control}
               name="buildingId"
-              rules={{
-                required: true,
-              }}
+              rules={{ required: true }}
               render={({ field }) => (
-                <Input
-                  type="number"
-                  placeholder="شناسه ساختمان"
-                  invalid={errors.buildingId && true}
-                  {...field}
-                />
+                <Input type="select" invalid={!!errors.buildingId} {...field}>
+                  <option value="">انتخاب ساختمان</option>
+
+                  {buildings.map((building) => (
+                    <option key={building.id} value={building.id}>
+                      {building.buildingName}
+                    </option>
+                  ))}
+                </Input>
               )}
             />
 
@@ -349,7 +354,7 @@ const Table = () => {
   return (
     <Fragment>
       <div className="react-dataTable">
-         <DataTable
+        <DataTable
           noHeader
           pagination
           subHeader

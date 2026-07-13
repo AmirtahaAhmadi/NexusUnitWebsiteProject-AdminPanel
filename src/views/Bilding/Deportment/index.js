@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { getDepartments } from "../../../core/Interceptor/Services/DepartmentsPageServices/get";
 import { createDepartment } from "../../../core/Interceptor/Services/DepartmentsPageServices/post";
 import { updateDepartment } from "../../../core/Interceptor/Services/DepartmentsPageServices/put";
-
+import { getBuildings } from "../../../core/Interceptor/Services/BildingPageServices/get";
 import {
   Row,
   Col,
@@ -96,19 +96,13 @@ const Table = () => {
     },
   });
   const [show, setShow] = useState(false);
-
   const [searchTerm, setSearchTerm] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
-
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
   const [allDepartments, setAllDepartments] = useState([]);
-
   const [loading, setLoading] = useState(false);
-
   const [selected, setSelected] = useState(null);
-
+  const [buildings, setBuildings] = useState([]);
   const fetchDepartments = async () => {
     setLoading(true);
 
@@ -123,10 +117,20 @@ const Table = () => {
     }
   };
 
+  const fetchBuildings = async () => {
+    try {
+      const response = await getBuildings();
+      console.log("Buildings =>", response.data);
+      setBuildings(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchDepartments();
+    fetchBuildings();
   }, []);
-
   const filteredDepartments = allDepartments.filter((item) =>
     (item.depName || "").toLowerCase().includes(searchTerm.toLowerCase()),
   );
@@ -201,7 +205,7 @@ const Table = () => {
       } else {
         const createBody = {
           depName: values.depName,
-          buildingId: Number(values.buildingId),
+          buildingId: values.buildingId,
         };
 
         console.log("CREATE BODY =>", createBody);
@@ -280,32 +284,31 @@ const Table = () => {
             <FormFeedback>لطفاً نام دپارتمان را وارد کنید</FormFeedback>
           )}
         </Col>
-        {!selected && (
-          <Col xs={12} className="mt-1">
-            <Label className="form-label">شناسه ساختمان</Label>
 
-            <Controller
-              control={control}
-              name="buildingId"
-              rules={{
-                required: true,
-              }}
-              render={({ field }) => (
-                <Input
-                  type="number"
-                  placeholder="شناسه ساختمان"
-                  invalid={errors.buildingId && true}
-                  {...field}
-                />
-              )}
-            />
+        <Col xs={12} className="mt-1">
+          <Label className="form-label">ساختمان</Label>
 
-            {errors.buildingId && (
-              <FormFeedback>شناسه ساختمان الزامی است</FormFeedback>
+          <Controller
+            control={control}
+            name="buildingId"
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Input type="select" invalid={!!errors.buildingId} {...field}>
+                <option value="">انتخاب ساختمان</option>
+
+                {buildings.map((building) => (
+                  <option key={building.id} value={building.id}>
+                    {building.buildingName}
+                  </option>
+                ))}
+              </Input>
             )}
-          </Col>
-        )}
+          />
 
+          {errors.buildingId && (
+            <FormFeedback>لطفاً ساختمان را انتخاب کنید</FormFeedback>
+          )}
+        </Col>
         <Col xs={12} className="text-center mt-2">
           <Button type="submit" className="me-1" color="primary">
             {selected ? "به‌روزرسانی" : "ایجاد دپارتمان"}

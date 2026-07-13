@@ -1,4 +1,3 @@
-
 import { toJalaali, toGregorian } from 'jalaali-js'
 
 export const jalaliMonthNames = [
@@ -19,7 +18,10 @@ export const jalaliMonthNames = [
 export const toPersianDigits = num => String(num).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d])
 
 export const gregorianToJalali = date => {
-  const { jy, jm, jd } = toJalaali(date)
+  const gy = date.getFullYear()
+  const gm = date.getMonth() + 1
+  const gd = date.getDate()
+  const { jy, jm, jd } = toJalaali(gy, gm, gd)
   return { jy, jm, jd }
 }
 

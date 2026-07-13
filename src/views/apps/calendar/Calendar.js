@@ -44,28 +44,38 @@ const Calendar = props => {
 
   const [jalaliTitle, setJalaliTitle] = useState(() => getJalaliMonthTitle(jalaliCursor.jy, jalaliCursor.jm))
 
+  const jalaliCursorRef = useRef(jalaliCursor)
+
+  useEffect(() => {
+    jalaliCursorRef.current = jalaliCursor
+  }, [jalaliCursor])
+
   useEffect(() => {
     if (calendarApi === null) {
       setCalendarApi(calendarRef.current.getApi())
     }
   }, [calendarApi, setCalendarApi])
 
-  // customButtons فقط یک‌بار موقع mount ساخته می‌شن و click handlerشون دیگه با
-  // re-render آپدیت نمی‌شه (محدودیت شناخته‌شده‌ی FullCalendar). به همین خاطر داخل
-  // این توابع هیچ‌وقت از state ری‌اکت (jalaliCursor / prop calendarApi) استفاده
-  // نمی‌کنیم؛ همیشه مستقیم از calendarRef.current می‌خونیم که یک ref پایدار است
-  // و همیشه به نمونه‌ی زنده‌ی تقویم اشاره می‌کند، حتی داخل closureِ قدیمی.
+  const goToJalaliMonth = (jy, jm) => {
+    const api = calendarRef.current?.getApi()
+    const { start } = getJalaliMonthRange(jy, jm)
+
+    jalaliCursorRef.current = { jy, jm }
+    setJalaliCursor({ jy, jm })
+    setJalaliTitle(getJalaliMonthTitle(jy, jm))
+
+    if (api) api.gotoDate(start)
+  }
+
   const handlePrevMonth = () => {
     const api = calendarRef.current?.getApi()
     if (!api) return
 
     if (api.view.type === 'dayGridMonth') {
-      const { jy, jm } = gregorianToJalali(api.view.currentStart)
+      const { jy, jm } = jalaliCursorRef.current
       const prev = shiftJalaliMonth(jy, jm, -1)
-      const { start } = getJalaliMonthRange(prev.jy, prev.jm)
-      api.gotoDate(start)
+      goToJalaliMonth(prev.jy, prev.jm)
     } else {
-      // در نمای هفته/روز/لیست از ناوبری داخلی خودِ FullCalendar استفاده می‌کنیم
       api.prev()
     }
   }
@@ -75,17 +85,14 @@ const Calendar = props => {
     if (!api) return
 
     if (api.view.type === 'dayGridMonth') {
-      const { jy, jm } = gregorianToJalali(api.view.currentStart)
+      const { jy, jm } = jalaliCursorRef.current
       const next = shiftJalaliMonth(jy, jm, 1)
-      const { start } = getJalaliMonthRange(next.jy, next.jm)
-      api.gotoDate(start)
+      goToJalaliMonth(next.jy, next.jm)
     } else {
       api.next()
     }
   }
 
-  // چون متنِ customButtons هم به‌صورت خودکار با تغییر state آپدیت نمی‌شه،
-  // دستی روی خودِ دکمه‌ی تیتر تنظیمش می‌کنیم.
   useEffect(() => {
     if (!calendarApi) return
     const btn = calendarApi.el?.querySelector('.fc-jalaliTitle-button')
@@ -115,8 +122,6 @@ const Calendar = props => {
       end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
     },
 
-    // پوشش کامل بازه‌ی ساعتی روز تا هیچ رویدادی در نمای روز/هفته به خاطر
-    // محدودیت ساعتی پیش‌فرض مخفی نمونه
     slotMinTime: '00:00:00',
     slotMaxTime: '24:00:00',
 
@@ -126,14 +131,15 @@ const Calendar = props => {
         html: `<span class="jalali-daynum${arg.isToday ? ' jalali-today' : ''}">${toPersianDigits(jd)}</span>`
       }
     },
+    dayCellClassNames: arg => (arg.isToday ? ['jalali-today-cell'] : []),
 
-    // منبع حقیقتِ ماه/عنوان رو از خودِ view می‌گیریم (نه از state جداگانه)، تا با
-    // هر نوع ناوبری - چه دکمه‌های سفارشی ما، چه دکمه‌های داخلی هفته/روز/لیست -
-    // همیشه هماهنگ بمونه. دیگه هیچ افکتی به‌خاطر این تغییر، view رو زورکی عوض نمی‌کنه.
     datesSet(info) {
-      const { jy, jm } = gregorianToJalali(info.view.currentStart)
-      setJalaliCursor({ jy, jm })
-      setJalaliTitle(getJalaliMonthTitle(jy, jm))
+      if (info.view.type !== 'dayGridMonth') {
+        const { jy, jm } = gregorianToJalali(info.view.currentStart)
+        jalaliCursorRef.current = { jy, jm }
+        setJalaliCursor({ jy, jm })
+        setJalaliTitle(getJalaliMonthTitle(jy, jm))
+      }
 
       if (onDatesSet) {
         onDatesSet({
@@ -154,9 +160,6 @@ const Calendar = props => {
       return [isActive ? 'bg-light-success' : 'bg-light-warning']
     },
 
-    // لایه‌ی اطمینان اضافه: هر بار رویداد رندر/آپدیت می‌شه، رنگش رو هم مستقیم
-    // روی خودِ المان DOM اعمال می‌کنیم. این باعث می‌شه حتی اگه eventClassNames
-    // به هر دلیلی دیر recompute بشه، رنگ بلافاصله درست باشه.
     eventDidMount(arg) {
       const applyColor = () => {
         const isActive = !!arg.event.extendedProps?.active
@@ -164,8 +167,6 @@ const Calendar = props => {
         arg.el.classList.add(isActive ? 'bg-light-success' : 'bg-light-warning')
       }
       applyColor()
-      // اگه بعداً extendedProps با setExtendedProp عوض بشه، دوباره اعمال کن
-      arg.event.setProp === undefined ? null : null
     },
 
     eventClick({ event: clickedEvent }) {
@@ -215,6 +216,9 @@ const Calendar = props => {
           background-color: #7367f0;
           color: #fff !important;
           font-weight: 600;
+        }
+        .fc .jalali-today-cell {
+          background-color: rgba(115, 103, 240, 0.08) !important;
         }
       `}</style>
       <CardBody className='pb-0'>

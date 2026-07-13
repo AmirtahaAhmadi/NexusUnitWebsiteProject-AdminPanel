@@ -10,13 +10,5 @@ export const createNewsCategoryfilter = async (data) => {
   formData.append("GoogleTitle", data.googleTitle);
   formData.append("GoogleDescribe", data.googleDescribe);
 
-  return await apiClient.post(
-    "/News/CreateNewsCategory",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    }
-  );
+  return apiClient.post("/News/CreateNewsCategory", formData);
 };
