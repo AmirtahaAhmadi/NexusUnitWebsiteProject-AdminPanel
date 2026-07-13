@@ -306,6 +306,7 @@ const UserInfoCard = ({ selectedUser, setUserDetailsRenderCount }) => {
 
       <AddUserAccessModal
         selectedUser={selectedUser}
+        locationUsing={'userInfoCard'}
         roleAccessModalShow={roleAccessModalShow}
         setRoleAccessModalShow={setRoleAccessModalShow}
         setUserDetailsRenderCount={setUserDetailsRenderCount}

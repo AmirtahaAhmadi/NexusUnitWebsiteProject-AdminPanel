@@ -1,6 +1,10 @@
-import { deleteCourseReserve, deleteUser } from "../../../../core/Interceptor/Services/UserServices/delete";
+import {
+  deleteCourseReserve,
+  deleteUser,
+} from "../../../../core/Interceptor/Services/UserServices/delete";
 import { getUserDetails } from "../../../../core/Interceptor/Services/UserServices/get";
 import { postSendReserveToCourse } from "../../../../core/Interceptor/Services/UserServices/post";
+import { handleSuccess } from "../../../extensions/sweet-alert/SweetAlerts";
 
 export const UserDetails = async (userId) => {
   try {
@@ -30,25 +34,13 @@ export const UserDetails = async (userId) => {
 export const DeleteUser = async (userId) => {
   try {
     const response = await deleteUser(userId);
-    console.log(response);
+    // console.log(response);
     if (response.data.success === true) {
       console.log(response.data.message);
+      handleSuccess("کاربر مورد نظر با موفقیت حذف شد!");
     }
   } catch (error) {
-    if (error.response) {
-      console.log("Error Data: ", error.response.data);
-      if (error.response.data.success === false) {
-        console.log(error.response.data.message);
-      } else {
-        console.log("خطایی رخ داده است");
-      }
-    } else if (error.request) {
-      console.log("خطا در ارتباط با سرور لطفا اینترنت خود را بررسی کنید");
-    } else {
-      console.error(error);
-    }
-  } finally {
-    console.log("");
+    console.log("deleteUser error: ", error.response.data);
   }
 };
 

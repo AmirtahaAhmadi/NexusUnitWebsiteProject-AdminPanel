@@ -28,37 +28,44 @@ import { selectThemeColors } from "@utils";
 import { postAddUserAccess } from '../../../../core/Interceptor/Services/UserServices/post';
 import { handleError, handleSuccess, handleWarning } from '../../../extensions/sweet-alert/SweetAlerts';
 
-const AddUserAccessModal = ({ selectedUser, roleAccessModalShow, setRoleAccessModalShow, setUserDetailsRenderCount }) => {
-  const roles = [];
+const Role_Id = {
+  student: 3,
+  teacher: 2,
+  admin: 1,
+}
+
+const AddUserAccessModal = ({ selectedUser, locationUsing, roleAccessModalShow, setRoleAccessModalShow, setUserDetailsRenderCount }) => {
   const [rolesId, setRolesId] = useState([]);
-  const [isRendered, setIsRendered] = useState(false);
-  const [defaultValues, setDefaultValues] = useState(
-    {
+
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm({
+    defaultValues: {
       isStudentRole: false,
       isAdminRole: false,
       isTeacherRole: false,
       isGodRole: false,
     }
-  );
+  });
 
   useEffect(() => {
-    selectedUser?.roles.map((role) => (roles.push(role.roleName)))
-    setDefaultValues(() => ({
-      isStudentRole: !!roles.includes('student'),
-      isAdminRole: !!roles.includes('admin'),
-      isTeacherRole: !!roles.includes('teacher'),
-      isGodRole: !!roles.includes('God'),
-    }))
-    setIsRendered(true)
-  }, [selectedUser])
+    const currentRoles = locationUsing == 'userList' ? selectedUser?.roles || [] : selectedUser?.roles?.map((role) => role.roleName) || [];
+    reset({
+      isStudentRole: currentRoles.includes('student'),
+      isAdminRole: currentRoles.includes('admin'),
+      isTeacherRole: currentRoles.includes('teacher'),
+      isGodRole: currentRoles.includes('GOD'),
+    });
+    setRolesId([]);
+  }, [selectedUser, reset])
 
-  const {
-    register,
-    control,
-    setValue,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm();
+  const toggleRole = (roleName) => {
+    const roleId = Role_Id[roleName];
+    setRolesId(prev => prev.includes(roleId) ? prev.filter((item) => item != roleId) : [...prev, roleId])
+  }
 
   const onSubmit = async (data) => {
     // console.log(data);
@@ -82,14 +89,6 @@ const AddUserAccessModal = ({ selectedUser, roleAccessModalShow, setRoleAccessMo
     }
   };
 
-  useEffect(() => {
-    if (defaultValues) {
-      Object.keys(defaultValues).forEach((key) => {
-        setValue(key, defaultValues[key]);
-      });
-    }
-  }, [defaultValues]);
-
   return (
     <>
       <Modal
@@ -112,18 +111,21 @@ const AddUserAccessModal = ({ selectedUser, roleAccessModalShow, setRoleAccessMo
               <div className='d-flex flex-column mb-1'>
                 <Label for="isStudentRole">رول دانشجو</Label>
                 <div className="form-switch">
-                  <Input
-                    type="switch"
-                    role="switch"
-                    id="isStudentRole"
-                    innerRef={register("isStudentRole").ref}
-                    name={register("isStudentRole").name}
-                    onChange={() => {
-                      register("isStudentRole").onChange
-                      setRolesId(prev => prev.includes(3) ? prev.filter((item) => item !== 3) : [...prev, 3])
-                    }}
-                    onBlur={register("isStudentRole").onBlur}
-                    disabled={defaultValues.isStudentRole}
+                  <Controller
+                    name="isStudentRole"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type="switch"
+                        role="switch"
+                        id="isStudentRole"
+                        innerRef={field.ref}
+                        checked={field.value || rolesId.includes(Role_Id.student)}
+                        onChange={() => { toggleRole('student') }}
+                        onBlur={field.onBlur}
+                        disabled={field.value}
+                      />
+                    )}
                   />
                 </div>
               </div>
@@ -132,18 +134,21 @@ const AddUserAccessModal = ({ selectedUser, roleAccessModalShow, setRoleAccessMo
               <div className='d-flex flex-column mb-1'>
                 <Label for="isTeacherRole">رول مربی</Label>
                 <div className="form-switch">
-                  <Input
-                    type="switch"
-                    role="switch"
-                    id="isTeacherRole"
-                    innerRef={register("isTeacherRole").ref}
-                    name={register("isTeacherRole").name}
-                    onChange={() => {
-                      register("isTeacherRole").onChange
-                      setRolesId(prev => prev.includes(2) ? prev.filter((item) => item !== 2) : [...prev, 2])
-                    }}
-                    onBlur={register("isTeacherRole").onBlur}
-                    disabled={defaultValues.isTeacherRole}
+                  <Controller
+                    name="isTeacherRole"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type="switch"
+                        role="switch"
+                        id="isTeacherRole"
+                        innerRef={field.ref}
+                        checked={field.value || rolesId.includes(Role_Id.teacher)}
+                        onChange={() => { toggleRole('teacher') }}
+                        onBlur={field.onBlur}
+                        disabled={field.value}
+                      />
+                    )}
                   />
                 </div>
               </div>
@@ -152,18 +157,21 @@ const AddUserAccessModal = ({ selectedUser, roleAccessModalShow, setRoleAccessMo
               <div className='d-flex flex-column mb-1'>
                 <Label for="isAdminRole">رول ادمین</Label>
                 <div className="form-switch">
-                  <Input
-                    type="switch"
-                    role="switch"
-                    id="isAdminRole"
-                    innerRef={register("isAdminRole").ref}
-                    name={register("isAdminRole").name}
-                    onChange={() => {
-                      register("isAdminRole").onChange
-                      setRolesId(prev => prev.includes(1) ? prev.filter((item) => item !== 1) : [...prev, 1])
-                    }}
-                    onBlur={register("isAdminRole").onBlur}
-                    disabled={defaultValues.isAdminRole}
+                  <Controller
+                    name="isAdminRole"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type="switch"
+                        role="switch"
+                        id="isAdminRole"
+                        innerRef={field.ref}
+                        checked={field.value || rolesId.includes(Role_Id.admin)}
+                        onChange={() => { toggleRole('admin') }}
+                        onBlur={field.onBlur}
+                        disabled={field.value}
+                      />
+                    )}
                   />
                 </div>
               </div>
@@ -172,14 +180,20 @@ const AddUserAccessModal = ({ selectedUser, roleAccessModalShow, setRoleAccessMo
               <div className='d-flex flex-column mb-1'>
                 <Label for="isGodRole">رول گاد</Label>
                 <div className="form-switch">
-                  <Input
-                    type="switch"
-                    role="switch"
-                    id="isGodRole"
-                    innerRef={register("isGodRole").ref}
-                    name={register("isGodRole").name}
-                    onBlur={register("isGodRole").onBlur}
-                    disabled={true}
+                  <Controller
+                    name="isGodRole"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type="switch"
+                        role="switch"
+                        id="isGodRole"
+                        innerRef={field.ref}
+                        checked={field.value}
+                        onBlur={field.onBlur}
+                        disabled={true}
+                      />
+                    )}
                   />
                 </div>
               </div>

@@ -156,7 +156,7 @@ const UsersList = ({ renderCount, setRenderCount }) => {
   const [users, setUsers] = useState([]);
   const [totalCount, setTotalCount] = useState();
 
-  const [selectedUserForRoleAccess, setSelectedUserForRoleAccess] = useState();
+  const [selectedUserForRoleAccess, setSelectedUserForRoleAccess] = useState({});
   const [addUserAccessModalShow, setAddUserAccessModalShow] = useState(false);
 
   const [sort, setSort] = useState("desc");
@@ -355,7 +355,7 @@ const UsersList = ({ renderCount, setRenderCount }) => {
               id="deleteUserT"
               style={{ background: "none", border: "none" }}
               onClick={() => {
-                // AcceptCourseComment(row.commentId);
+                DeleteUser(row.id)
                 setRenderCount((prev) => prev + 1);
               }}
             >
@@ -368,7 +368,8 @@ const UsersList = ({ renderCount, setRenderCount }) => {
             <button
               style={{ background: "none", border: "none" }}
               onClick={() => {
-                // AcceptCourseComment(row.commentId);
+                setSelectedUserForRoleAccess(row)
+                setAddUserAccessModalShow(true)
               }}
             >
               <Badge style={{ height: "25px" }} className="cursor-pointer" color="primary">
@@ -538,6 +539,7 @@ const UsersList = ({ renderCount, setRenderCount }) => {
 
       <AddUserAccessModal
         selectedUser={selectedUserForRoleAccess}
+        locationUsing={'userList'}
         roleAccessModalShow={addUserAccessModalShow}
         setRoleAccessModalShow={setAddUserAccessModalShow}
         setUserDetailsRenderCount={setRenderCount}
