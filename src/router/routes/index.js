@@ -28,6 +28,7 @@ const DefaultRoute = "/home";
 const Home = lazy(() => import("../../pages/Home"));
 const UserList = lazy(() => import('../../views/apps/user/list'))
 const UserView = lazy(() => import('../../views/apps/user/view'))
+const Comments = lazy(() => import('../../pages/Comments'))
 const SecondPage = lazy(() => import("../../pages/SecondPage"));
 const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
@@ -56,15 +57,19 @@ const Routes = [
   },
   {
     element: <UserList />,
-    path: '/apps/user/list'
+    path: '/user/list'
   },
   {
     path: '/apps/user/view',
-    element: <Navigate to='/apps/user/view/1' />
+    element: <Navigate to='/user/view/1' />
   },
   {
     element: <UserView />,
-    path: '/apps/user/view/:id'
+    path: '/user/view/:id'
+  },
+  {
+    element: <Comments />,
+    path: '/comments/list'
   },
   {
     path: "/login",

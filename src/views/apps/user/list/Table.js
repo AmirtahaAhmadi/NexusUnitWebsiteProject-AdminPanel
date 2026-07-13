@@ -4,12 +4,10 @@ import { Fragment, useState, useEffect } from "react";
 // ** Invoice List Sidebar
 import Sidebar from "./Sidebar";
 
-// ** Table Columns
-import { columns } from "./columns";
+import { Link } from "react-router-dom";
 
-// ** Store & Actions
-// import { getAllData, getData } from '../store'
-// import { useDispatch, useSelector } from 'react-redux'
+import Avatar from "@components/avatar";
+import { DeleteUser, UserDetails } from "../store/functions";
 import { getAllUsers } from "../../../../core/Interceptor/Services/UserServices/get";
 
 // ** Third Party Components
@@ -24,6 +22,15 @@ import {
   File,
   Grid,
   Copy,
+  Plus,
+  Slack,
+  User,
+  Settings,
+  Database,
+  Edit2,
+  MoreVertical,
+  Trash2,
+  Archive,
 } from "react-feather";
 
 // ** Utils
@@ -44,7 +51,12 @@ import {
   DropdownItem,
   DropdownToggle,
   UncontrolledDropdown,
+  Badge,
+  UncontrolledTooltip,
 } from "reactstrap";
+
+import { dateToLocal } from "../store/DateToLocalFunction";
+import AddUserAccessModal from "../view/AddUserAccessModal";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
@@ -86,28 +98,12 @@ const CustomHeader = ({
     return result;
   }
 
-  // ** Downloads CSV
-  // function downloadCSV(array) {
-  //   const link = document.createElement("a");
-  //   let csv = convertArrayOfObjectsToCSV(array);
-  //   if (csv === null) return;
-
-  //   const filename = "export.csv";
-
-  //   if (!csv.match(/^data:text\/csv/i)) {
-  //     csv = `data:text/csv;charset=utf-8,${csv}`;
-  //   }
-
-  //   link.setAttribute("href", encodeURI(csv));
-  //   link.setAttribute("download", filename);
-  //   link.click();
-  // }
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
         <Col xl="6" className="d-flex align-items-center p-0">
           <div className="d-flex align-items-center w-100">
-            <label htmlFor="rows-per-page">نمایش</label>
+            <label htmlFor="rows-per-page">تعداد در صفحه: </label>
             <Input
               className="mx-50"
               type="select"
@@ -120,7 +116,6 @@ const CustomHeader = ({
               <option value={25}>25</option>
               <option value={50}>50</option>
             </Input>
-            <label htmlFor="rows-per-page">ورودی</label>
           </div>
         </Col>
         <Col
@@ -137,6 +132,7 @@ const CustomHeader = ({
               type="text"
               value={searchTerm}
               onChange={(e) => handleFilter(e.target.value)}
+              placeholder="جستجو کنید"
             />
           </div>
 
@@ -146,7 +142,7 @@ const CustomHeader = ({
               color="primary"
               onClick={toggleSidebar}
             >
-              افزودن کاربر
+              <span>افزودن کاربر</span>
             </Button>
           </div>
         </Col>
@@ -156,12 +152,13 @@ const CustomHeader = ({
 };
 
 const UsersList = ({ renderCount, setRenderCount }) => {
-  // ** Store Vars
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [totalCount, setTotalCount] = useState();
 
-  // ** States
+  const [selectedUserForRoleAccess, setSelectedUserForRoleAccess] = useState();
+  const [addUserAccessModalShow, setAddUserAccessModalShow] = useState(false);
+
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -184,7 +181,7 @@ const UsersList = ({ renderCount, setRenderCount }) => {
   // ** Get data on mount
   useEffect(() => {
     const fetchGetAllUser = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
         const response = await getAllUsers({
           pageNumber: currentPage,
@@ -199,11 +196,11 @@ const UsersList = ({ renderCount, setRenderCount }) => {
         console.log(response.data.listUser);
         setUsers(response.data.listUser);
         setTotalCount(response.data.totalCount);
-        setTotalPages(Math.ceil(response.data.totalCount / rowsPerPage))
+        setTotalPages(Math.ceil(response.data.totalCount / rowsPerPage));
       } catch (error) {
         console.error("userList error:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     };
     const timeoutForUsers = setTimeout(() => {
@@ -220,6 +217,169 @@ const UsersList = ({ renderCount, setRenderCount }) => {
     currentRole.value,
     renderCount,
   ]);
+
+  const renderClient = (row) => {
+    if (row.currentPictureAddress != null) {
+      return (
+        <Avatar
+          className="me-1"
+          img={row.currentPictureAddress}
+          width="32"
+          height="32"
+        />
+      );
+    } else {
+      return (
+        <Avatar
+          initials
+          className="me-1"
+          color={"light-primary"}
+          content={row.fName + " " + row.lName || "John Doe"}
+        />
+      );
+    }
+  };
+
+  // ** Renders Role Columns
+  const renderRole = (row) => {
+    const roleObj = {
+      admin: {
+        class: "text-danger",
+        icon: Slack,
+      },
+      student: {
+        class: "text-primary",
+        icon: User,
+      },
+      teacher: {
+        class: "text-success",
+        icon: Database,
+      },
+      GOD: {
+        class: "text-warning",
+        icon: Settings,
+      },
+    };
+
+    const Icon = roleObj[row] ? roleObj[row].icon : Edit2;
+
+    return (
+      <>
+        <span
+          title={row}
+          style={{ display: "flex", alignItems: "center", gap: "2px" }}
+          className="text-truncate text-capitalize align-middle me-50"
+        >
+          <Icon
+            size={18}
+            className={`${roleObj[row] ? roleObj[row].class : ""}`}
+          />
+          {row}
+        </span>
+      </>
+    );
+  };
+
+  const statusObj = {
+    true: "light-success",
+    false: "light-danger",
+  };
+
+  const columns = [
+    {
+      name: "نام",
+      sortable: true,
+      minWidth: "350px",
+      sortField: "fName",
+      selector: (row) => row.fName,
+      cell: (row) => (
+        <div className="d-flex justify-content-left align-items-center">
+          <Link
+            to={`/user/view/${row.id}`}
+            className="user_name text-truncate text-body"
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            {renderClient(row)}
+            <div style={{ gap: "2px" }} className="d-flex flex-column">
+              <span className="fw-bolder">
+                {row.fName} {row.lName}
+              </span>
+              <small className="text-truncate text-muted mb-0">
+                {row.gmail}
+              </small>
+            </div>
+          </Link>
+        </div>
+      ),
+    },
+    {
+      name: "نقش ها",
+      sortable: true,
+      minWidth: "350px",
+      sortField: "role",
+      selector: (row) => row.roles,
+      cell: (row) =>
+        row.roles.length != 0 ? (
+          row.roles.map((role) => renderRole(role))
+        ) : (
+          <Badge className="text-capitalize" color={"light-secondary"} pill>
+            بدون نقش
+          </Badge>
+        ),
+    },
+    {
+      name: "وضعیت",
+      sortable: true,
+      sortField: "status",
+      selector: (row) => row.active,
+      cell: (row) => (
+        <Badge className="text-capitalize" color={statusObj[row.active]} pill>
+          {row.active == true ? "فعال" : "غیر فعال"}
+        </Badge>
+      ),
+    },
+    {
+      name: "تاریخ ثبت نام",
+      minWidth: "100px",
+      sortable: true,
+      selector: (row) => row.insertDate,
+      cell: (row) => dateToLocal(row.insertDate),
+    },
+    {
+      name: "عملیات",
+      minWidth: "200px",
+      cell: (row) => (
+        <>
+          <div style={{ alignItems: "center", gap: "6px" }} className="d-flex">
+            <button
+              id="deleteUserT"
+              style={{ background: "none", border: "none" }}
+              onClick={() => {
+                // AcceptCourseComment(row.commentId);
+                setRenderCount((prev) => prev + 1);
+              }}
+            >
+              <Trash2 size={20} className="text-danger" />
+            </button>
+            <UncontrolledTooltip placement="top" target="deleteUserT">
+              حذف کردن کاربر
+            </UncontrolledTooltip>
+
+            <button
+              style={{ background: "none", border: "none" }}
+              onClick={() => {
+                // AcceptCourseComment(row.commentId);
+              }}
+            >
+              <Badge style={{ height: "25px" }} className="cursor-pointer" color="primary">
+                <span style={{ fontSize: "13.5px" }}>دسترسی</span>
+              </Badge>
+            </button>
+          </div>
+        </>
+      ),
+    },
+  ];
 
   // ** User filter options
   const roleOptions = [
@@ -370,7 +530,18 @@ const UsersList = ({ renderCount, setRenderCount }) => {
         </div>
       </Card>
 
-      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} setRenderCount={setRenderCount} />
+      <Sidebar
+        open={sidebarOpen}
+        toggleSidebar={toggleSidebar}
+        setRenderCount={setRenderCount}
+      />
+
+      <AddUserAccessModal
+        selectedUser={selectedUserForRoleAccess}
+        roleAccessModalShow={addUserAccessModalShow}
+        setRoleAccessModalShow={setAddUserAccessModalShow}
+        setUserDetailsRenderCount={setRenderCount}
+      />
     </Fragment>
   );
 };

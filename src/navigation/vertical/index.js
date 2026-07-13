@@ -1,4 +1,4 @@
-import { Mail, Home, Airplay, Circle, User } from "react-feather";
+import { Mail, Home, Airplay, Circle, User, Bookmark } from "react-feather";
 
 export default [
   {
@@ -28,9 +28,15 @@ export default [
     ],
   },
   {
-    id: "list",
+    id: "userList",
     title: "مدیریت کاربران",
     icon: <User size={20} />,
-    navLink: "/apps/user/list",
+    navLink: "/user/list",
+  },
+  {
+    id: "commentsList",
+    title: "کامنت ها",
+    icon: <Bookmark size={20} />,
+    navLink: "/comments/list",
   },
 ];

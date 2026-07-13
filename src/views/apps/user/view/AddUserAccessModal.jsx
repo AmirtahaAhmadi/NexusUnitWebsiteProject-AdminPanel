@@ -42,7 +42,7 @@ const AddUserAccessModal = ({ selectedUser, roleAccessModalShow, setRoleAccessMo
   );
 
   useEffect(() => {
-    selectedUser.roles?.map((role) => (roles.push(role.roleName)))
+    selectedUser?.roles.map((role) => (roles.push(role.roleName)))
     setDefaultValues(() => ({
       isStudentRole: !!roles.includes('student'),
       isAdminRole: !!roles.includes('admin'),

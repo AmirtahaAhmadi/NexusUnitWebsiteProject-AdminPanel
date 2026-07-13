@@ -47,7 +47,7 @@ const roleColors = {
   admin: "light-danger",
   student: "light-success",
   teacher: "light-warning",
-  God: "light-info",
+  GOD: "light-info",
 };
 
 const statusColors = {

@@ -114,7 +114,7 @@ const columns3 = [
     cell: (row) => (
       <div className="d-flex justify-content-left align-items-center">
         <div style={{ gap: "8px" }} className="d-flex">
-          {row.accept ? 'رزرو تایید شده' : (
+          {row.accept ? 'تایید شده' : (
             <>
               <Badge
                 style={{ background: 'none' }}
