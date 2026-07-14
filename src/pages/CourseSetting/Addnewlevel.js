@@ -34,7 +34,7 @@ const Addnewlevel = () => {
     const res = await CreateCourseLevelCall(newwork);
     if (res) {
       refreshValue();
-      toast.success("سطح اضافه شد");
+      toast.success(" اضافه شد");
       setnewwork({
         id: "",
         levelName: "",

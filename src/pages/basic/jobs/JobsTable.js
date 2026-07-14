@@ -67,7 +67,7 @@ const JobsTable = () => {
 
   return (
     <Row className="match-height">
-      <ProductsSearchbar />
+      {/* <ProductsSearchbar /> */}
       {loading ? (
         <div>در حال پیدا کردن</div>
       ) : (

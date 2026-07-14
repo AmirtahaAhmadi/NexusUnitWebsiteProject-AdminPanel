@@ -9,6 +9,10 @@ import Addnewlevel from "./Addnewlevel";
 import CourseLevelList from "./CourseLevelList";
 import AddnewStatus from "./AddnewStatus";
 import CoursestatusList from "./CoursestatusList";
+import CourseTechList from "./CourseTechList";
+import Addnewtech from "./Addnewtech";
+import UsersList from "../user/list";
+
 const CourseSettingMenu = () => {
   return (
     <Fragment>
@@ -26,6 +30,11 @@ const CourseSettingMenu = () => {
         <div className=" t-text-[20px] t-p-8">تمام استاتوس ها</div>
         <CoursestatusList />
         <AddnewStatus />
+      </div>
+      <div className="shadow my-4">
+        <div className=" t-text-[20px] t-p-8">تمام تکنولوژِی ها</div>
+        <CourseTechList />
+        <Addnewtech />
       </div>
     </Fragment>
   );

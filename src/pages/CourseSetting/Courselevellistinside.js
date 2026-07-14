@@ -34,15 +34,7 @@ export const columns = [
     center: true,
     minWidth: "120px",
     cell: (row) => {
-      return (
-        <div className="d-flex flex-row t-gap-5">
-          <span
-            onClick={() => console.log("Edit Level ID:", row.id)}
-            className="text-truncate fw-bolder t-p-3 t-cursor-pointer t-bg-[#f3f2f7] t-rounded-[8px] hover:t-bg-[#6256e2] hover:t-text-[#f8f8f8] t-duration-300 t-transition-all">
-            اصلاح
-          </span>
-        </div>
-      );
+      return <div className="d-flex flex-row t-gap-5"></div>;
     },
   },
 ];

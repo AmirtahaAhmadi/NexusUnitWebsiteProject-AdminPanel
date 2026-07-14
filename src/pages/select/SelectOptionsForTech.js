@@ -11,10 +11,11 @@ import {
   Col,
   Label,
 } from "reactstrap";
-
+import { CCstep2id } from "../../redux/zustan/CCstep2id";
 // ** Utils
 import { selectThemeColors } from "@utils";
 import { getCourseCreateDataCall } from "../../core/Interceptor/Courses/getCreateStep1Call";
+import { CreateCourseStep3Call } from "../../core/Interceptor/Courses/CreateCourseStep3Call";
 // ** Third Party Components
 import axios from "axios";
 import Select, { components } from "react-select"; // eslint-disable-line
@@ -176,15 +177,21 @@ const formatGroupLabel = (data) => (
 );
 
 const SelectOptionsForTech = () => {
+  const theid = CCstep2id((state) => state.theid);
+  const updatefield = CCstep2id((state) => state.updatetheid);
+  const resetFormData = globalformData((state) => state.resetFormData);
   const [getcreatdata, setgetcreatdata] = useState([]);
   const [getteachers, setgetteachers] = useState([]);
   const run = async () => {
     const run = await getCourseCreateDataCall();
     if (run) {
       setgetcreatdata(run);
-      // console.log("getcreate", run);
+      console.log("getcreate", theid);
     }
   };
+  useEffect(() => {
+    console.log("theid ffff", theid);
+  }, [theid]);
 
   // const getallcoursetype = async () => {
   //   const result = await getCourseTypescall();
@@ -200,14 +207,8 @@ const SelectOptionsForTech = () => {
 
   useState(() => {}, []);
   const [selectOptions, setSelectOptions] = useState({
-    courseTypes: [],
     technologies: [],
     // statuses: [],
-    levels: [],
-    teachers: [],
-
-    terms: [],
-    classrooms: [],
   });
 
   useEffect(() => {
@@ -357,21 +358,21 @@ const SelectOptionsForTech = () => {
         <Row>
           <Col className="mb-1" md="6" sm="12">
             <Label className="form-label">تکنولوژی ها</Label>
+
             <Select
               isMulti
               theme={selectThemeColors}
-              options={selectOptions.technologies}
+              options={selectOptions.technologies || []}
               className="react-select"
               classNamePrefix="select"
               placeholder="انتخاب"
-              value={selectOptions.technologies.filter((item) =>
-                formData.technologyIds?.includes(item.value),
+              value={(selectOptions.technologies || []).filter((option) =>
+                (theid?.techid || []).includes(option.value),
               )}
               onChange={(selectedOptions) =>
-                updateformdata({
-                  technologyIds: selectedOptions
-                    ? selectedOptions?.map((item) => item.value)
-                    : [],
+                updatefield({
+                  ...theid,
+                  techid: selectedOptions?.map((option) => option.value) || [],
                 })
               }
             />

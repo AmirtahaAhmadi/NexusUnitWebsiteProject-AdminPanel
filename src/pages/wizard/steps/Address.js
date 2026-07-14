@@ -12,7 +12,26 @@ import { useEffect } from "react";
 import { globalformData } from "../../../redux/zustan/formdata";
 import toast from "react-hot-toast";
 import SelectOptionsForTech from "../../select/SelectOptionsForTech";
+import { CCstep2id } from "../../../redux/zustan/CCstep2id";
+import { CreateCourseStep3Call } from "../../../core/Interceptor/Courses/CreateCourseStep3Call";
+import { useNavigate } from "react-router-dom";
+
 const Address = ({ stepper, type }) => {
+  const theid = CCstep2id((state) => state.theid);
+  const resettheid = CCstep2id((state) => state.resettheid);
+  const nav = useNavigate();
+
+  const handleSubmit = async () => {
+    const res = await CreateCourseStep3Call(theid);
+    if (res) {
+      toast.success("عملیات با موفیت انجام شد");
+      resettheid();
+      nav("/AllCourses");
+    } else {
+      toast.error("خطا نیامند تلاشی دوباره");
+    }
+  };
+
   return (
     <Fragment>
       {" "}
@@ -29,9 +48,14 @@ const Address = ({ stepper, type }) => {
             color="primary"
             className="btn-next"
             onClick={() => {
-              handleNext();
+              if (theid && theid.techid.length === 0) {
+                toast.error("حتما انتخاب کنید");
+                return;
+              }
+
+              handleSubmit();
             }}>
-            <span className="align-middle d-sm-inline-block d-none">بعدی</span>
+            <span className="align-middle d-sm-inline-block d-none">اتمام</span>
             <ArrowRight
               size={14}
               className="align-middle ms-sm-25 ms-0"></ArrowRight>

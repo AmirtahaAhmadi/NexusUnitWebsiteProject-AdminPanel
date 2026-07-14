@@ -24,6 +24,7 @@ const initialState = {
   CourseLvlId: "",
   TeacherId: "",
   TeacherName: "",
+  CourseStatusId: "",
 };
 export const globalformData = create((set) => ({
   formData: initialState,

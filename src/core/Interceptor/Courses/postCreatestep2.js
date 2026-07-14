@@ -9,7 +9,7 @@ export const postCreatestep2 = (data) => {
   formData.append("Capacity", data.Capacity);
   formData.append("CourseTypeId", data.CourseTypeId);
   formData.append("SessionNumber", data.SessionNumber);
-
+  formData.append("CourseStatusId", data.CourseStatusId);
   formData.append(
     "CurrentCoursePaymentNumber",
     data.CurrentCoursePaymentNumber,

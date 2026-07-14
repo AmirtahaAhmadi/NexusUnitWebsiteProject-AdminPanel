@@ -17,7 +17,7 @@ import { selectThemeColors } from "@utils";
 import { getCourseCreateDataCall } from "../../core/Interceptor/Courses/getCreateStep1Call";
 // ** Third Party Components
 import axios from "axios";
-import Select, { components } from "react-select"; // eslint-disable-line
+import Select, { components } from "react-select";
 import makeAnimated from "react-select/animated";
 import CreatableSelect from "react-select/creatable";
 import AsyncSelect from "react-select/async";
@@ -202,10 +202,10 @@ const SelectOptions = () => {
   const [selectOptions, setSelectOptions] = useState({
     courseTypes: [],
     technologies: [],
-    statuses: [],
+
     levels: [],
     teachers: [],
-
+    CourseStatusId: [],
     terms: [],
     classrooms: [],
   });
@@ -225,7 +225,7 @@ const SelectOptions = () => {
             label: item.techName,
           })) || [],
 
-        statuses:
+        CourseStatusId:
           getcreatdata.statusDtos?.map((item) => ({
             value: item.id,
             label: item.statusName,
@@ -376,25 +376,25 @@ const SelectOptions = () => {
               }
             />
           </Col> */}
-          {/* 
+
           <Col className="mb-1" md="6" sm="12">
             <Label className="form-label">استاتوس</Label>
             <Select
               theme={selectThemeColors}
-              options={selectOptions.statuses}
+              options={selectOptions.CourseStatusId}
               className="react-select"
               placeholder="انتخاب"
               classNamePrefix="select"
-              value={selectOptions.statuses.find(
-                (item) => item?.value === formData.statusId,
+              value={selectOptions.CourseStatusId.find(
+                (item) => item?.value === formData.CourseStatusId,
               )}
               onChange={(selectedOption) =>
                 updateformdata({
-                  statusId: selectedOption ? selectedOption.value : null,
+                  CourseStatusId: selectedOption ? selectedOption.value : null,
                 })
               }
             />
-          </Col> */}
+          </Col>
 
           <Col className="mb-1" md="6" sm="12">
             <Label className="form-label">سطح</Label>

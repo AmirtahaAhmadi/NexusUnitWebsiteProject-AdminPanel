@@ -36,7 +36,7 @@ const AddnewStatus = () => {
     const res = await CreateNewStatusCall(newwork);
     if (res) {
       refreshValue();
-      toast.success(" استاتوس اضافه شد");
+      toast.success(" اضافه شد");
       setnewwork({
         statusName: "",
         describe: "",

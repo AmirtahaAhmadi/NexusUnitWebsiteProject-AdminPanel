@@ -66,7 +66,7 @@ const PersonalInfo = ({ stepper, type }) => {
       const response = await postCreatestep2(formData);
       console.log("course created bjhbjhb:", response.data);
       if (response.data.id) {
-        updatetheid(response.data.id);
+        updatetheid({ id: response.data.id });
         resetFormData();
         stepper?.next();
       }
