@@ -35,6 +35,7 @@ const DashboardEcommerce = lazy(() =>
   import("../../Component/dashboard/ecommerce"),
 );
 const Calendar = lazy(() => import("../../views/apps/calendar"));
+const Chat = lazy(() => import("../../views/apps/chat"));
 
 const BlogList = lazy(() => import("../../views/blog/list"));
 const BlogDetails = lazy(() => import("../../views/blog/details"));
@@ -61,6 +62,14 @@ const Routes = [
   {
     element: <Calendar />,
     path: "/apps/calendar",
+  },
+    {
+    path: '/apps/chat',
+    element: <Chat />,
+    meta: {
+      appLayout: true,
+      className: 'chat-application'
+    }
   },
   {
     path: "/pages/blog/list",

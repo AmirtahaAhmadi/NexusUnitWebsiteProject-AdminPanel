@@ -1,4 +1,4 @@
-import { Mail, Home, Calendar, Airplay, Circle, FileText } from "react-feather";
+import { Mail, Home,MessageSquare, Calendar, Airplay, Circle, FileText } from "react-feather";
 
 export default [
   {
@@ -13,7 +13,12 @@ export default [
     icon: <Calendar />,
     navLink: "/apps/calendar",
   },
-
+  {
+        id: 'chat',
+        title: 'تیکت پشتیبانی',
+        icon: <MessageSquare />,
+        navLink: '/apps/chat'
+      },
   // {
   //   id: "secondPage",
   //   title: "Second Page",
@@ -60,12 +65,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/pages/blog/category",
       },
-      // {
-      //   id: "categoryEdit",
-      //   title: "ایجاد دسته بندی جدید ",
-      //   icon: <Circle />,
-      //   navLink: "/pages/blog/add",
-      // },
+      {
+        id: "categoryEdit",
+        title: "ایجاد دسته بندی جدید ",
+        icon: <Circle />,
+        navLink: "/pages/blog/add",
+      },
     ],
   },
   {
