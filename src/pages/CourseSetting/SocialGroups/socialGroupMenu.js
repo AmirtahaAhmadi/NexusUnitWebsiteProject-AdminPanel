@@ -17,8 +17,8 @@ const CourseSettingMenu = () => {
   return (
     <Fragment>
       <Breadcrumbs
-        title="اجتمایی"
-        data={[{ title: "منو" }, { title: "دوره هایه اجتمایی" }]}
+        title="تنظیمات دوره"
+        data={[{ title: "منو" }, { title: "تنظیمات دوره" }]}
       />
 
       <div className="shadow my-4">

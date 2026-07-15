@@ -14,7 +14,7 @@ import {
   ModalHeader,
   Input,
 } from "reactstrap";
-
+import { SingleCourseDetail } from "./singleCourseDetail";
 // ** Third Party Components
 import toast from "react-hot-toast";
 import { ActiveDeactiveCourse } from "../../core/Interceptor/Courses/ActiveDeactiveCourse";
@@ -26,83 +26,128 @@ import Select, { components } from "react-select";
 import makeAnimated from "react-select/animated";
 import CreatableSelect from "react-select/creatable";
 import AsyncSelect from "react-select/async";
+import { globalformData } from "../../redux/zustan/formdata";
+
 const ShowingMoreOfcourseinfo = ({ array }) => {
   const [show, setShow] = useState(false);
   const [showedit, setshowedit] = useState(false);
   const [refresh, setrefresh] = useState(false);
-  const [array1, setarray1] = useState(null);
+  const [array1, setarray1] = useState();
   const [getcourse1, setgetcoursebyid] = useState({});
   const [getChoosingData, setgetChoosingData] = useState([]);
+
   const getChoose = async () => {
     const res = await getCourseCreateDataCall();
-    console.log("res", res);
+    console.log("res for choosing", res);
     setgetChoosingData(res);
   };
+
   useEffect(() => {
     getChoose();
   }, []);
 
   const [newvalue, setnewvalue] = useState({
+    courseId: array1,
     title: "",
-    describe: "",
     miniDescribe: "",
+    describe: "",
+    uniqeUrlString: "",
     capacity: "",
-    courseTypeId: "",
     sessionNumber: "",
     currentCoursePaymentNumber: "",
+    cost: "",
+    startTime: "",
+    endTime: "",
+    coursePrerequisiteId: "",
+    googleTitle: "",
+    googleSchema: "",
+    shortLink: "",
+    imageAddress: "",
+    tumbImageAddress: "",
+    image: null,
+    courseTypeId: "1234",
     tremId: "",
     classId: "",
     courseLvlId: "",
     teacherId: "",
-    cost: "",
-    uniqeUrlString: "",
-    image: "",
-    startTime: "",
-    endTime: "",
-    googleSchema: "",
-    googleTitle: "",
-    coursePrerequisiteId: "",
-    shortLink: "",
-    tumbImageAddress: "",
-    imageAddress: "",
-    id: "",
+    teacherName: "",
+    courseStatusId: "",
   });
+
+  const termOptions = (getChoosingData?.termDtos || []).map((item) => ({
+    value: item.id,
+    label: item.termName,
+  }));
+
+  const classOptions = (getChoosingData?.classRoomDtos || []).map((item) => ({
+    value: item.id,
+    label: `${item.classRoomName}`,
+  }));
+
+  const courseLevelOptions = (getChoosingData?.courseLevelDtos || []).map(
+    (item) => ({
+      value: item.id,
+      label: item.levelName,
+    }),
+  );
+
+  const teacherOptions = (getChoosingData?.teachers || []).map((item) => ({
+    value: item.teacherId,
+    label: item.fullName,
+  }));
+
+  const prerequisiteOptions = (getChoosingData?.technologyDtos || []).map(
+    (item) => ({
+      value: item.id,
+      label: item.techName,
+    }),
+  );
+  const statusOptions = (getChoosingData?.statusDtos || []).map((item) => ({
+    value: item.id,
+    label: item.statusName,
+  }));
+  useEffect(() => {
+    console.log("newValue", newvalue);
+  }, [newvalue]);
 
   const run = async () => {
     try {
-      const courseId = array1;
-      if (!courseId) return;
+      if (!array) return;
 
-      const getbyid = await getcoursebyidAdminTeacherCall(courseId);
+      const getbyid = await getcoursebyidAdminTeacherCall(array);
       if (getbyid) {
+        console.log("getbyid", getbyid);
         setgetcoursebyid(getbyid);
 
         setnewvalue({
-          title: getbyid.title,
-          describe: getbyid.describe,
-          miniDescribe: getbyid.miniDescribe,
-          capacity: getbyid.capacity,
-          courseTypeId: getbyid.courseTypeId,
-          sessionNumber: getbyid.sessionNumber,
-          currentCoursePaymentNumber: getbyid.currentCoursePaymentNumber,
-          tremId: getbyid.tremId,
-          classId: getbyid.classId,
-          courseLvlId: getbyid.courseLvlId,
-          teacherId: getbyid.teacherId,
-          cost: getbyid.cost,
-          uniqeUrlString: getbyid.uniqeUrlString,
+          courseId: getbyid?.courseId || "",
+          title: getbyid?.title || "",
+          describe: getbyid?.describe || "",
+          miniDescribe: getbyid?.miniDescribe || "",
+          capacity: getbyid?.capacity || "",
+
+          sessionNumber: getbyid?.sessionNumber || "",
+          currentCoursePaymentNumber: getbyid?.currentCoursePaymentNumber || "",
+          tremId: getbyid?.tremId || "",
+          classId: getbyid?.classId || "",
+          courseLvlId: getbyid?.courseLvlId || "",
+          teacherId: getbyid?.teacherId || "",
+          cost: getbyid?.cost || "",
+          uniqeUrlString: getbyid?.uniqeUrlString || "",
           image: null,
-          startTime: new Date(getbyid.startTime).toISOString().slice(0, 16),
-
-          endTime: new Date(getbyid.endTime).toISOString().slice(0, 16),
-
-          googleSchema: getbyid.googleSchema,
-          googleTitle: getbyid.googleTitle,
-          coursePrerequisiteId: getbyid.coursePrerequisiteId,
-          shortLink: getbyid.shortLink,
-          tumbImageAddress: getbyid.tumbImageAddress,
-          imageAddress: getbyid.imageAddress,
-          id: getbyid.id || getbyid.courseId,
+          startTime: getbyid?.startTime
+            ? new Date(getbyid.startTime).toISOString().slice(0, 16)
+            : "",
+          endTime: getbyid?.endTime
+            ? new Date(getbyid.endTime).toISOString().slice(0, 16)
+            : "",
+          googleSchema: getbyid?.googleSchema || "",
+          googleTitle: getbyid?.googleTitle || "",
+          coursePrerequisiteId: getbyid?.coursePrerequisiteId || "",
+          shortLink: getbyid?.shortLink || "",
+          tumbImageAddress: getbyid?.tumbImageAddress || "",
+          imageAddress: getbyid?.imageAddress || "",
+          courseStatusId: getbyid?.statusId || "",
         });
       }
     } catch (error) {
@@ -111,6 +156,7 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
   };
 
   useEffect(() => {
+    console.log("this for array", array);
     setarray1(array);
   }, [array]);
 
@@ -239,16 +285,22 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
 
               <div className="d-flex gap-2">
                 <div className="flex-fill">
-                  <Label for="courseTypeId">نوع دوره</Label>
-                  <Input
-                    type="number"
-                    id="courseTypeId"
-                    value={newvalue.courseTypeId}
-                    onChange={(e) =>
-                      handleChange("courseTypeId", e.target.value)
-                    }
+                  <Label for="courseStatusId">استاتوس</Label>
+                  <Select
+                    inputId="courseStatusId"
+                    options={statusOptions}
+                    className="react-select"
+                    classNamePrefix="select"
+                    placeholder="انتخاب "
+                    value={statusOptions.find(
+                      (option) => option.value === newvalue.courseStatusId,
+                    )}
+                    onChange={(selectedOption) => {
+                      handleChange("courseStatusId", selectedOption.value);
+                    }}
                   />
                 </div>
+
                 <div className="flex-fill">
                   <Label for="sessionNumber">تعداد جلسات</Label>
                   <Input
@@ -264,7 +316,9 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
 
               <div className="d-flex gap-2">
                 <div className="flex-fill">
-                  <Label for="currentCoursePaymentNumber">شماره پرداخت</Label>
+                  <Label for="currentCoursePaymentNumber">
+                    تعداد خریداری شده ها
+                  </Label>
                   <Input
                     type="number"
                     id="currentCoursePaymentNumber"
@@ -276,11 +330,20 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
                 </div>
                 <div className="flex-fill">
                   <Label for="tremId">ترم</Label>
-                  <Input
-                    type="number"
-                    id="tremId"
-                    value={newvalue.tremId}
-                    onChange={(e) => handleChange("tremId", e.target.value)}
+                  <Select
+                    inputId="tremId"
+                    options={termOptions}
+                    className="react-select"
+                    classNamePrefix="select"
+                    placeholder="انتخاب ترم"
+                    value={
+                      termOptions.find(
+                        (option) => option.value === newvalue.tremId,
+                      ) || null
+                    }
+                    onChange={(selectedOption) => {
+                      handleChange("tremId", selectedOption.value);
+                    }}
                   />
                 </div>
               </div>
@@ -288,22 +351,76 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
               <div className="d-flex gap-2">
                 <div className="flex-fill">
                   <Label for="classId">کلاس</Label>
-                  <Input
-                    type="number"
-                    id="classId"
-                    value={newvalue.classId}
-                    onChange={(e) => handleChange("classId", e.target.value)}
+                  <Select
+                    inputId="classId"
+                    options={classOptions}
+                    className="react-select"
+                    classNamePrefix="select"
+                    placeholder="انتخاب کلاس"
+                    value={
+                      classOptions.find(
+                        (option) => option.value === newvalue.classId,
+                      ) || null
+                    }
+                    onChange={(selectedOption) => {
+                      if (!selectedOption) {
+                        toast.error("حتما انتخاب کنید");
+                        handleChange("classId", "");
+                        return;
+                      }
+
+                      handleChange("classId", selectedOption.value);
+                    }}
                   />
                 </div>
+
                 <div className="flex-fill">
                   <Label for="courseLvlId">سطح دوره</Label>
-                  <Input
-                    type="number"
-                    id="courseLvlId"
-                    value={newvalue.courseLvlId}
-                    onChange={(e) =>
-                      handleChange("courseLvlId", e.target.value)
+                  <Select
+                    inputId="courseLvlId"
+                    options={courseLevelOptions}
+                    className="react-select"
+                    classNamePrefix="select"
+                    placeholder="انتخاب سطح دوره"
+                    value={
+                      courseLevelOptions.find(
+                        (option) => option.value === newvalue.courseLvlId,
+                      ) || null
                     }
+                    onChange={(selectedOption) => {
+                      if (!selectedOption) {
+                        toast.error("حتما انتخاب کنید");
+                        handleChange("courseLvlId", "");
+                        return;
+                      }
+
+                      handleChange("courseLvlId", selectedOption.value);
+                    }}
+                  />
+                </div>
+
+                <div className="flex-fill">
+                  <Label for="courseLvlId">سطح دوره</Label>
+                  <Select
+                    inputId="courseLvlId"
+                    options={courseLevelOptions}
+                    className="react-select"
+                    classNamePrefix="select"
+                    placeholder="انتخاب سطح دوره"
+                    value={
+                      courseLevelOptions.find(
+                        (option) => option.value === newvalue.courseLvlId,
+                      ) || null
+                    }
+                    onChange={(selectedOption) => {
+                      if (!selectedOption) {
+                        toast.error("حتما انتخاب کنید");
+                        handleChange("courseLvlId", "");
+                        return;
+                      }
+
+                      handleChange("courseLvlId", selectedOption.value);
+                    }}
                   />
                 </div>
               </div>
@@ -311,28 +428,60 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
               <div className="d-flex gap-2">
                 <div className="flex-fill">
                   <Label for="teacherId">مدرس</Label>
-                  <Input
-                    type="number"
-                    id="teacherId"
-                    value={newvalue.teacherId}
-                    onChange={(e) => handleChange("teacherId", e.target.value)}
+                  <Select
+                    inputId="teacherId"
+                    options={teacherOptions}
+                    className="react-select"
+                    classNamePrefix="select"
+                    placeholder="انتخاب مدرس"
+                    value={
+                      teacherOptions.find(
+                        (option) => option.value === newvalue.teacherId,
+                      ) || null
+                    }
+                    onChange={(selectedOption) => {
+                      if (!selectedOption) {
+                        toast.error("حتما انتخاب کنید");
+                        handleChange("teacherId", "");
+                        return;
+                      }
+
+                      handleChange("teacherId", selectedOption.value);
+                    }}
                   />
                 </div>
                 <div className="flex-fill">
                   <Label for="coursePrerequisiteId">پیش نیاز</Label>
-                  <Input
-                    type="number"
-                    id="coursePrerequisiteId"
-                    value={newvalue.coursePrerequisiteId}
-                    onChange={(e) =>
-                      handleChange("coursePrerequisiteId", e.target.value)
+                  <Select
+                    inputId="coursePrerequisiteId"
+                    options={prerequisiteOptions}
+                    className="react-select"
+                    classNamePrefix="select"
+                    placeholder="انتخاب پیش نیاز"
+                    value={
+                      prerequisiteOptions.find(
+                        (option) =>
+                          option.value === newvalue.coursePrerequisiteId,
+                      ) || null
                     }
+                    onChange={(selectedOption) => {
+                      if (!selectedOption) {
+                        toast.error("حتما انتخاب کنید");
+                        handleChange("coursePrerequisiteId", "");
+                        return;
+                      }
+
+                      handleChange(
+                        "coursePrerequisiteId",
+                        selectedOption.value,
+                      );
+                    }}
                   />
                 </div>
               </div>
 
               <div>
-                <Label for="uniqeUrlString">لینک یکتا</Label>
+                <Label for="uniqeUrlString">ادرس خلص</Label>
                 <Input
                   id="uniqeUrlString"
                   value={newvalue.uniqeUrlString}
@@ -357,17 +506,6 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
                   id="googleTitle"
                   value={newvalue.googleTitle}
                   onChange={(e) => handleChange("googleTitle", e.target.value)}
-                />
-              </div>
-
-              <div>
-                <Label for="googleSchema">گوگل اسکیما</Label>
-                <Input
-                  type="textarea"
-                  id="googleSchema"
-                  rows="3"
-                  value={newvalue.googleSchema}
-                  onChange={(e) => handleChange("googleSchema", e.target.value)}
                 />
               </div>
 
@@ -422,89 +560,7 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
               </div>
             </div>
           ) : (
-            <div className="t-flex t-flex-row t-justify-between t-text-[14px] t-p-8 t-w-[100%] t-mx-auto t-border t-border-red-800">
-              <div className="t-flex t-flex-col t-gap-2">
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">موجودی:</div>
-                  <div>{getcourse1.capacity}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">قیمت:</div>
-                  <div>{getcourse1.cost}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">تعداد کامنت:</div>
-                  <div>{getcourse1.courseCommentTotal}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">تعداد گروه:</div>
-                  <div>{getcourse1.courseGroupTotal}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">کد کورس:</div>
-                  <div>{getcourse1.courseId}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">کد سطح دوره:</div>
-                  <div>{getcourse1.courseLvlId}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">وضعیت دوره:</div>
-                  <div>{getcourse1.courseStatusName}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">حذف شده:</div>
-                  <div>{getcourse1.isDelete ? "بله" : "خیر"}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">تعداد لایک:</div>
-                  <div>{getcourse1.likeCount}</div>
-                </div>
-              </div>
-
-              <div className="t-flex t-flex-col t-gap-2">
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">لایک کاربر فعلی:</div>
-                  <div>{getcourse1.currentUserLike}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">توضیحات:</div>
-                  <div>{getcourse1.describe}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">توضیح کوتاه:</div>
-                  <div>{getcourse1.miniDescribe}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">تعداد دیسلایک:</div>
-                  <div>{getcourse1.dissLikeCount}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">شروع دوره:</div>
-                  <div>{getcourse1.startTime}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">پایان دوره:</div>
-                  <div>{getcourse1.endTime}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">کد وضعیت:</div>
-                  <div>{getcourse1.statusId}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">نام وضعیت:</div>
-                  <div>{getcourse1.statusName}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">نام مدرس:</div>
-                  <div>{getcourse1.teacherName}</div>
-                </div>
-                <div className="t-flex t-flex-row t-flex-wrap t-gap-2">
-                  <div className="fw-bold">امتیاز دوره:</div>
-                  <div>{getcourse1.courseRate}</div>
-                </div>
-              </div>
-            </div>
+            <SingleCourseDetail getcourse1={getcourse1} />
           )}
 
           <div className="d-flex justify-content-center pt-2">
@@ -512,7 +568,9 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
               <Button
                 className="ms-1 bg-success t-text-white"
                 color="success"
-                onClick={handleSubmit}>
+                onClick={() => {
+                  handleSubmit();
+                }}>
                 ارسال
               </Button>
             )}

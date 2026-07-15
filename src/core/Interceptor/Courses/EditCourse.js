@@ -1,18 +1,20 @@
 import apiClient from "../interceptor";
 
 export const EditCourse = (data) => {
+  console.log("data for send", data);
+
   const formData = new FormData();
 
-  formData.append("Title", data.Title);
-  formData.append("Describe", data.Describe);
-  formData.append("MiniDescribe", data.MiniDescribe);
-  formData.append("Capacity", data.Capacity);
-  formData.append("CourseTypeId", data.CourseTypeId);
-  formData.append("SessionNumber", data.SessionNumber);
+  formData.append("Title", data?.Title);
+  formData.append("Describe", data?.Describe);
+  formData.append("MiniDescribe", data?.MiniDescribe);
+  formData.append("Capacity", data?.Capacity);
+  formData.append("CourseTypeId", data?.CourseTypeId);
+  formData.append("SessionNumber", data?.SessionNumber);
 
   formData.append(
     "CurrentCoursePaymentNumber",
-    data.CurrentCoursePaymentNumber,
+    data?.CurrentCoursePaymentNumber,
   );
   formData.append("TremId", data.TremId);
   formData.append("ClassId", data.ClassId);

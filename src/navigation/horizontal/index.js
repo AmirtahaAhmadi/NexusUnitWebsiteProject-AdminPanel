@@ -8,6 +8,7 @@ import { PenTool } from "react-feather";
 import { Home } from "react-feather";
 import { Mail } from "react-feather";
 import { Briefcase } from "react-feather";
+import { MessageSquare } from "react-feather";
 export default [
   {
     id: "home",
@@ -76,6 +77,13 @@ export default [
     icon: <PenTool style={{ width: 20, height: 20 }} />,
     navLink: "/updatejobs",
   },
+  {
+    id: "SocialGroup",
+    title: "گروه هایه اجتمایی",
+    icon: <MessageSquare style={{ width: 20, height: 20 }} />,
+    navLink: "/SocialGroup",
+  },
+
   // {
   //   id: "assistance",
   //   title: "مشاوران",

@@ -2,6 +2,7 @@ import { getcoursebyidAdminTeacher } from "./getcoursebyidAdminTeacher";
 
 export const getcoursebyidAdminTeacherCall = async (id) => {
   try {
+    if (!id) return;
     const response = await getcoursebyidAdminTeacher(id);
     if (response) {
       console.log("courid course", response);

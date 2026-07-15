@@ -18,6 +18,7 @@ import { isObjEmpty } from "@utils";
 import Assistance from "../../pages/basic/jobs/assistance";
 import CourseSettingMenu from "../../pages/CourseSetting/CourseSettingMenu";
 import JobsTable from "../../pages/basic/jobs/JobsTable";
+
 const getLayout = {
   blank: <BlankLayout />,
   vertical: <VerticalLayout />,
