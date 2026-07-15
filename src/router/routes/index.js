@@ -35,6 +35,7 @@ const TermManagement = lazy(() => import("../../views/Bilding/TermManagement"));
 const ClassroomManagement = lazy(() =>
   import("../../views/Bilding/ClassroomManagement"),
 );
+const CourseHelps = lazy(() => import("../../pages/CourseHelps"));
 const Department = lazy(() => import("../../views/Bilding/Deportment"));
 const Buildings = lazy(() => import("../../views/Bilding"));
 const DashboardEcommerce = lazy(() =>
@@ -182,6 +183,11 @@ const Routes = [
     path: "/techupdate",
     element: <CourseSettingMenu />,
   },
+  {
+    path: "/CourseHelps",
+    element: <CourseHelps />,
+  },
+
 ];
 
 const getRouteMeta = (route) => {

@@ -167,6 +167,12 @@ export default [
     icon: <MessageSquare style={{ width: 20, height: 20 }} />,
     navLink: "/SocialGroup",
   },
+  {
+    id: "CourseHelps",
+    title: " دوره های کمکی",
+    icon: <MessageSquare style={{ width: 20, height: 20 }} />,
+    navLink: "/CourseHelps",
+  },
 
   // {
   //   id: "assistance",
