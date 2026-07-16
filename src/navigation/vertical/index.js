@@ -1,4 +1,21 @@
-import { Mail, Home,MessageSquare, Calendar, Airplay, Circle, FileText, Book, FilePlus, Archive, Tool, Bookmark, Briefcase, PenTool } from "react-feather";
+import {
+  Mail,
+  Home,
+  MessageSquare,
+  Calendar,
+  Airplay,
+  Circle,
+  FileText,
+  Book,
+  FilePlus,
+  Archive,
+  Tool,
+  Bookmark,
+  Briefcase,
+  PenTool,
+  Users,
+  Share2,
+} from "react-feather";
 
 export default [
   {
@@ -14,11 +31,11 @@ export default [
     navLink: "/apps/calendar",
   },
   {
-        id: 'chat',
-        title: 'تیکت پشتیبانی',
-        icon: <MessageSquare />,
-        navLink: '/apps/chat'
-      },
+    id: "chat",
+    title: "تیکت پشتیبانی",
+    icon: <MessageSquare />,
+    navLink: "/apps/chat",
+  },
   // {
   //   id: "secondPage",
   //   title: "Second Page",
@@ -107,71 +124,66 @@ export default [
     ],
   },
   {
-    id: "AllCourses",
-    title: "تمام کورسها",
-    icon: <Book size={20} />,
-    navLink: "/AllCourses",
-  },
-  {
-    id: "updateCourses",
-    title: "بروزرسانی کورس ها",
-    icon: <FilePlus size={20} />,
-    navLink: "/updateCourses",
-  },
-
-  {
     id: "courses",
     title: "دوره ها",
     icon: <Archive style={{ width: 20, height: 20 }} />,
+    children: [
+      {
+        id: "AllCourses",
+        title: "تمام دوره ها",
+        icon: <Circle size={12} />,
+        navLink: "/AllCourses",
+      },
+      {
+        id: "updateCourses",
+        title: "بروزرسانی دوره ها",
+        icon: <Circle size={12} />,
+        navLink: "/updateCourses",
+      },
+      {
+        id: "reservedCourse",
+        title: "دوره های رزرو شده",
+        icon: <Circle size={12} />,
+        navLink: "/reservedCourse",
+      },
+      {
+        id: "techupdate",
+        title: "تنظیمات دوره",
+        icon: <Circle size={12} />,
+        navLink: "/techupdate",
+      },
+      {
+        id: "CourseHelps",
+        title: "دوره های کمکی",
+        icon: <Circle size={12} />,
+        navLink: "/CourseHelps",
+      },
+      {
+        id: "SocialGroup",
+        title: "گروه های اجتماعی",
+        icon: <Circle size={12} />,
+        navLink: "/SocialGroup",
+      },
+    ],
   },
-  {
-    id: "AllCourses",
-    title: "تمام دوره ها",
-    icon: <Book style={{ width: 20, height: 20 }} />,
-    navLink: "/AllCourses",
-  },
-  {
-    id: "updateCourses",
-    title: "بروزرسانی دوره ها",
-    icon: <Tool style={{ width: 20, height: 20 }} />,
-    navLink: "/updateCourses",
-  },
-  {
-    id: "reservedCourse",
-    title: "دوره هایه رزرو شده",
-    icon: <Bookmark style={{ width: 20, height: 20 }} />,
-    navLink: "/reservedCourse",
-  },
-  {
-    id: "techupdate",
-    title: "تنظیمات دوره",
-    icon: <FilePlus style={{ width: 20, height: 20 }} />,
-    navLink: "/techupdate",
-  },
-
   {
     id: "jobs",
-    title: "تمام مشاغل",
-    icon: <Briefcase style={{ width: 20, height: 20 }} />,
-    navLink: "/jobs",
-  },
-  {
-    id: "updatejobs",
-    title: "بروزرسانی مشاغل",
-    icon: <PenTool style={{ width: 20, height: 20 }} />,
-    navLink: "/updatejobs",
-  },
-  {
-    id: "SocialGroup",
-    title: "گروه هایه اجتمایی",
-    icon: <MessageSquare style={{ width: 20, height: 20 }} />,
-    navLink: "/SocialGroup",
-  },
-  {
-    id: "CourseHelps",
-    title: " دوره های کمکی",
-    icon: <MessageSquare style={{ width: 20, height: 20 }} />,
-    navLink: "/CourseHelps",
+    title: "مشاغل",
+    icon: <Briefcase size={20} />,
+    children: [
+      {
+        id: "jobs",
+        title: "تمام مشاغل",
+        icon: <Circle size={12} />,
+        navLink: "/jobs",
+      },
+      {
+        id: "updatejobs",
+        title: "بروزرسانی مشاغل",
+        icon: <Circle size={12} />,
+        navLink: "/updatejobs",
+      },
+    ],
   },
 
   // {

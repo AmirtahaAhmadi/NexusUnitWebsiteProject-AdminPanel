@@ -52,6 +52,14 @@ const AddCategory = () => {
 
   const onChangeImage = (e) => {
     const file = e.target.files?.[0];
+
+    console.log("===== Selected File =====");
+    console.log(file);
+    console.log("instanceof File:", file instanceof File);
+    console.log("name:", file?.name);
+    console.log("type:", file?.type);
+    console.log("size:", file?.size);
+
     if (!file) return;
 
     setImgFile(file);
@@ -62,6 +70,12 @@ const AddCategory = () => {
   };
 
   const onSubmit = async (formData) => {
+    console.log("===== Form Values =====");
+    console.log(formData);
+
+    console.log("===== Image =====");
+    console.log(imgFile);
+    console.log("instanceof File:", imgFile instanceof File);
     setIsSaving(true);
     try {
       await createNewsCategoryfilter({
@@ -79,6 +93,21 @@ const AddCategory = () => {
 
       handleBackToList();
     } catch (error) {
+      console.log("=========== ERROR ===========");
+      console.log(error);
+
+      console.log("Status:");
+      console.log(error.response?.status);
+
+      console.log("Response:");
+      console.log(error.response?.data);
+
+      console.log("Headers:");
+      console.log(error.response?.headers);
+
+      console.log("Request:");
+      console.log(error.config);
+
       console.error("API ERROR:", error);
       Swal.fire({
         title: "خطا در ایجاد دسته‌بندی",
