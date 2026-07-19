@@ -40,12 +40,8 @@ export const getUserSkills = (userId) => {
   });
 };
 
-export const getCourseDetails = (courseId) => {
-  return apiClient.get("/Home/GetCourseDetails", {
-    params: {
-      CourseId: courseId,
-    },
-  });
+export const getCourseDetails = (id) => {
+  return apiClient.get("/Course/" + id);
 };
 
 export const getUserCourseReserve = (courseId) => {
@@ -91,4 +87,13 @@ export const getCourseComments = ({
 
 export const getAccountProfileInfo = () => {
   return apiClient.get("/SharePanel/GetProfileInfo");
+};
+
+export const getCourseGroupId = (teacherId, courseId) => {
+  return apiClient.get("/CourseGroup/GetCourseGroup", {
+    params: {
+      TeacherId: teacherId,
+      CourseId: courseId,
+    },
+  });
 };

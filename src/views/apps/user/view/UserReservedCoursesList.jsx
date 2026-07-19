@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge, Card, CardHeader, Progress } from "reactstrap";
 
-import { Check, ChevronDown, X } from "react-feather";
+import { Check, ChevronDown, Trash2, X } from "react-feather";
 import DataTable from "react-data-table-component";
 
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -9,7 +9,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { useEffect, useState } from "react";
 import { getCourseDetails, getUserCourseReserve } from "../../../../core/Interceptor/Services/UserServices/get";
 import { dateToLocal } from "../store/DateToLocalFunction";
-import { DelCourseReserve, SendReserveToCourse } from '../store/functions';
+import { DelCourseReserve, GetCourseTeacherId, SendReserveToCourse } from '../store/functions';
 
 const statusColors = {
   true: "light-success",
@@ -54,7 +54,7 @@ const UserReservedCoursesList = ({ currentUserDetails, setUserDetailsRenderCount
       cell: (row) => (
         <div className="d-flex justify-content-left align-items-center">
           <div style={{ gap: "6px" }} className="d-flex">
-            {row.accept ? 'رزرو تایید شده' : (
+            {!row.accept && (
               <>
                 <button type='button' style={{ background: "none", border: "none" }} onClick={() => {
                   SendReserveToCourse(row.courseId, 'cg1', row.userId)
@@ -68,42 +68,37 @@ const UserReservedCoursesList = ({ currentUserDetails, setUserDetailsRenderCount
                     <Check size={20} />
                   </Badge>
                 </button>
-                <button type='button' style={{ background: "none", border: "none" }} onClick={() => {
-                  DelCourseReserve(row.id)
-                  // setUserDetailsRenderCount(prev => prev + 1)
-                }}>
-                  <Badge
-                    style={{ background: 'none' }}
-                    className="text-capitalize cursor-pointer"
-                    color='danger'
-                  >
-                    <X size={20} />
-                  </Badge>
-                </button>
               </>
             )}
+            <button type='button' style={{ background: "none", border: "none" }} onClick={() => {
+              DelCourseReserve(row.id)
+              setUserDetailsRenderCount(prev => prev + 1)
+            }}>
+              <Trash2 size={20} className='text-danger' />
+            </button>
           </div>
         </div>
       ),
     },
   ];
-  // const [userRCourses, setUserRCourses] = useState([]);
-  // const fetchGetUserReservedCourses = async () => {
-  //   try {
-  //     const requests = currentUserDetails.courseReserve.map((vals) =>
-  //       getCourseDetails(vals.courseId),
-  //     );
-  //     const responses = await Promise.all(requests);
-  //     responses.map((r) => setUserRCourses((prev) => [...prev, r.data]));
-  //     console.log(responses);
-  //     // console.log(userCourses);
-  //   } catch (error) {
-  //     console.error("userCoursesGroupList error:", error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   fetchGetUserReservedCourses();
-  // }, []);
+  const [userRCoursesTeacherId, setUserRCoursesTeacherId] = useState([]);
+  const fetchGetUserReservedCourses = async () => {
+    try {
+      const requests = currentUserDetails.courseReserve.map((vals) =>
+        getCourseDetails(vals.courseId),
+      );
+      const responses = await Promise.all(requests);
+      responses.map((r) => setUserRCoursesTeacherId((prev) => [...prev, r.data]));
+      console.log(responses);
+      // console.log(userRCoursesTeacherId);
+    } catch (error) {
+      console.error("userCoursesGroupList error:", error);
+    }
+  };
+  useEffect(() => {
+    fetchGetUserReservedCourses();
+    // console.log(GetCourseTeacherId('9c128a84-8cfb-470a-8858-71838ce4bf97'))
+  }, []);
 
   return (
     <>

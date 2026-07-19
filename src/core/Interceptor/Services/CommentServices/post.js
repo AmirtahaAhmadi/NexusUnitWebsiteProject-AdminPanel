@@ -1,7 +1,7 @@
 import apiClient from "../../interceptor";
 
 export const postAcceptCourseComment = (commentCourseId) => {
-  return apiClient.post("/Course/AcceptCourseComment", {
+  return apiClient.post("/Course/AcceptCourseComment", null, {
     params: {
       CommentCourseId: commentCourseId,
     },
@@ -25,13 +25,13 @@ export const postAddReplyCourseComment = (
   });
 };
 
-export const postAddReplyNewsComment = (newsId, title, describe, userId) => {
+export const postAddReplyNewsComment = (newsId, title, describe, userId, parentId) => {
   return apiClient.post("/News/CreateNewsReplyComment", {
     newsId: newsId,
     userIpAddress: "",
     title: title,
     describe: describe,
     userId: userId,
-    parentId: "",
+    parentId: parentId,
   });
 };

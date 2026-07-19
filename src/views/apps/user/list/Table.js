@@ -355,7 +355,7 @@ const UsersList = ({ renderCount, setRenderCount }) => {
               id="deleteUserT"
               style={{ background: "none", border: "none" }}
               onClick={() => {
-                DeleteUser(row.id)
+                // DeleteUser(row.id)
                 setRenderCount((prev) => prev + 1);
               }}
             >
@@ -430,7 +430,7 @@ const UsersList = ({ renderCount, setRenderCount }) => {
         previousLinkClassName={"page-link"}
         pageLinkClassName={"page-link"}
         containerClassName={
-          "pagination react-paginate justify-content-end my-2 pe-1"
+          "pagination react-paginate justify-content-center my-2 pe-1"
         }
       />
     );

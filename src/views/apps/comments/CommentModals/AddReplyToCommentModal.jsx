@@ -44,7 +44,6 @@ const AddReplyToCommentModal = ({ courseOrNewsId, commentId, addReplyToCommentMo
   const fetchAccountInfo = async () => {
     try {
       const response = await getAccountProfileInfo();
-      console.log(response.data)
       setAccountInfo(response.data)
     } catch (error) {
       console.error(error)
@@ -59,7 +58,7 @@ const AddReplyToCommentModal = ({ courseOrNewsId, commentId, addReplyToCommentMo
     if (commentType == "coursesC") {
       AddCourseCommentReply(courseOrNewsId, commentId, data.title, data.describe);
     } else {
-      AddNewsCommentReply(courseOrNewsId, data.title, data.describe, accountInfo.id);
+      AddNewsCommentReply(courseOrNewsId, data.title, data.describe, accountInfo.id, commentId);
     }
     setRenderCount(prev => prev + 1)
     setAddReplyToCommentModalShow(false)

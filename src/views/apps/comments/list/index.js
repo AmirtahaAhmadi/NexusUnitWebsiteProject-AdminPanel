@@ -32,11 +32,15 @@ const UsersList = () => {
     }
   };
   const paramValues = [
-    {},
     {
+      rowOfPage: 1000,
+    },
+    {
+      rowOfPage: 1000,
       accept: true,
     },
     {
+      rowOfPage: 1000,
       accept: false,
     },
   ];

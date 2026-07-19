@@ -17,14 +17,8 @@ import {
 } from "react-feather";
 
 // ** User Components
-import InvoiceList from "./InvoiceList";
-import SecurityTab from "./SecurityTab";
-import Connections from "./Connections";
 import BillingPlanTab from "./BillingTab";
-import UserTimeline from "./UserTimeline";
-import Notifications from "./Notifications";
 import UserCourses from "./UserCourses";
-import UserProjectsList from "./UserProjectsList";
 import UserReservedCoursesList from "./UserReservedCoursesList";
 import UserComments from "./UserComments";
 import UserOtherDetails from "./UserOtherDetails";
@@ -54,7 +48,6 @@ const UserTabs = ({
         </NavItem>
         <NavItem>
           <NavLink active={active === "3"} onClick={() => toggleTab("3")}>
-            {/* <Bookmark className='font-medium-3 me-50' /> */}
             <DollarSign className="font-medium-3 me-50" />
             <span className="fw-bold">پرداخت ها</span>
           </NavLink>
@@ -96,7 +89,7 @@ const UserTabs = ({
           <BillingPlanTab currentUserDetails={currentUserDetails} />
         </TabPane>
         <TabPane tabId="4">
-          <UserComments currentUserDetails={currentUserDetails} />
+          <UserComments currentUserDetails={currentUserDetails} userDetailsRenderCount={userDetailsRenderCount} setUserDetailsRenderCount={setUserDetailsRenderCount} />
         </TabPane>
         <TabPane tabId="5">
           <UserOtherDetails currentUserDetails={currentUserDetails} />

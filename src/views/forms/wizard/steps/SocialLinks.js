@@ -8,7 +8,10 @@ import { useForm } from "react-hook-form";
 // ** Reactstrap Imports
 import { Label, Row, Col, Form, Input, Button } from "reactstrap";
 import { putUpdateUser } from "../../../../core/Interceptor/Services/UserServices/put";
-import { handleError, handleSuccess } from "../../../extensions/sweet-alert/SweetAlerts";
+import {
+  handleError,
+  handleSuccess,
+} from "../../../extensions/sweet-alert/SweetAlerts";
 
 const SocialLinks = ({
   stepper,
@@ -70,12 +73,12 @@ const SocialLinks = ({
       // console.log(response.data);
       if (response.data.success == true) {
         setUserDetailsRenderCount((prev) => prev + 1);
-        setShow(false)
+        setShow(false);
         handleSuccess("اطلاعات کاربر با موفقیت بروز شد!");
       }
     } catch (error) {
       console.log("updatingUserProfile error: ", error);
-      // handleError("عملیات با مشکل روبرو شد!");
+      handleError("عملیات با مشکل روبرو شد!");
     }
   };
 

@@ -8,6 +8,8 @@ export const deleteUser = (userId) => {
 
 export const deleteCourseReserve = (id) => {
   return apiClient.delete("/CourseReserve", {
-    id: id,
+    data: {
+      id: id,
+    },
   });
 };

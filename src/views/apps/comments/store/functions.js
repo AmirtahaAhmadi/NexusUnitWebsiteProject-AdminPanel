@@ -54,13 +54,14 @@ export const AddCourseCommentReply = async (
   }
 };
 
-export const AddNewsCommentReply = async (newsId, title, describe, userId) => {
+export const AddNewsCommentReply = async (newsId, title, describe, userId, parentId) => {
   try {
     const response = await postAddReplyNewsComment(
       newsId,
       title,
       describe,
       userId,
+      parentId,
     );
     if (response.data.success == true) {
       // console.log(response.data.message);
@@ -73,7 +74,7 @@ export const AddNewsCommentReply = async (newsId, title, describe, userId) => {
 
 export const GetUserDetails = async (userId) => {
   try {
-    const response = await getUserDetails(userId);
+    const response = await getUserDetails(userId)
     if (response.data.success == true) {
       // console.log(response.data.message);
       return response.data;

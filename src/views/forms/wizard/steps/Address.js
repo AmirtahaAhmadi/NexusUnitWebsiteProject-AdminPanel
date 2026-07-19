@@ -57,7 +57,7 @@ const Address = ({ stepper, type, data, onSubmit }) => {
   }, [data]);
 
   const OnSubmitForm = () => {
-    onSubmit({ latitude: lat, longitude: long });
+    onSubmit({ latitude: lat || data.latitude, longitude: long || data.longitude });
     stepper.next();
   };
 
@@ -82,7 +82,7 @@ const Address = ({ stepper, type, data, onSubmit }) => {
               }}
               className="d-flex align-items-center"
             >
-              {long || data.longitude}
+              {long || data.longitude || '--'}
             </div>
           </Col>
           <Col md="6" className="mb-1">
@@ -98,7 +98,7 @@ const Address = ({ stepper, type, data, onSubmit }) => {
               }}
               className="d-flex align-items-center"
             >
-              {lat || data.latitude}
+              {lat || data.latitude || '--'}
             </div>
           </Col>
         </Row>

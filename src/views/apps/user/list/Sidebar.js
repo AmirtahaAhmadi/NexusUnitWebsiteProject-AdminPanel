@@ -62,9 +62,6 @@ const SidebarNewUsers = ({ open, toggleSidebar, setRenderCount }) => {
   // const [isStudent, setIsStudent] = useState(false);
   // const [isTeacher, setIsTeacher] = useState(false);
 
-  // ** Store Vars
-  // const dispatch = useDispatch()
-
   // ** Vars
   const defaultValues = {
     lastName: "",
@@ -97,9 +94,9 @@ const SidebarNewUsers = ({ open, toggleSidebar, setRenderCount }) => {
         data.password,
         data.phoneNumber,
         // data.isStudent,
-        false,
+        true,
         // data.isTeacher,
-        false,
+        true,
       );
       if (response.data.success == true) {
         toggleSidebar()

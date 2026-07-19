@@ -165,7 +165,8 @@ const UsersList = ({ renderCount, setRenderCount, newsComments }) => {
     courseOrNewsCommentIdForAddReply,
     setCourseOrNewsCommentIdForAddReply,
   ] = useState();
-  const [addReplyToCommentModalShow, setAddReplyToCommentModalShow] = useState(false);
+  const [addReplyToCommentModalShow, setAddReplyToCommentModalShow] =
+    useState(false);
 
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState();
@@ -243,7 +244,7 @@ const UsersList = ({ renderCount, setRenderCount, newsComments }) => {
     {
       name: "نام دوره",
       sortable: true,
-      minWidth: "100px",
+      minWidth: "150px",
       sortField: "title",
       selector: (row) => row.courseTitle,
       cell: (row) => (
@@ -307,26 +308,22 @@ const UsersList = ({ renderCount, setRenderCount, newsComments }) => {
       selector: (row) => row.replyCount,
       cell: (row) => (
         <>
-          {row.accept ? (
-            <>
-              <button
-                id="showRepliesC"
-                style={{ background: "none", border: "none" }}
-                onClick={() => {
-                  setCourseIdForReplies(row.courseId);
-                  setCourseOrNewsCommentIdForReplies(row.commentId);
-                  setCommentRepliesModal(true);
-                }}
-              >
-                <Eye size={20} className="text-primary cursor-pointer" />
-              </button>
-              <UncontrolledTooltip placement="top" target="showRepliesC">
-                نمایش پاسخ های کامنت
-              </UncontrolledTooltip>
-            </>
-          ) : (
-            <span>کامنت تایید نشده</span>
-          )}
+          <>
+            <button
+              id="showRepliesC"
+              style={{ background: "none", border: "none" }}
+              onClick={() => {
+                setCourseIdForReplies(row.courseId);
+                setCourseOrNewsCommentIdForReplies(row.commentId);
+                setCommentRepliesModal(true);
+              }}
+            >
+              <Eye size={20} className="text-primary cursor-pointer" />
+            </button>
+            <UncontrolledTooltip placement="top" target="showRepliesC">
+              نمایش پاسخ های کامنت
+            </UncontrolledTooltip>
+          </>
         </>
       ),
     },
@@ -501,6 +498,7 @@ const UsersList = ({ renderCount, setRenderCount, newsComments }) => {
           style={{ background: "none", border: "none" }}
           onClick={() => {
             setCourseOrNewsIdForAddReply(row.newsId);
+            setCourseOrNewsCommentIdForAddReply(row.id);
             setAddReplyToCommentModalShow(true);
           }}
         >
@@ -556,7 +554,7 @@ const UsersList = ({ renderCount, setRenderCount, newsComments }) => {
         previousLinkClassName={"page-link"}
         pageLinkClassName={"page-link"}
         containerClassName={
-          "pagination react-paginate justify-content-end my-2 pe-1"
+          "pagination react-paginate justify-content-center my-2 pe-1"
         }
       />
     );
