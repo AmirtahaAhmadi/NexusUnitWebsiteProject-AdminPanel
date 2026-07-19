@@ -15,6 +15,7 @@ import {
   PenTool,
   Users,
   Share2,
+  User,
 } from "react-feather";
 
 export default [
@@ -23,6 +24,18 @@ export default [
     title: "داشبورد",
     icon: <Home size={20} />,
     navLink: "/ecommerce",
+  },
+  {
+    id: "userList",
+    title: "مدیریت کاربران",
+    icon: <User size={20} />,
+    navLink: "/user/list",
+  },
+  {
+    id: "commentsList",
+    title: "کامنت ها",
+    icon: <Bookmark size={20} />,
+    navLink: "/comments/list",
   },
   {
     id: "calendar",
@@ -130,7 +143,7 @@ export default [
     children: [
       {
         id: "AllCourses",
-        title: "تمام دوره ها",
+        title: "دوره ها",
         icon: <Circle size={12} />,
         navLink: "/AllCourses",
       },

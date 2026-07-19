@@ -6,6 +6,15 @@ body,
   height: 100%;
 }
 
+@font-face {
+  font-family: YekanBakh;
+  src: url("./assets/fonts/YekanBakh-VF.ttf");
+}
+
+* {
+  font-family: YekanBakh;
+}
+
 // Vertical Menu
 // ========================================================================
 .vertical-layout .main-menu {

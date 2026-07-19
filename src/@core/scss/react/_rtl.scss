@@ -4,6 +4,15 @@ html[dir='rtl'] {
     left: 1px !important;
   }
 
+  @font-face {
+    font-family: YekanBakh;
+    src: url("./assets/fonts/YekanBakh-VF.ttf");
+  }
+
+  * {
+    font-family: YekanBakh;
+  }
+
   // RTL Icons
   .rotate-rtl {
     transform: rotate(-180deg);
