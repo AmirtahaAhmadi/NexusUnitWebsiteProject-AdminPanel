@@ -1,14 +1,9 @@
 // ** React Imports
 import { useSkin } from "@hooks/useSkin";
-import { Link } from "react-router-dom";
-
-// ** Icons Imports
-import { Facebook, Twitter, Mail, GitHub } from "react-feather";
-
-// ** Custom Components
-import InputPasswordToggle from "@components/input-password-toggle";
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Reactstrap Imports
+import { useForm, Controller } from "react-hook-form";
 import {
   Row,
   Col,
@@ -26,14 +21,56 @@ import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
+import { postLogin } from "../core/Interceptor/Services/AuthPageServices/post";
 
 const Login = () => {
   const { skin } = useSkin();
+  const navigate = useNavigate();
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      phoneOrGmail: "",
+      password: "",
+      rememberMe: false,
+    },
+  });
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await postLogin(
+        data.phoneOrGmail,
+        data.password,
+        data.rememberMe,
+      );
+
+      if (!response?.data?.token) {
+        setError("root", { message: "خطا در دریافت اطلاعات" });
+        return;
+      }
+
+      localStorage.setItem("token", response.data.token);
+      navigate("/");
+    } catch (error) {
+      const message =
+        error?.response?.status === 401
+          ? "ایمیل یا رمز عبور اشتباه است"
+          : "خطایی رخ داده، دوباره تلاش کنید";
+
+      setError("root", { message });
+    }
+  };
 
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
 
   return (
-    <div className="auth-wrapper auth-cover">
+    <div className="auth-wrapper auth-cover" >
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28">
@@ -104,11 +141,13 @@ const Login = () => {
           </svg>
           <h2 className="brand-text text-primary ms-1">Vuexy</h2>
         </Link>
+
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
             <img className="img-fluid" src={source} alt="Login Cover" />
           </div>
         </Col>
+
         <Col
           className="d-flex align-items-center auth-bg px-2 p-lg-5"
           lg="4"
@@ -116,73 +155,92 @@ const Login = () => {
         >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
-              Welcome to Vuexy! 👋
+              خوش آمدید 👋
             </CardTitle>
             <CardText className="mb-2">
-              Please sign-in to your account and start the adventure
+              برای ورود به پنل مدیریت اطلاعات خود را وارد کنید
             </CardText>
+
             <Form
               className="auth-login-form mt-2"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubmit(onSubmit)}
             >
               <div className="mb-1">
                 <Label className="form-label" for="login-email">
-                  Email
+                  ایمیل
                 </Label>
-                <Input
-                  type="email"
-                  id="login-email"
-                  placeholder="john@example.com"
-                  autoFocus
+                <Controller
+                  name="phoneOrGmail"
+                  control={control}
+                  rules={{ required: "ایمیل یا شماره موبایل الزامی است" }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="text"
+                      id="login-email"
+                      placeholder="ایمیل یا شماره موبایل"
+                      autoFocus
+                      invalid={!!errors.phoneOrGmail}
+                    />
+                  )}
                 />
+                {errors.phoneOrGmail && (
+                  <small className="text-danger">
+                    {errors.phoneOrGmail.message}
+                  </small>
+                )}
               </div>
+
               <div className="mb-1">
-                <div className="d-flex justify-content-between">
-                  <Label className="form-label" for="login-password">
-                    Password
-                  </Label>
-                  <Link to="/forgot-password">
-                    <small>Forgot Password?</small>
-                  </Link>
-                </div>
-                <InputPasswordToggle
-                  className="input-group-merge"
-                  id="login-password"
+                <Label className="form-label" for="login-password">
+                  رمز عبور
+                </Label>
+                <Controller
+                  name="password"
+                  control={control}
+                  rules={{ required: "رمز عبور الزامی است" }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="password"
+                      id="login-password"
+                      invalid={!!errors.password}
+                    />
+                  )}
                 />
+                {errors.password && (
+                  <small className="text-danger">
+                    {errors.password.message}
+                  </small>
+                )}
               </div>
+
               <div className="form-check mb-1">
-                <Input type="checkbox" id="remember-me" />
+                <Input
+                  type="checkbox"
+                  id="remember-me"
+                  {...register("rememberMe")}
+                />
                 <Label className="form-check-label" for="remember-me">
-                  Remember Me
+                  مرا به خاطر بسپار
                 </Label>
               </div>
-              <Button tag={Link} to="/" color="primary" block>
-                Sign in
+
+              {errors.root && (
+                <p className="text-danger text-center mt-1 mb-1">
+                  {errors.root.message}
+                </p>
+              )}
+
+              <Button
+                type="submit"
+                color="primary"
+                block
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "در حال ورود..." : "ورود"}
               </Button>
             </Form>
-            <p className="text-center mt-2">
-              <span className="me-25">New on our platform?</span>
-              <Link to="/register">
-                <span>Create an account</span>
-              </Link>
-            </p>
-            <div className="divider my-2">
-              <div className="divider-text">or</div>
-            </div>
-            <div className="auth-footer-btn d-flex justify-content-center">
-              <Button color="facebook">
-                <Facebook size={14} />
-              </Button>
-              <Button color="twitter">
-                <Twitter size={14} />
-              </Button>
-              <Button color="google">
-                <Mail size={14} />
-              </Button>
-              <Button className="me-0" color="github">
-                <GitHub size={14} />
-              </Button>
-            </div>
           </Col>
         </Col>
       </Row>

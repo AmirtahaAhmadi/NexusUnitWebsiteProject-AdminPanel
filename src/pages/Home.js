@@ -20,8 +20,7 @@ const Home = () => {
             Please make sure to read our{" "}
             <CardLink
               href="https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation/"
-              target="_blank"
-            >
+              target="_blank">
               Template Documentation
             </CardLink>{" "}
             to understand where to go from here and how to use our template.
@@ -42,8 +41,7 @@ const Home = () => {
             Please read our{" "}
             <CardLink
               href="https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation/docs/development/auth"
-              target="_blank"
-            >
+              target="_blank">
               JWT Documentation
             </CardLink>{" "}
             to get more out of JWT authentication.

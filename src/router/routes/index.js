@@ -6,12 +6,18 @@ import BlankLayout from "@layouts/BlankLayout";
 import VerticalLayout from "@src/layouts/VerticalLayout";
 import HorizontalLayout from "@src/layouts/HorizontalLayout";
 import LayoutWrapper from "@src/@core/layouts/components/layout-wrapper";
-
+import Wizard from "../../pages/wizard";
+import BasicCards from "../../pages/basic";
+import Jobstitleanddata from "../../pages/basic/jobs/jobstitleanddata";
+import Alljobsmenu from "../../pages/basic/jobs/Alljobsmenu";
+import Updatejobsmenu from "../../pages/basic/jobs/updatejobsmenu";
 // ** Route Components
 import PublicRoute from "@components/routes/PublicRoute";
-
 // ** Utils
 import { isObjEmpty } from "@utils";
+import Assistance from "../../pages/basic/jobs/assistance";
+import CourseSettingMenu from "../../pages/CourseSetting/CourseSettingMenu";
+import JobsTable from "../../pages/basic/jobs/JobsTable";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -23,15 +29,32 @@ const getLayout = {
 const TemplateTitle = "%s - Vuexy React Admin Template";
 
 // ** Default Route
-const DefaultRoute = "/home";
+const DefaultRoute = "/ecommerce";
 
-const Home = lazy(() => import("../../pages/Home"));
-const SecondPage = lazy(() => import("../../pages/SecondPage"));
+const TermManagement = lazy(() => import("../../views/Bilding/TermManagement"));
+const ClassroomManagement = lazy(() =>
+  import("../../views/Bilding/ClassroomManagement"),
+);
+const SocialGroup = lazy(() => import("../../pages/SocialGroup"));
+const CourseHelps = lazy(() => import("../../pages/CourseHelps"));
+const Department = lazy(() => import("../../views/Bilding/Deportment"));
+const Buildings = lazy(() => import("../../views/Bilding"));
+const DashboardEcommerce = lazy(() =>
+  import("../../Component/dashboard/ecommerce"),
+);
+const Calendar = lazy(() => import("../../views/apps/calendar"));
+const Chat = lazy(() => import("../../views/apps/chat"));
+
+const BlogList = lazy(() => import("../../views/blog/list"));
+const BlogDetails = lazy(() => import("../../views/blog/details"));
+const BlogEdit = lazy(() => import("../../views/blog/edit"));
+const Category = lazy(() => import("../../views/blog/Category"));
+const AddCategory = lazy(() => import("../../views/blog/Category/AddCategory"));
+
 const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
-const Sample = lazy(() => import("../../pages/Sample"));
 
 // ** Merge Routes
 const Routes = [
@@ -41,16 +64,68 @@ const Routes = [
     element: <Navigate replace to={DefaultRoute} />,
   },
   {
-    path: "/home",
-    element: <Home />,
+    path: "/ecommerce",
+    element: <DashboardEcommerce />,
   },
   {
-    path: "/sample",
-    element: <Sample />,
+    element: <Calendar />,
+    path: "/apps/calendar",
   },
   {
-    path: "/second-page",
-    element: <SecondPage />,
+    path: "/apps/chat",
+    element: <Chat />,
+    meta: {
+      appLayout: true,
+      className: "chat-application",
+    },
+  },
+  {
+    path: "/pages/blog/list",
+    element: <BlogList />,
+  },
+  {
+    path: "/pages/blog/list",
+    element: <BlogList />,
+  },
+
+  {
+    path: "/pages/blog/detail/:id",
+    element: <BlogDetails />,
+  },
+
+  {
+    path: "/pages/blog/edit",
+    element: <Navigate replace to="/pages/blog/edit/new" />,
+  },
+
+  {
+    path: "/pages/blog/edit/:id",
+    element: <BlogEdit />,
+  },
+
+  {
+    path: "/pages/blog/category",
+    element: <Category />,
+  },
+  {
+    path: "/pages/blog/add",
+    element: <AddCategory />,
+  },
+  {
+    element: <Buildings />,
+    path: "/pages/Buildings/list",
+  },
+  {
+    element: <Department />,
+    path: "/pages/Buildings/department",
+  },
+  {
+    element: <ClassroomManagement />,
+    path: "/pages/Buildings/ClassroomManagement",
+  },
+  {
+    element: <TermManagement />,
+    path: "/pages/Buildings/TermManagement",
   },
   {
     path: "/login",
@@ -86,6 +161,39 @@ const Routes = [
     meta: {
       layout: "blank",
     },
+  },
+
+  {
+    path: "/updateCourses",
+    element: <Wizard />,
+  },
+  {
+    path: "/AllCourses",
+    element: <BasicCards />,
+  },
+  {
+    path: "/jobs",
+    element: <Alljobsmenu />,
+  },
+  {
+    path: "/updatejobs",
+    element: <Updatejobsmenu />,
+  },
+  // {
+  //   path: "/assistance",
+  //   element: <Assistance />,
+  // },
+  {
+    path: "/techupdate",
+    element: <CourseSettingMenu />,
+  },
+  {
+    path: "/SocialGroup",
+    element: <SocialGroup />,
+  },
+  {
+    path: "/CourseHelps",
+    element: <CourseHelps />,
   },
 ];
 
