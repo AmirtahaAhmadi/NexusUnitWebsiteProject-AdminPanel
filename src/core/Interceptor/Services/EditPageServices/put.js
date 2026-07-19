@@ -2,6 +2,10 @@ import apiClient from "../../interceptor";
 
 export const updateNews = ({
   id,
+  slideNumber = 0,
+  currentImageAddress = "",
+  currentImageAddressTumb = "",
+  active = true,
   title,
   googleTitle,
   googleDescribe,
@@ -13,7 +17,13 @@ export const updateNews = ({
   image,
 }) => {
   const formData = new FormData();
+
   formData.append("Id", id);
+  formData.append("SlideNumber", slideNumber);
+  formData.append("CurrentImageAddress", currentImageAddress);
+  formData.append("CurrentImageAddressTumb", currentImageAddressTumb);
+  formData.append("Active", active ? "true" : "false");
+
   formData.append("Title", title ?? "");
   formData.append("GoogleTitle", googleTitle ?? "");
   formData.append("GoogleDescribe", googleDescribe ?? "");
@@ -26,25 +36,50 @@ export const updateNews = ({
     formData.append("NewsCatregoryId", newsCategoryId);
   }
 
-  if (image) {
+  if (image instanceof File) {
     formData.append("Image", image);
   }
 
-  return apiClient.put("/News/UpdateNews", formData);
+  return apiClient
+    .put("/News/UpdateNews", formData)
+    .then((res) => res)
+    .catch((err) => {
+      console.error("API ERROR (updateNews):", err?.response?.data ?? err);
+      throw err;
+    });
 };
 
-export const updateNewsFile = (fileId, newsId, file) => {
+export const updateNewsFile = ({
+  fileId,
+  newsId,
+  file,
+  isSlide = false,
+  selectForMainImage = true,
+}) => {
   const formData = new FormData();
+
   formData.append("Id", fileId);
   formData.append("NewsId", newsId);
-  formData.append("File", file);
+  formData.append("IsSlide", isSlide ? "true" : "false");
+  formData.append("SelectForMainImage", selectForMainImage ? "true" : "false");
+
+  if (file instanceof File) {
+    formData.append("File", file);
+  }
 
   return apiClient.put("/News/UpdateNewsFile", formData);
 };
-
-export const activeDeactiveNews = (newsId, isActive) => {
-  return apiClient.put("/News/ActiveDeactiveNews", {
-    newsId,
-    isActive,
-  });
+export const activeDeactiveNews = (id, active) => {
+  return apiClient
+    .put("/News/ActiveDeactiveNews", {
+      id,
+      active,
+    })
+    .catch((err) => {
+      console.error(
+        "API ERROR (activeDeactiveNews):",
+        err?.response?.data ?? err,
+      );
+      throw err;
+    });
 };

@@ -71,38 +71,41 @@ const Routes = [
     element: <Calendar />,
     path: "/apps/calendar",
   },
-    {
-    path: '/apps/chat',
+  {
+    path: "/apps/chat",
     element: <Chat />,
     meta: {
       appLayout: true,
-      className: 'chat-application'
-    }
+      className: "chat-application",
+    },
   },
   {
     path: "/pages/blog/list",
     element: <BlogList />,
   },
   {
+    path: "/pages/blog/list",
+    element: <BlogList />,
+  },
+
+  {
     path: "/pages/blog/detail/:id",
     element: <BlogDetails />,
   },
+
   {
-    path: "/pages/blog/detail",
-    element: <Navigate to="/pages/blog/detail/1" />,
+    path: "/pages/blog/edit",
+    element: <Navigate replace to="/pages/blog/edit/new" />,
   },
 
   {
     path: "/pages/blog/edit/:id",
     element: <BlogEdit />,
   },
+
   {
-    path: "/pages/blog/edit",
-    element: <Navigate to="/pages/blog/edit/b28b240b-2248-4b73-a6d5-5e9ab72e09dc" />,
-  },
-  {
-    element: <Category />,
     path: "/pages/blog/category",
+    element: <Category />,
   },
   {
     path: "/pages/blog/add",
@@ -192,7 +195,6 @@ const Routes = [
     path: "/CourseHelps",
     element: <CourseHelps />,
   },
-
 ];
 
 const getRouteMeta = (route) => {

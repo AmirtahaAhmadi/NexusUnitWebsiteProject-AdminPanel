@@ -73,7 +73,9 @@ const toSafeArray = (value) => {
   return [];
 };
 
-const edjsParser = edjsHTML();
+const edjsParser = edjsHTML({
+  raw: (block) => block.data.html ?? "",
+});
 
 const editorOutputToHtml = (outputData) => {
   try {
@@ -132,10 +134,44 @@ const NewsEdit = () => {
   const editorHolderRef = useRef(null);
   const isEditorReadyRef = useRef(false);
 
+  const resetFormState = () => {
+    setTitle("");
+    setGoogleTitle("");
+    setGoogleDescribe("");
+    setMiniDescribe("");
+    setKeyword("");
+    setIsSlider(false);
+    setSlug("");
+    setIsActive(true);
+    setSelectedCategory(null);
+    setFeaturedImg(null);
+    setFeaturedFileId(null);
+    setNewImageFile(null);
+    setImgPath("");
+  };
+
+  const destroyEditor = () => {
+    if (editorRef.current && typeof editorRef.current.destroy === "function") {
+      editorRef.current.destroy();
+    }
+    editorRef.current = null;
+    isEditorReadyRef.current = false;
+  };
+
   useEffect(() => {
+    console.log("[NewsEdit] id از URL:", id);
+    console.log("[NewsEdit] isNew (آیا حالت افزودن است؟):", isNew);
+
     if (!id) return;
+    resetFormState();
+    setData(null);
+    setInitialEditorData(null);
+    destroyEditor();
 
     if (isNew) {
+      console.log(
+        "[NewsEdit] حالت افزودن خبر جدید - فرم خالی نمایش داده می‌شود",
+      );
       const fetchCategoriesOnly = async () => {
         setIsLoading(true);
         try {
@@ -164,11 +200,15 @@ const NewsEdit = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        console.log("Route id:", id);
+        console.log("[NewsEdit] در حال گرفتن اطلاعات خبر با id:", id);
+
         const [categoryRes, newsRes] = await Promise.all([
           getListNewsCategory(),
           getNewsById(id),
         ]);
+
+        console.log("[NewsEdit] پاسخ خام getNewsById:", newsRes);
+        console.log("[NewsEdit] newsRes.data:", newsRes.data);
 
         const rawCategories =
           categoryRes.data?.categories ?? categoryRes.data ?? [];
@@ -178,7 +218,14 @@ const NewsEdit = () => {
         }));
         setCategoryOptions(categories);
 
-        const news = newsRes.data.detailsNewsDto;
+        const news =
+          newsRes.data?.detailsNewsDto ??
+          newsRes.data?.news ??
+          newsRes.data ??
+          {};
+
+        console.log("[NewsEdit] آبجکت نهایی خبر که استفاده می‌شود:", news);
+
         setData(news);
         setTitle(news.title ?? "");
         setGoogleTitle(news.googleTitle ?? "");
@@ -233,6 +280,10 @@ const NewsEdit = () => {
     };
 
     fetchData();
+
+    return () => {
+      destroyEditor();
+    };
   }, [id]);
 
   useEffect(() => {
@@ -260,14 +311,7 @@ const NewsEdit = () => {
     editorRef.current = editor;
 
     return () => {
-      if (
-        editorRef.current &&
-        typeof editorRef.current.destroy === "function"
-      ) {
-        editorRef.current.destroy();
-      }
-      editorRef.current = null;
-      isEditorReadyRef.current = false;
+      destroyEditor();
     };
   }, [isLoading, initialEditorData]);
 
@@ -334,6 +378,7 @@ const NewsEdit = () => {
       }
 
       if (isNew) {
+        console.log("[NewsEdit] در حال ایجاد خبر جدید با عنوان:", title);
         await createNews({
           title,
           googleTitle,
@@ -348,8 +393,18 @@ const NewsEdit = () => {
 
         toast.success("خبر جدید با موفقیت ایجاد شد");
       } else {
+        console.log(
+          "[NewsEdit] در حال ویرایش خبر با id:",
+          id,
+          "عنوان جدید:",
+          title,
+        );
         await updateNews({
           id,
+          slideNumber: data?.slideNumber,
+          currentImageAddress: data?.currentImageAddress,
+          currentImageAddressTumb: data?.currentImageAddressTumb,
+          active: isActive,
           title,
           googleTitle,
           googleDescribe,

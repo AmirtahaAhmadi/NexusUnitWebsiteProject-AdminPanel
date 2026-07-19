@@ -4,20 +4,9 @@ import { Fragment, useState, useEffect, useRef } from "react";
 // ** Third Party Components
 import classnames from "classnames";
 import Select from "react-select";
-import draftToHtml from "draftjs-to-html";
-import { Editor } from "react-draft-wysiwyg";
-import { EditorState, convertToRaw } from "draft-js";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-import {
-  FileText,
-  Edit2,
-  X,
-  Search,
-  Plus,
-  CheckCircle,
-  XCircle,
-} from "react-feather";
+import { Edit2, X, Search, Plus, CheckCircle, XCircle } from "react-feather";
 
 // ** Custom Components
 import Breadcrumbs from "@components/breadcrumbs";
@@ -37,26 +26,18 @@ import {
   PaginationItem,
   PaginationLink,
   Input,
-  Label,
   InputGroup,
   InputGroupText,
   Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Spinner,
-  FormGroup,
   UncontrolledTooltip,
 } from "reactstrap";
 // ** Styles
-import "@styles/react/libs/editor/editor.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/base/pages/page-blog.scss";
 
 // ** API Services
 import { getNewsWidthPagination } from "../../../core/Interceptor/Services/blogPageServices/get";
-import { createNews } from "../../../core/Interceptor/Services/blogPageServices/post";
 import { activeDeactiveNews } from "../../../core/Interceptor/Services/EditPageServices/put";
 import { getListNewsCategory } from "../../../core/Interceptor/Services/EditPageServices/get";
 
@@ -68,6 +49,9 @@ const toSafeArray = (value) => {
   }
   return [];
 };
+
+const getIsActive = (item) =>
+  item?.active ?? item?.isActive ?? item?.status === "active";
 
 const BlogList = () => {
   const navigate = useNavigate();
@@ -84,22 +68,8 @@ const BlogList = () => {
   const [inactiveCount, setInactiveCount] = useState(0);
   const [statusFilter, setStatusFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState(null);
-  const blogRef = useRef(null);
-
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newGoogleTitle, setNewGoogleTitle] = useState("");
-  const [newGoogleDescribe, setNewGoogleDescribe] = useState("");
-  const [newMiniDescribe, setNewMiniDescribe] = useState("");
-  const [newKeyword, setNewKeyword] = useState("");
-  const [newIsSlider, setNewIsSlider] = useState(false);
-  const [newContent, setNewContent] = useState(EditorState.createEmpty());
   const [categoryOptions, setCategoryOptions] = useState([]);
-  const [newSelectedCategory, setNewSelectedCategory] = useState(null);
-  const [newImageFile, setNewImageFile] = useState(null);
-  const [newImagePreview, setNewImagePreview] = useState(null);
-  const [newImgPath, setNewImgPath] = useState("");
+  const blogRef = useRef(null);
 
   const fetchNews = async () => {
     setIsLoading(true);
@@ -119,16 +89,8 @@ const BlogList = () => {
 
       setData(newsList);
       setTotalCount(response.data.totalCount ?? newsList.length);
-      setActiveCount(
-        newsList.filter((n) => n.active || n.isActive || n.status === "active")
-          .length,
-      );
-
-      setInactiveCount(
-        newsList.filter(
-          (n) => !(n.active || n.isActive || n.status === "active"),
-        ).length,
-      );
+      setActiveCount(newsList.filter((n) => getIsActive(n)).length);
+      setInactiveCount(newsList.filter((n) => !getIsActive(n)).length);
     } catch (error) {
       console.error("API ERROR:", error);
       toast.error("خطا در دریافت لیست اخبار");
@@ -189,92 +151,6 @@ const BlogList = () => {
     fetchCategories();
   }, []);
 
-  const resetAddForm = () => {
-    setNewTitle("");
-    setNewGoogleTitle("");
-    setNewGoogleDescribe("");
-    setNewMiniDescribe("");
-    setNewKeyword("");
-    setNewIsSlider(false);
-    setNewContent(EditorState.createEmpty());
-    setNewSelectedCategory(null);
-    setNewImageFile(null);
-    setNewImagePreview(null);
-    setNewImgPath("");
-  };
-
-  const handleAddNewBlog = () => {
-    handleUpdate({
-      id: "b28b240b-2248-4b73-a6d5-5e9ab72e09dc",
-    });
-  };
-
-  const toggleAddModal = () => {
-    if (isCreating) return;
-    setIsAddModalOpen((prev) => !prev);
-  };
-
-  const onChangeNewImage = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setNewImageFile(file);
-    setNewImgPath(file.name);
-
-    const reader = new FileReader();
-    reader.onload = () => setNewImagePreview(reader.result);
-    reader.readAsDataURL(file);
-  };
-
-  const handleCreateNews = async () => {
-    if (!newTitle.trim()) {
-      toast.error("عنوان خبر الزامی است");
-      return;
-    }
-    if (!newSelectedCategory) {
-      toast.error("انتخاب دسته‌بندی الزامی است");
-      return;
-    }
-
-    setIsCreating(true);
-    try {
-      const rawContentState = convertToRaw(newContent.getCurrentContent());
-      const htmlContent = draftToHtml(rawContentState);
-
-      await createNews({
-        title: newTitle,
-        googleTitle: newGoogleTitle,
-        googleDescribe: newGoogleDescribe,
-        miniDescribe: newMiniDescribe,
-        describe: htmlContent,
-        keyword: newKeyword,
-        isSlider: newIsSlider,
-        newsCategoryId: newSelectedCategory.value,
-        image: newImageFile,
-      });
-
-      toast.success("خبر جدید با موفقیت ایجاد شد");
-      setIsAddModalOpen(false);
-      resetAddForm();
-      setSortingCol("InsertDate");
-      setSortType("DESC");
-      setStatusFilter("");
-      if (currentPage !== 1) {
-        setCurrentPage(1);
-      } else {
-        fetchNews();
-      }
-    } catch (error) {
-      console.error("API ERROR (create news):", error);
-      toast.error("خطا در ایجاد خبر جدید");
-    } finally {
-      setIsCreating(false);
-    }
-  };
-
-  const getIsActive = (item) =>
-    item.active ?? item.isActive ?? item.status === "active";
-
   const renderStatusBadge = (item) => {
     const isActive = getIsActive(item);
     return (
@@ -285,11 +161,15 @@ const BlogList = () => {
   };
 
   const handleEdit = (item) => {
+    console.log("[BlogList] کلیک روی دکمه ویرایش (مداد) - آیتم:", item);
+    console.log("[BlogList] در حال رفتن به مسیر ویرایش با id:", item.id);
     navigate(`/pages/blog/edit/${item.id}`);
   };
 
-  const handleUpdate = (item) => {
-    navigate(`/pages/blog/edit/${item.id}`);
+  const handleAddNewBlog = () => {
+    console.log("[BlogList] کلیک روی دکمه افزودن بلاگ جدید");
+    console.log("[BlogList] در حال رفتن به مسیر افزودن با id='new'");
+    navigate(`/pages/blog/edit/new`);
   };
 
   const handleCancel = async (item) => {
@@ -316,13 +196,16 @@ const BlogList = () => {
 
       setData((prev) =>
         prev.map((news) =>
-          news.id === item.id ? { ...news, isActive: willActivate } : news,
+          news.id === item.id
+            ? { ...news, active: willActivate, isActive: willActivate }
+            : news,
         ),
       );
 
-      toast.success(willActivate ? "خبر فعال شد" : "خبر غیرفعال شد");
+      setActiveCount((prev) => (willActivate ? prev + 1 : prev - 1));
+      setInactiveCount((prev) => (willActivate ? prev - 1 : prev + 1));
 
-      fetchNews();
+      toast.success(willActivate ? "خبر فعال شد" : "خبر غیرفعال شد");
     } catch (error) {
       console.error(
         "=== activeDeactiveNews ERROR ===",
@@ -334,29 +217,18 @@ const BlogList = () => {
 
   const renderActions = (item) => {
     const editId = `blog-action-edit-${item.id}`;
-    const updateId = `blog-action-update-${item.id}`;
     const cancelId = `blog-action-cancel-${item.id}`;
 
     return (
       <div className="d-flex align-items-center justify-content-center gap-75">
-        <FileText
+        <Edit2
           id={editId}
           size={17}
-          className="cursor-pointer text-info"
+          className="cursor-pointer text-primary"
           onClick={() => handleEdit(item)}
         />
         <UncontrolledTooltip placement="top" target={editId}>
-          مشاهده / ویرایش
-        </UncontrolledTooltip>
-
-        <Edit2
-          id={updateId}
-          size={17}
-          className="cursor-pointer text-primary"
-          onClick={() => handleUpdate(item)}
-        />
-        <UncontrolledTooltip placement="top" target={updateId}>
-          آپدیت
+          ویرایش
         </UncontrolledTooltip>
 
         <X
@@ -564,7 +436,7 @@ const BlogList = () => {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </InputGroup>
-              <Button color="primary" onClick={() => handleUpdate(data[0])}>
+              <Button color="primary" onClick={handleAddNewBlog}>
                 <Plus size={15} className="me-50" />
                 افزودن بلاگ جدید
               </Button>
@@ -586,163 +458,6 @@ const BlogList = () => {
           )}
         </div>
       </div>
-
-      <Modal
-        isOpen={isAddModalOpen}
-        toggle={toggleAddModal}
-        size="lg"
-        backdrop="static"
-      >
-        <ModalHeader toggle={toggleAddModal}>افزودن خبر جدید</ModalHeader>
-        <ModalBody>
-          <Row>
-            <Col md="6" className="mb-2">
-              <Label className="form-label" for="new-news-title">
-                عنوان (Title) *
-              </Label>
-              <Input
-                id="new-news-title"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="عنوان خبر را وارد کنید"
-              />
-            </Col>
-            <Col md="6" className="mb-2">
-              <Label className="form-label" for="new-news-category">
-                دسته بندی (NewsCatregoryId) *
-              </Label>
-              <Select
-                id="new-news-category"
-                isClearable
-                theme={selectThemeColors}
-                value={newSelectedCategory}
-                name="category"
-                options={categoryOptions}
-                className="react-select"
-                classNamePrefix="select"
-                onChange={(value) => setNewSelectedCategory(value)}
-              />
-            </Col>
-            <Col md="6" className="mb-2">
-              <Label className="form-label" for="new-news-google-title">
-                عنوان گوگل (GoogleTitle)
-              </Label>
-              <Input
-                id="new-news-google-title"
-                value={newGoogleTitle}
-                onChange={(e) => setNewGoogleTitle(e.target.value)}
-              />
-            </Col>
-            <Col md="6" className="mb-2">
-              <Label className="form-label" for="new-news-keyword">
-                کلمات کلیدی (Keyword)
-              </Label>
-              <Input
-                id="new-news-keyword"
-                value={newKeyword}
-                onChange={(e) => setNewKeyword(e.target.value)}
-                placeholder="با کاما جدا کنید"
-              />
-            </Col>
-            <Col md="6" className="mb-2">
-              <Label className="form-label" for="new-news-google-describe">
-                توضیح گوگل (GoogleDescribe)
-              </Label>
-              <Input
-                id="new-news-google-describe"
-                type="textarea"
-                rows="2"
-                value={newGoogleDescribe}
-                onChange={(e) => setNewGoogleDescribe(e.target.value)}
-              />
-            </Col>
-            <Col md="6" className="mb-2">
-              <Label className="form-label" for="new-news-mini-describe">
-                توضیح کوتاه (MiniDescribe)
-              </Label>
-              <Input
-                id="new-news-mini-describe"
-                type="textarea"
-                rows="2"
-                value={newMiniDescribe}
-                onChange={(e) => setNewMiniDescribe(e.target.value)}
-              />
-            </Col>
-            <Col sm="12" className="mb-2">
-              <FormGroup switch>
-                <Input
-                  type="switch"
-                  role="switch"
-                  id="new-news-is-slider"
-                  checked={newIsSlider}
-                  onChange={(e) => setNewIsSlider(e.target.checked)}
-                />
-                <Label check for="new-news-is-slider">
-                  نمایش در اسلایدر (IsSlider)
-                </Label>
-              </FormGroup>
-            </Col>
-            <Col sm="12" className="mb-2">
-              <Label className="form-label">محتوا (Describe)</Label>
-              <Editor
-                editorState={newContent}
-                onEditorStateChange={setNewContent}
-              />
-            </Col>
-            <Col sm="12" className="mb-2">
-              <div className="border rounded p-2">
-                <h6 className="mb-1">تصویر (Image)</h6>
-                <div className="d-flex flex-column flex-md-row">
-                  {newImagePreview && (
-                    <img
-                      className="rounded me-2 mb-1 mb-md-0"
-                      src={newImagePreview}
-                      alt="پیش‌نمایش تصویر"
-                      width="150"
-                      height="100"
-                    />
-                  )}
-                  <div>
-                    <small className="text-muted d-block mb-50">
-                      حداقل رزولوشن تصویر 800x400، حجم مجاز تا 10 مگابایت.
-                    </small>
-                    {newImgPath && (
-                      <p className="my-50 mb-1">
-                        <small>{newImgPath}</small>
-                      </p>
-                    )}
-                    <Input
-                      type="file"
-                      id="new-news-image"
-                      name="newNewsImage"
-                      onChange={onChangeNewImage}
-                      accept=".jpg, .jpeg, .png, .gif"
-                    />
-                  </div>
-                </div>
-              </div>
-            </Col>
-          </Row>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            color="secondary"
-            outline
-            onClick={toggleAddModal}
-            disabled={isCreating}
-          >
-            انصراف
-          </Button>
-          <Button
-            color="primary"
-            onClick={handleCreateNews}
-            disabled={isCreating}
-          >
-            {isCreating && <Spinner size="sm" className="me-50" />}
-            ایجاد خبر
-          </Button>
-        </ModalFooter>
-      </Modal>
     </Fragment>
   );
 };
