@@ -2,7 +2,7 @@
 import { Card, CardBody, CardText, Button } from "reactstrap";
 
 // ** Images
-import medal from "@src/assets/images/illustration/badge.svg";
+import medal from "../../../../assets/images/illustration/badge.svg";
 
 const CardMedal = ({ profile }) => {
   return (

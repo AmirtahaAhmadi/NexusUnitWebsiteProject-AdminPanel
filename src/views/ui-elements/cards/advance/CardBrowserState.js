@@ -1,126 +1,67 @@
 import { useMemo } from "react";
-import Chart from "react-apexcharts";
-import {
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  CardHeader,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-} from "reactstrap";
+import { Card, CardBody, CardText, CardTitle, CardHeader } from "reactstrap";
 
-import { MoreVertical, Star, BookOpen } from "react-feather";
+import { Users, UserCheck, UserX } from "react-feather";
 
-const CardBrowserState = ({
-  colors,
-  trackBgColor,
-  favoriteCourses = [],
-  favoriteNews = [],
-}) => {
-  const statesArr = useMemo(() => {
-    const coursesPercent = favoriteCourses.length
-      ? Math.min(favoriteCourses.length * 10, 100)
-      : 0;
+const CardBrowserState = ({ courseUsers = [] }) => {
+  const totalUsers = courseUsers.length;
 
-    const newsPercent = favoriteNews.length
-      ? Math.min(favoriteNews.length * 10, 100)
-      : 0;
+  const activeUsers = courseUsers.filter(
+    (user) => user.currentPictureAddress,
+  ).length;
 
-    return [
+  const incompleteUsers = totalUsers - activeUsers;
+
+  const statesArr = useMemo(
+    () => [
       {
-        title: "دوره‌های مورد علاقه",
-        value: `${coursesPercent}%`,
-        icon: <BookOpen size={18} />,
-        chart: {
-          type: "radialBar",
-          series: [coursesPercent],
-          height: 30,
-          width: 30,
-          options: {
-            colors: [colors.primary.main],
-            plotOptions: {
-              radialBar: {
-                hollow: { size: "22%" },
-                track: { background: trackBgColor },
-                dataLabels: { show: false },
-              },
-            },
-          },
-        },
+        title: "کل کاربران",
+        value: `${totalUsers} نفر`,
+        icon: <Users size={18} />,
       },
+
       {
-        title: "اخبار مورد علاقه",
-        value: `${newsPercent}%`,
-        icon: <Star size={18} />,
-        chart: {
-          type: "radialBar",
-          series: [newsPercent],
-          height: 30,
-          width: 30,
-          options: {
-            colors: [colors.warning.main],
-            plotOptions: {
-              radialBar: {
-                hollow: { size: "22%" },
-                track: { background: trackBgColor },
-                dataLabels: { show: false },
-              },
-            },
-          },
-        },
+        title: "پروفایل تکمیل شده",
+        value: `${activeUsers} نفر`,
+        icon: <UserCheck size={18} />,
       },
-    ];
-  }, [favoriteCourses, favoriteNews, colors, trackBgColor]);
+
+      {
+        title: "پروفایل ناقص",
+        value: `${incompleteUsers} نفر`,
+        icon: <UserX size={18} />,
+      },
+    ],
+    [totalUsers, activeUsers, incompleteUsers],
+  );
 
   return (
     <Card className="card-browser-states">
       <CardHeader>
         <div>
-          <CardTitle tag="h4">آمار علاقه‌مندی‌ها</CardTitle>
-          <CardText className="font-small-2">بر اساس فعالیت کاربر</CardText>
+          <CardTitle tag="h4">آمار کاربران</CardTitle>
+
+          <CardText className="font-small-2">وضعیت کاربران سیستم</CardText>
         </div>
-
-        <UncontrolledDropdown>
-          <DropdownToggle
-            color=""
-            className="bg-transparent btn-sm border-0 p-50"
-          >
-            <MoreVertical size={18} />
-          </DropdownToggle>
-
-          <DropdownMenu end>
-            <DropdownItem>هفته اخیر</DropdownItem>
-            <DropdownItem>ماه اخیر</DropdownItem>
-            <DropdownItem>سال اخیر</DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
       </CardHeader>
 
       <CardBody>
-        {statesArr.map((state) => (
+        {statesArr.map((item) => (
           <div
-            key={state.title}
-            className="d-flex justify-content-between align-items-center mb-2"
+            key={item.title}
+            className="
+              d-flex
+              justify-content-between
+              align-items-center
+              mb-2"
           >
             <div className="d-flex align-items-center">
-              <span className="me-1">{state.icon}</span>
-              <span>{state.title}</span>
+              <span className="me-1">{item.icon}</span>
+
+              <span>{item.title}</span>
             </div>
 
-            <div className="d-flex align-items-center">
-              <strong className="me-1">{state.value}</strong>
-
-              <Chart
-                options={state.chart.options}
-                series={state.chart.series}
-                type="radialBar"
-                height={30}
-                width={30}
-              />
-            </div>
+            <strong>{item.value}</strong>
           </div>
         ))}
       </CardBody>

@@ -2,106 +2,130 @@
 import Avatar from "@components/avatar";
 
 // ** Icons
-import { MoreVertical, MessageCircle } from "react-feather";
+import { MoreVertical } from "react-feather";
 
 // ** Reactstrap
-import { Card, CardHeader, CardTitle, CardBody } from "reactstrap";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardBody
+} from "reactstrap";
 
-const normalizeComment = (item = {}) => {
-  const title =
+const formatPersianDate = (date) => {
+  if (!date) return "-";
+
+  try {
+    return new Intl.DateTimeFormat("fa-IR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }).format(new Date(date));
+  } catch {
+    return date;
+  }
+};
+
+const shortenText = (text = "", length = 55) => {
+  if (!text) return "بدون متن";
+  return text.length > length
+    ? `${text.substring(0, length)}...`
+    : text;
+};
+
+const normalizeComment = (item = {}) => ({
+  id: item.id || item.commentId,
+
+  title: item.title || "بدون عنوان",
+
+  courseTitle:
     item.courseTitle ||
     item.course?.title ||
-    item.courseName ||
-    item.title ||
-    "دوره";
+    "بدون نام دوره",
 
-  const text =
-    item.comment ||
-    item.desc ||
-    item.description ||
-    item.text ||
-    item.commentText ||
-    item.body ||
-    "بدون متن";
+  text: shortenText(item.describe || ""),
 
-  const date =
-    item.insertDate ||
-    item.createDate ||
-    item.lastUpdate ||
-    item.date ||
-    "";
+  fullText: item.describe || "",
 
-  const author =
-    item.fullName ||
-    (item.fName ? `${item.fName} ${item.lName || ""}`.trim() : "") ||
-    item.userName ||
-    "";
+  author: item.author || "کاربر",
 
-  return {
-    id: item.id || item.commentId,
-    title,
-    text,
-    date,
-    author,
-  };
-};
+  avatar: item.pictureAddress,
+
+  date: formatPersianDate(item.insertDate)
+});
 
 const CardTransactions = ({ comments = [] }) => {
   const list = Array.isArray(comments)
     ? comments
     : comments?.myCommentsDtos || [];
 
-  const renderComments = () => {
-    if (!list.length) {
-      return (
-        <div className="text-center text-muted py-2">
-          نظری برای نمایش وجود ندارد.
-        </div>
-      );
-    }
-
-    return list.slice(0, 5).map((raw, index) => {
-      const item = normalizeComment(raw);
-
-      return (
-        <div
-          key={item.id || index}
-          className="transaction-item d-flex justify-content-between align-items-center mb-2"
-        >
-          <div className="d-flex">
-            <Avatar
-              className="rounded"
-              color="light-primary"
-              icon={<MessageCircle size={18} />}
-            />
-
-            <div className="ms-1">
-              <h6 className="transaction-title mb-25">{item.title}</h6>
-
-              <small className="text-muted d-block">{item.text}</small>
-
-              {item.author && (
-                <small className="text-muted">{item.author}</small>
-              )}
-            </div>
-          </div>
-
-          <div className="text-end">
-            <small className="text-muted">{item.date}</small>
-          </div>
-        </div>
-      );
-    });
-  };
-
   return (
     <Card className="card-transaction">
-      <CardHeader>
-        <CardTitle tag="h4">آخرین نظرات من</CardTitle>
+      <CardHeader className="d-flex justify-content-between align-items-center">
+        <CardTitle tag="h4">
+          آخرین نظرات من
+        </CardTitle>
+
         <MoreVertical size={18} className="cursor-pointer" />
       </CardHeader>
 
-      <CardBody>{renderComments()}</CardBody>
+      <CardBody>
+        {!list.length ? (
+          <div className="text-center py-3 text-muted">
+            نظری برای نمایش وجود ندارد.
+          </div>
+        ) : (
+          list.slice(0, 5).map((raw) => {
+            const item = normalizeComment(raw);
+
+            return (
+              <div
+                key={item.id}
+                className="transaction-item d-flex justify-content-between align-items-start mb-2 pb-2 border-bottom"
+              >
+                <div className="d-flex">
+
+                  <Avatar
+                    img={item.avatar}
+                    imgHeight="45"
+                    imgWidth="45"
+                    content={item.author}
+                    color=""
+                    className="p-0 m-0 shadow-none border-0 bg-transparent"
+                  />
+
+                  <div className="ms-1">
+
+                    <h6 className="mb-25 fw-bold">
+                      {item.title}
+                    </h6>
+
+                    <small className="text-primary d-block mb-25">
+                      {item.courseTitle}
+                    </small>
+
+                    <small
+                      className="text-muted d-block"
+                      title={item.fullText}
+                    >
+                      {item.text}
+                    </small>
+
+                    <small className="text-success">
+                      {item.author}
+                    </small>
+
+                  </div>
+                </div>
+
+                <small className="text-muted">
+                  {item.date}
+                </small>
+              </div>
+            );
+          })
+        )}
+      </CardBody>
     </Card>
   );
 };
