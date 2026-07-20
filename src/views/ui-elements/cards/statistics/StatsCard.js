@@ -71,14 +71,14 @@ const StatsCard = ({
               <h4 className="fw-bolder mb-0">
                 <CountUp
                   key={item.title}
-                  start={0}
+                  // start={0}
                   end={item.title}
                   duration={2}
-                  delay={0.2}
-                  separator=","
-                  useEasing
-                  enableScrollSpy
-                  scrollSpyOnce
+                  // delay={0.2}
+                  // separator=","
+                  // useEasing
+                  // enableScrollSpy
+                  // scrollSpyOnce
                 />
               </h4>
 
