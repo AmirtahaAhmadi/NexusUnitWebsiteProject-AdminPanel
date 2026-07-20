@@ -40,13 +40,7 @@ export const updateNews = ({
     formData.append("Image", image);
   }
 
-  return apiClient
-    .put("/News/UpdateNews", formData)
-    .then((res) => res)
-    .catch((err) => {
-      console.error("API ERROR (updateNews):", err?.response?.data ?? err);
-      throw err;
-    });
+  return apiClient.put("/News/UpdateNews", formData);
 };
 
 export const updateNewsFile = ({
@@ -69,17 +63,11 @@ export const updateNewsFile = ({
 
   return apiClient.put("/News/UpdateNewsFile", formData);
 };
+
 export const activeDeactiveNews = (id, active) => {
-  return apiClient
-    .put("/News/ActiveDeactiveNews", {
-      id,
-      active,
-    })
-    .catch((err) => {
-      console.error(
-        "API ERROR (activeDeactiveNews):",
-        err?.response?.data ?? err,
-      );
-      throw err;
-    });
+  const formData = new FormData();
+  formData.append("Id", id);
+  formData.append("Active", active ? "true" : "false");
+
+  return apiClient.put("/News/ActiveDeactiveNews", formData);
 };

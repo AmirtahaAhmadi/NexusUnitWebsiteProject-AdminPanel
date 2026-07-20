@@ -30,6 +30,20 @@ import {
   InputGroupText,
 } from "reactstrap";
 
+const getSupporterId = (ticket) =>
+  ticket?.supporterId ??
+  ticket?.supporterID ??
+  ticket?.supporter?.id ??
+  ticket?.SupporterId ??
+  null;
+
+const getInitials = (fullName) => {
+  if (!fullName || typeof fullName !== "string") return "?";
+  const trimmed = fullName.trim();
+  if (!trimmed) return "?";
+  return trimmed.charAt(0).toUpperCase();
+};
+
 const ChatLog = (props) => {
   const {
     handleUser,
@@ -42,7 +56,7 @@ const ChatLog = (props) => {
   } = props;
   const { userProfile, selectedUser } = chatData;
   const ticket = selectedUser?.originalTicket;
-  const isAccepted = !!ticket?.supporterId;
+  const isAccepted = !!getSupporterId(ticket);
   const chatArea = useRef(null);
 
   const [msg, setMsg] = useState("");
@@ -98,6 +112,11 @@ const ChatLog = (props) => {
 
   const renderChats = () => {
     return formattedChatData().map((item, index) => {
+      const isSupport = item.senderId === 11;
+      const senderName = isSupport
+        ? userProfile.fullName
+        : selectedUser.contact.fullName;
+
       return (
         <div
           key={index}
@@ -110,11 +129,9 @@ const ChatLog = (props) => {
               imgWidth={36}
               imgHeight={36}
               className="box-shadow-1 cursor-pointer"
-              img={
-                item.senderId === 11
-                  ? userProfile.avatar
-                  : selectedUser.contact.avatar
-              }
+              color="primary"
+              content={getInitials(senderName)}
+              initials
             />
           </div>
 
@@ -159,7 +176,7 @@ const ChatLog = (props) => {
       : "div";
 
   return (
-    <div className="chat-app-window">
+    <div className="chat-app-window" style={{ overflowX: "hidden" }}>
       <div
         className={classnames("start-chat-area", {
           "d-none": Object.keys(selectedUser).length,
@@ -194,7 +211,9 @@ const ChatLog = (props) => {
                 <Avatar
                   imgHeight="36"
                   imgWidth="36"
-                  img={selectedUser.contact.avatar}
+                  color="primary"
+                  content={getInitials(selectedUser.contact.fullName)}
+                  initials
                   status={selectedUser.contact.status}
                   className="avatar-border user-profile-toggle m-0 me-1"
                   onClick={() => handleAvatarClick(selectedUser.contact)}
@@ -218,7 +237,8 @@ const ChatLog = (props) => {
           <ChatWrapper
             ref={chatArea}
             className="user-chats"
-            options={{ wheelPropagation: false }}
+            options={{ wheelPropagation: false, suppressScrollX: true }}
+            style={{ overflowX: "hidden" }}
           >
             {selectedUser.chat ? (
               <div className="chats">{renderChats()}</div>

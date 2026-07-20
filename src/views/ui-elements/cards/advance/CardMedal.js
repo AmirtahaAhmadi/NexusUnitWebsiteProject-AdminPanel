@@ -24,9 +24,7 @@ const CardMedal = ({ profile }) => {
           میزان تکمیل پروفایل
         </CardText>
 
-        <Button color="primary">
-          مشاهده پروفایل
-        </Button>
+    
 
         <img
           className="congratulation-medal"

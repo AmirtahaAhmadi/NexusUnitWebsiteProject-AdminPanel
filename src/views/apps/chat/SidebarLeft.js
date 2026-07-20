@@ -15,6 +15,13 @@ import { X, Search } from 'react-feather'
 // ** Reactstrap Imports
 import { CardText, InputGroup, InputGroupText, Badge, Input } from 'reactstrap'
 
+const getInitials = fullName => {
+  if (!fullName || typeof fullName !== 'string') return '?'
+  const trimmed = fullName.trim()
+  if (!trimmed) return '?'
+  return trimmed.charAt(0).toUpperCase()
+}
+
 const SidebarLeft = props => {
   const {
     chatData,
@@ -129,7 +136,14 @@ const SidebarLeft = props => {
             active: active === item.id
           })}
         >
-          <Avatar img={item.avatar} imgHeight='42' imgWidth='42' status={item.status} />
+          <Avatar
+            color='primary'
+            content={getInitials(item.fullName)}
+            initials
+            imgHeight='42'
+            imgWidth='42'
+            status={item.status}
+          />
           <div className='chat-info flex-grow-1'>
             <h5 className='mb-0'>{item.fullName}</h5>
             <CardText className='text-truncate'>
@@ -153,13 +167,23 @@ const SidebarLeft = props => {
   const renderContacts = () => {
     if (contacts && contacts.length) {
       return contacts.map(item => {
+        const lastMessage = getLastMessage(item)
+        const time = safeFormatDate(lastMessage ? lastMessage.time : null)
+
         return (
           <li key={item.fullName} onClick={() => handleUserClick(item.id)}>
-            <Avatar img={item.avatar} imgHeight='42' imgWidth='42' />
+            <Avatar color='primary' content={getInitials(item.fullName)} initials imgHeight='42' imgWidth='42' />
             <div className='chat-info flex-grow-1'>
               <h5 className='mb-0'>{item.fullName}</h5>
-              <CardText className='text-truncate'>{item.about}</CardText>
+              <CardText className='text-truncate'>
+                {lastMessage ? lastMessage.message : item.about}
+              </CardText>
             </div>
+            {lastMessage ? (
+              <div className='chat-meta text-nowrap d-flex flex-column align-items-end'>
+                <small className='mb-25 chat-time'>{time}</small>
+              </div>
+            ) : null}
           </li>
         )
       })
@@ -179,9 +203,9 @@ const SidebarLeft = props => {
   }
 
   return chatData ? (
-    <div className='sidebar-left'>
+    <div className='sidebar-left' style={{ overflowX: 'hidden' }}>
       <div className='sidebar'>
-        <div className={classnames('sidebar-content', { show: sidebar === true })}>
+        <div className={classnames('sidebar-content', { show: sidebar === true })} style={{ overflowX: 'hidden' }}>
           <div className='sidebar-close-icon' onClick={handleSidebar}>
             <X size={14} />
           </div>
@@ -191,7 +215,9 @@ const SidebarLeft = props => {
                 {Object.keys(userProfile).length ? (
                   <Avatar
                     className='avatar-border'
-                    img={userProfile.avatar}
+                    color='primary'
+                    content={getInitials(userProfile.fullName)}
+                    initials
                     status={status}
                     imgHeight='42'
                     imgWidth='42'
@@ -211,7 +237,11 @@ const SidebarLeft = props => {
               </small>
             ) : null}
           </div>
-          <PerfectScrollbar className='chat-user-list-wrapper list-group' options={{ wheelPropagation: false }}>
+          <PerfectScrollbar
+            className='chat-user-list-wrapper list-group'
+            options={{ wheelPropagation: false, suppressScrollX: true }}
+            style={{ overflowX: 'hidden' }}
+          >
             <h4 className='chat-list-title'>تیکت‌ها {isLoading ? '(در حال بارگذاری...)' : ''}</h4>
             <ul className='chat-users-list chat-list media-list'>{renderChats()}</ul>
             {contacts && contacts.length ? (
