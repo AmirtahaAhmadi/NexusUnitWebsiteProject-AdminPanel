@@ -1,6 +1,15 @@
 @import '../base/bootstrap-extended/include';
 @import '../base/components/include';
 
+@font-face {
+  font-family: YekanBakh;
+  src: url("./assets/fonts/YekanBakh-VF.ttf");
+}
+
+* {
+  font-family: YekanBakh;
+}
+
 .dark-layout {
   .bg-transparent.btn- {
     svg {

@@ -44,6 +44,9 @@ const DashboardEcommerce = lazy(() =>
 );
 const Calendar = lazy(() => import("../../views/apps/calendar"));
 const Chat = lazy(() => import("../../views/apps/chat"));
+const UserList = lazy(() => import('../../views/apps/user/list'))
+const UserView = lazy(() => import('../../views/apps/user/view'))
+const Comments = lazy(() => import('../../pages/Comments'))
 
 const BlogList = lazy(() => import("../../views/blog/list"));
 const BlogDetails = lazy(() => import("../../views/blog/details"));
@@ -66,6 +69,22 @@ const Routes = [
   {
     path: "/ecommerce",
     element: <DashboardEcommerce />,
+  },
+  {
+    element: <UserList />,
+    path: '/user/list'
+  },
+  {
+    path: '/apps/user/view',
+    element: <Navigate to='/user/view/1' />
+  },
+  {
+    element: <UserView />,
+    path: '/user/view/:id'
+  },
+  {
+    element: <Comments />,
+    path: '/comments/list'
   },
   {
     element: <Calendar />,

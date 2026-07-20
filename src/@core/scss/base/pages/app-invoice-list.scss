@@ -11,6 +11,15 @@
 @import '../bootstrap-extended/include'; // Bootstrap includes
 @import '../components/include'; // Components includes
 
+@font-face {
+  font-family: YekanBakh;
+  src: url("./assets/fonts/YekanBakh-VF.ttf");
+}
+
+* {
+  font-family: YekanBakh;
+}
+
 .invoice-list-wrapper {
   @media (max-width: 470px) {
     .invoice_status {
