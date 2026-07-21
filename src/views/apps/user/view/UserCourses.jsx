@@ -100,8 +100,8 @@ const UserCourses = ({ currentUserDetails, userDetailsRenderCount }) => {
       );
       const responses = await Promise.all(requests);
       responses.map((r) => setUserCourses((prev) => [...prev, r.data]));
-      console.log(responses);
-      console.log(userCourses);
+      // console.log(responses);
+      // console.log(userCourses);
     } catch (error) {
       console.error("userCoursesList error:", error);
     } finally {

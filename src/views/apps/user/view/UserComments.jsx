@@ -171,7 +171,7 @@ const UserComments = ({ currentUserDetails, userDetailsRenderCount, setUserDetai
         // teacherId: '',
         userId: currentUserDetails.id,
       });
-      console.log(response.data);
+      // console.log(response.data);
       setCoursesComments(response.data.comments);
       setTotalCount(response.data.totalCount);
       // setTotalPages(Math.ceil(response.data.totalCount / rowsPerPage));
@@ -203,18 +203,6 @@ const UserComments = ({ currentUserDetails, userDetailsRenderCount, setUserDetai
   };
 
   const columns1 = [
-    // {
-    //   name: "نام کاربر",
-    //   sortable: true,
-    //   minWidth: "150px",
-    //   sortField: "title",
-    //   selector: (row) => row.author,
-    //   cell: (row) => (
-    //     <div className="d-flex justify-content-left align-items-center">
-    //       <span className="fw-bolder">{row.author || "--"}</span>
-    //     </div>
-    //   ),
-    // },
     {
       name: "نام دوره",
       sortable: true,

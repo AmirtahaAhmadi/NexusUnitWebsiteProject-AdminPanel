@@ -57,7 +57,9 @@ const Address = ({ stepper, type, data, onSubmit }) => {
   }, [data]);
 
   const OnSubmitForm = () => {
-    onSubmit({ latitude: lat || data.latitude, longitude: long || data.longitude });
+    const latt = lat || data.latitude;
+    const longg = long || data.longitude;
+    onSubmit({ latitude: latt, longitude: longg });
     stepper.next();
   };
 

@@ -17,12 +17,12 @@ import {
 } from "react-feather";
 
 // ** User Components
-import BillingPlanTab from "./BillingTab";
 import UserCourses from "./UserCourses";
 import UserReservedCoursesList from "./UserReservedCoursesList";
 import UserComments from "./UserComments";
 import UserOtherDetails from "./UserOtherDetails";
 import UserSocialMedia from "./UserSocialMedia";
+import UserPayments from "./UserPayments";
 
 const UserTabs = ({
   active,
@@ -86,7 +86,7 @@ const UserTabs = ({
           />
         </TabPane>
         <TabPane tabId="3">
-          <BillingPlanTab currentUserDetails={currentUserDetails} />
+          <UserPayments currentUserDetails={currentUserDetails} />
         </TabPane>
         <TabPane tabId="4">
           <UserComments currentUserDetails={currentUserDetails} userDetailsRenderCount={userDetailsRenderCount} setUserDetailsRenderCount={setUserDetailsRenderCount} />
