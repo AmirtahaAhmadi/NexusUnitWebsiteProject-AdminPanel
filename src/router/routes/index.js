@@ -11,6 +11,7 @@ import BasicCards from "../../pages/basic";
 import Jobstitleanddata from "../../pages/basic/jobs/jobstitleanddata";
 import Alljobsmenu from "../../pages/basic/jobs/Alljobsmenu";
 import Updatejobsmenu from "../../pages/basic/jobs/updatejobsmenu";
+import UserSessionMenu from "../../pages/CourseList/UserSessionMenu";
 // ** Route Components
 import PublicRoute from "@components/routes/PublicRoute";
 // ** Utils
@@ -18,7 +19,7 @@ import { isObjEmpty } from "@utils";
 import Assistance from "../../pages/basic/jobs/assistance";
 import CourseSettingMenu from "../../pages/CourseSetting/CourseSettingMenu";
 import JobsTable from "../../pages/basic/jobs/JobsTable";
-
+import CourseGroupMenu from "../../pages/CourseList/CourseGroup/CourseGroupMenu";
 const getLayout = {
   blank: <BlankLayout />,
   vertical: <VerticalLayout />,
@@ -110,13 +111,20 @@ const Routes = [
     path: "/updatejobs",
     element: <Updatejobsmenu />,
   },
-  // {
-  //   path: "/assistance",
-  //   element: <Assistance />,
-  // },
+
   {
     path: "/techupdate",
     element: <CourseSettingMenu />,
+  },
+  {
+    path: "/useHomework",
+    element: <UserSessionMenu />,
+  },
+
+  {
+    path: "/CourseGroup",
+
+    element: <CourseGroupMenu />,
   },
 ];
 

@@ -17,10 +17,20 @@ const CourseSettingMenu = () => {
   return (
     <Fragment>
       <Breadcrumbs
-        title="اجتمایی"
-        data={[{ title: "منو" }, { title: "دوره هایه اجتمایی" }]}
+        title="تنظیمات دوره"
+        data={[{ title: "منو" }, { title: "تنظیمات دوره" }]}
       />
 
+      <div className="shadow">
+        <div className=" t-text-[20px] t-p-8">تمام سطح ها</div>
+        <CourseLevelList />
+        <Addnewlevel />
+      </div>
+      <div className="shadow my-4">
+        <div className=" t-text-[20px] t-p-8">تمام استاتوس ها</div>
+        <CoursestatusList />
+        <AddnewStatus />
+      </div>
       <div className="shadow my-4">
         <div className=" t-text-[20px] t-p-8">تمام تکنولوژِی ها</div>
         <CourseTechList />

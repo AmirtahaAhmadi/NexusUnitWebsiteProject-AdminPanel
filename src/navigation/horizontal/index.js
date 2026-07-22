@@ -9,6 +9,7 @@ import { Home } from "react-feather";
 import { Mail } from "react-feather";
 import { Briefcase } from "react-feather";
 import { MessageSquare } from "react-feather";
+import { Settings } from "react-feather";
 export default [
   {
     id: "home",
@@ -78,16 +79,21 @@ export default [
     navLink: "/updatejobs",
   },
   {
-    id: "SocialGroup",
-    title: "گروه هایه اجتمایی",
+    id: "sessions",
+    title: "جلسه ها",
     icon: <MessageSquare style={{ width: 20, height: 20 }} />,
-    navLink: "/SocialGroup",
+    navLink: "/sessions",
   },
-
-  // {
-  //   id: "assistance",
-  //   title: "مشاوران",
-  //   icon: <PenTool style={{ width: 20, height: 20 }} />,
-  //   navLink: "/assistance",
-  // },
+  {
+    id: "useHomework",
+    title: "لیست تکالیف کاربران",
+    icon: <Briefcase style={{ width: 20, height: 20 }} />,
+    navLink: "/useHomework",
+  },
+  {
+    id: "CourseGroup",
+    title: "بروزرسانی گروه هایه دوره",
+    icon: <Settings style={{ width: 20, height: 20 }} />,
+    navLink: "/CourseGroup",
+  },
 ];

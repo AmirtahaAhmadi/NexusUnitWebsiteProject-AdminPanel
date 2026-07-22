@@ -81,7 +81,7 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
 
   const classOptions = (getChoosingData?.classRoomDtos || []).map((item) => ({
     value: item.id,
-    label: `${item.classRoomName}`,
+    label: item.classRoomName,
   }));
 
   const courseLevelOptions = (getChoosingData?.courseLevelDtos || []).map(
@@ -106,52 +106,64 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
     value: item.id,
     label: item.statusName,
   }));
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: newvalue.Title,
+    description: newvalue.describe,
+    instructor: {
+      "@type": "Person",
+      name: newvalue.teacherName,
+    },
+  };
+
   useEffect(() => {
     console.log("newValue", newvalue);
   }, [newvalue]);
 
   const run = async () => {
-    try {
-      if (!array) return;
+    if (!array) return;
 
-      const getbyid = await getcoursebyidAdminTeacherCall(array);
-      if (getbyid) {
-        console.log("getbyid", getbyid);
-        setgetcoursebyid(getbyid);
+    const getbyid = await getcoursebyidAdminTeacherCall(array);
+    if (getbyid) {
+      console.log("getbyid", getbyid);
+      setgetcoursebyid(getbyid);
 
-        setnewvalue({
-          courseId: getbyid?.courseId || "",
-          title: getbyid?.title || "",
-          describe: getbyid?.describe || "",
-          miniDescribe: getbyid?.miniDescribe || "",
-          capacity: getbyid?.capacity || "",
+      setnewvalue({
+        courseId: getbyid?.courseId || "",
+        title: getbyid?.title || "",
+        describe: getbyid?.describe || "",
+        miniDescribe: getbyid?.miniDescribe || "",
+        capacity: getbyid?.capacity || "",
 
-          sessionNumber: getbyid?.sessionNumber || "",
-          currentCoursePaymentNumber: getbyid?.currentCoursePaymentNumber || "",
-          tremId: getbyid?.tremId || "",
-          classId: getbyid?.classId || "",
-          courseLvlId: getbyid?.courseLvlId || "",
-          teacherId: getbyid?.teacherId || "",
-          cost: getbyid?.cost || "",
-          uniqeUrlString: getbyid?.uniqeUrlString || "",
-          image: null,
-          startTime: getbyid?.startTime
-            ? new Date(getbyid.startTime).toISOString().slice(0, 16)
-            : "",
-          endTime: getbyid?.endTime
-            ? new Date(getbyid.endTime).toISOString().slice(0, 16)
-            : "",
-          googleSchema: getbyid?.googleSchema || "",
-          googleTitle: getbyid?.googleTitle || "",
-          coursePrerequisiteId: getbyid?.coursePrerequisiteId || "",
-          shortLink: getbyid?.shortLink || "",
-          tumbImageAddress: getbyid?.tumbImageAddress || "",
-          imageAddress: getbyid?.imageAddress || "",
-          courseStatusId: getbyid?.statusId || "",
-        });
-      }
-    } catch (error) {
-      console.log(error);
+        sessionNumber: getbyid?.sessionNumber || "",
+        currentCoursePaymentNumber: getbyid?.currentCoursePaymentNumber || "",
+        tremId: getbyid?.tremId || "",
+        classId: getbyid?.classId || "",
+        courseLvlId: getbyid?.courseLvlId || "",
+        teacherId: getbyid?.teacherId || "",
+        cost: getbyid?.cost || "",
+        uniqeUrlString: getbyid?.uniqeUrlString || "",
+        image: null,
+        startTime: getbyid?.startTime
+          ? new Date(getbyid.startTime).toISOString().slice(0, 16)
+          : "",
+        endTime: getbyid?.endTime
+          ? new Date(getbyid.endTime).toISOString().slice(0, 16)
+          : "",
+
+        googleSchema: getbyid?.googleSchema || "",
+        googleTitle: getbyid?.googleTitle || "",
+        coursePrerequisiteId: getbyid?.coursePrerequisiteId || "",
+        shortLink: getbyid?.shortLink || "",
+        tumbImageAddress: getbyid?.tumbImageAddress || "",
+        imageAddress: getbyid?.imageAddress || "",
+        courseStatusId: getbyid?.statusId || "",
+        teacherName: getbyid?.teacherName || "",
+      });
+    } else {
+      console.log("error");
     }
   };
 
@@ -164,23 +176,28 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
     run();
   }, [array1, refresh]);
 
-  const handleChange = (key, value) => {
+  const handleChange = (el, value) => {
     setnewvalue((prev) => ({
       ...prev,
-      [key]: value,
+      [el]: value,
     }));
   };
 
   const handleSubmit = async () => {
+    setnewvalue((pre) => ({
+      ...pre,
+      googleSchema: schema,
+    }));
+
     try {
       await EditCourse(newvalue);
 
-      toast.success("دوره با موفقیت ویرایش شد");
+      toast.success("تغییرات اعمال شد");
       setshowedit(false);
-      setrefresh((prev) => !prev);
+      setrefresh((pre) => !pre);
     } catch (error) {
       console.log(error);
-      toast.error("خطا در ویرایش دوره");
+      toast.error("خطا ");
     }
   };
 
@@ -193,7 +210,7 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
     try {
       const result = await ActiveDeactiveCourse(action);
       if (result) {
-        toast.success("وضعیت دوره تغییر کرد");
+        toast.success("تغییرات  اعمال شد");
         setrefresh((prev) => !prev);
       }
     } catch (error) {
@@ -202,6 +219,9 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
     }
   };
 
+  useEffect(() => {
+    console.log("newvalue", newvalue);
+  }, [newvalue]);
   return (
     <Fragment>
       <div
@@ -445,7 +465,10 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
                         handleChange("teacherId", "");
                         return;
                       }
-
+                      // const selected = selectedOption.value.find(
+                      //   (op) => op.value === teacherOptions.value,
+                      // );
+                      console.log("selected", selected);
                       handleChange("teacherId", selectedOption.value);
                     }}
                   />

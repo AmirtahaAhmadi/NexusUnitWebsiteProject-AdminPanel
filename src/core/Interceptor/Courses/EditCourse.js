@@ -31,7 +31,7 @@ export const EditCourse = (data) => {
   formData.append("ShortLink", data.ShortLink);
   formData.append("TumbImageAddress", data.TumbImageAddress);
   formData.append("ImageAddress", data.ImageAddress);
-
+  console.log("formData dasdasd", formData);
   return apiClient.put("/Course", formData, {
     headers: {
       "Content-Type": "multipart/form-data",

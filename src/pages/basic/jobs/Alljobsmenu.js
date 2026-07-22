@@ -19,7 +19,7 @@ const Alljobsmenu = () => {
   return (
     <Fragment>
       <Breadcrumbs
-        title="تمام مشاغل"
+        title=" مشاغل"
         data={[{ title: "منو" }, { title: "تمام مشاغل" }]}
       />
 
