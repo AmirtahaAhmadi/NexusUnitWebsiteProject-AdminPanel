@@ -87,9 +87,8 @@ const BlogDetails = () => {
   const [commentText, setCommentText] = useState("");
   const [activeReplyId, setActiveReplyId] = useState(null);
 
-  // دکمه ویرایش خبر: کاربر را به صفحه ادیت همین خبر می‌برد
   const handleEditNews = () => {
-    navigate(`/pages/blog/edit/${id}`);
+    navigate(`/pages/blog/edit/${id}`, { state: { from: "detail" } });
   };
 
   const fetchUserInfo = async () => {
@@ -203,6 +202,7 @@ const BlogDetails = () => {
       setIsRateLoading(false);
     }
   };
+
   const handleSubmitComment = async () => {
     if (!commentText.trim()) return;
 
@@ -216,6 +216,7 @@ const BlogDetails = () => {
       console.error("خطا در ارسال کامنت:", error);
     }
   };
+
   const handleSubmitReply = async (commentId) => {
     const text = replyTexts[commentId];
 
@@ -252,27 +253,56 @@ const BlogDetails = () => {
       console.error("reply error:", error);
     }
   };
-  const fetchNews = async () => {
+
+  const fetchNews = async (newsId, requestToken) => {
     setIsLoading(true);
+    setData({});
 
     try {
-      const response = await NewsBlogDetail({
-        Id: id,
-      });
+      const response = await NewsBlogDetail({ Id: newsId });
 
-      setBlogLikeCount(response.data.news?.[0]?.currentLikeCount || 0);
-      setBlogLiked(response.data.news?.[0]?.currentUserIsLike || false);
-      setData(response.data.news?.[0]);
-      console.log("دیتای دریافتی", response.data.news?.[0]);
+      if (requestToken.current !== newsId) return;
+
+      const newsList = response.data?.news || [];
+
+      const matchedNews =
+        newsList.find((n) => String(n.id) === String(newsId)) ||
+        newsList[0] ||
+        null;
+
+      if (!matchedNews) {
+        console.warn("هیچ خبری با این id از سرور برنگشت:", newsId);
+      } else if (String(matchedNews.id) !== String(newsId)) {
+        console.warn(
+          "توجه: id خبر برگشتی از سرور با id درخواستی یکی نیست. این یعنی endpoint سمت بک‌اند فیلتر Id را درست اعمال نمی‌کند.",
+          { requested: newsId, received: matchedNews.id },
+        );
+      }
+
+      setBlogLikeCount(matchedNews?.currentLikeCount || 0);
+      setBlogLiked(matchedNews?.currentUserIsLike || false);
+      setData(matchedNews || {});
+      console.log("دیتای دریافتی برای id", newsId, matchedNews);
     } catch (error) {
-      console.error("API ERROR:", error);
+      if (requestToken.current === newsId) {
+        console.error("API ERROR:", error);
+      }
     } finally {
-      setIsLoading(false);
+      if (requestToken.current === newsId) {
+        setIsLoading(false);
+      }
     }
   };
+
   useEffect(() => {
-    fetchNews(id);
+    const requestToken = { current: id };
+    fetchNews(id, requestToken);
+
+    return () => {
+      requestToken.current = null;
+    };
   }, [id]);
+
   const handleBlogLike = async () => {
     if (isBlogLikeLoading) return;
 
@@ -293,10 +323,16 @@ const BlogDetails = () => {
       setIsBlogLikeLoading(false);
     }
   };
-  const fetchBlogComment = async (newsId) => {
+
+  const fetchBlogComment = async (newsId, requestToken) => {
     setisLoadingComment(true);
+    setBlogComment([]);
+
     try {
       const response = await GetNewsComments({ NewsId: newsId });
+
+      if (requestToken && requestToken.current !== newsId) return;
+
       const comments =
         response.data?.comments ||
         response.data?.data ||
@@ -304,14 +340,24 @@ const BlogDetails = () => {
       setBlogComment(comments);
       console.log("دیتای دریافتی از سرور", comments);
     } catch (error) {
-      console.error(error);
-      setBlogComment([]);
+      if (!requestToken || requestToken.current === newsId) {
+        console.error(error);
+        setBlogComment([]);
+      }
     } finally {
-      setisLoadingComment(false);
+      if (!requestToken || requestToken.current === newsId) {
+        setisLoadingComment(false);
+      }
     }
   };
+
   useEffect(() => {
-    fetchBlogComment(id);
+    const requestToken = { current: id };
+    fetchBlogComment(id, requestToken);
+
+    return () => {
+      requestToken.current = null;
+    };
   }, [id]);
 
   const badgeColorsArr = {
@@ -331,6 +377,7 @@ const BlogDetails = () => {
       </Badge>
     ));
   };
+
   const renderComments = () => {
     if (isLoadingComment) {
       return (
@@ -513,20 +560,20 @@ const BlogDetails = () => {
                     fontSize: "14px",
                     border: "1px solid #e5e7eb",
                     borderRadius: "12px",
-                    outline: "none", // 👈 مهم
+                    outline: "none",
                     resize: "none",
                     backgroundColor: "#fff",
                     color: "#374151",
                     transition: "0.2s ease",
                   }}
                   onFocus={(e) => {
-                    e.target.style.outline = "none"; // 👈 مهم
+                    e.target.style.outline = "none";
                     e.target.style.borderColor = "#3b82f6";
                     e.target.style.boxShadow =
                       "0 0 0 2px rgba(59,130,246,0.15)";
                   }}
                   onBlur={(e) => {
-                    e.target.style.outline = "none"; // 👈 مهم
+                    e.target.style.outline = "none";
                     e.target.style.borderColor = "#e5e7eb";
                     e.target.style.boxShadow = "none";
                   }}
@@ -561,6 +608,7 @@ const BlogDetails = () => {
       );
     });
   };
+
   if (isLoading) {
     return (
       <div

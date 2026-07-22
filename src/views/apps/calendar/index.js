@@ -37,13 +37,17 @@ const mapScheduleToEvent = (item) => {
 
   return {
     id: String(item.id),
-    title: item.courseName || item.title || `دوره ${item.courseGroupId ?? ""}`,
+
+    title: item.coursegroup?.groupName
+      ? `${item.coursegroup.groupName} - دوره`
+      : "جلسه دوره",
+
     start,
     end,
     allDay: false,
     display: "block",
+
     extendedProps: {
-      active: getActiveFlag(item),
       courseGroupId: item.courseGroupId,
       weekNumber: item.weekNumber,
       rowEffect: item.rowEffect,
@@ -51,7 +55,6 @@ const mapScheduleToEvent = (item) => {
     },
   };
 };
-
 const CalendarComponent = () => {
   // ** States
   const [calendarApi, setCalendarApi] = useState(null);

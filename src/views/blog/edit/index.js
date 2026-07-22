@@ -1,6 +1,6 @@
 // ** React Imports
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 // ** Third Party Components
 import Select from "react-select";
@@ -108,6 +108,9 @@ const htmlToEditorData = (html) => {
 const NewsEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const cameFromDetail = location.state?.from === "detail";
 
   const isNew = id === "new";
 
@@ -424,7 +427,11 @@ const NewsEdit = () => {
         toast.success("تغییرات با موفقیت ذخیره شد");
       }
 
-      navigate("/pages/blog/list");
+      if (!isNew && cameFromDetail) {
+        navigate(`/pages/blog/detail/${id}`);
+      } else {
+        navigate("/pages/blog/list");
+      }
     } catch (error) {
       console.error("API ERROR:", error);
       toast.error(isNew ? "خطا در ایجاد خبر جدید" : "خطا در ذخیره تغییرات");
@@ -434,7 +441,12 @@ const NewsEdit = () => {
   };
 
   const handleCancel = () => {
-    navigate("/pages/blog/list");
+    // انصراف هم باید همون‌جایی که کاربر ازش اومده برگردونه
+    if (!isNew && cameFromDetail) {
+      navigate(`/pages/blog/detail/${id}`);
+    } else {
+      navigate("/pages/blog/list");
+    }
   };
 
   return (
