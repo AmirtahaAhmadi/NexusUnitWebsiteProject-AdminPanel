@@ -15,6 +15,7 @@ import {
   PenTool,
   Users,
   Share2,
+  Menu,
 } from "react-feather";
 
 export default [
@@ -158,11 +159,32 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/CourseHelps",
       },
+
       {
-        id: "SocialGroup",
-        title: "گروه های اجتماعی",
-        icon: <Circle size={12} />,
-        navLink: "/SocialGroup",
+        id: "CourseGroup",
+        title: "بروزرسانی گروه هایه دوره",
+        icon: <Settings style={{ width: 20, height: 20 }} />,
+        navLink: "/CourseGroup",
+      },
+      {
+        id: "sessions",
+        title: "جلسه ها",
+        icon: <Menu style={{ width: 20, height: 20 }} />,
+        navLink: "/sessions",
+        children: [
+          {
+            id: "useHomework",
+            title: "لیست تکالیف کاربران",
+            icon: <Briefcase style={{ width: 20, height: 20 }} />,
+            navLink: "/useHomework",
+          },
+          {
+            id: "updatejobs",
+            title: "بروزرسانی مشاغل",
+            icon: <PenTool style={{ width: 20, height: 20 }} />,
+            navLink: "/updatejobs",
+          },
+        ],
       },
     ],
   },

@@ -185,11 +185,16 @@ export default [
       },
     ],
   },
-
-  // {
-  //   id: "assistance",
-  //   title: "مشاوران",
-  //   icon: <PenTool style={{ width: 20, height: 20 }} />,
-  //   navLink: "/assistance",
-  // },
+  {
+    id: "useHomework",
+    title: "لیست تکالیف کاربران",
+    icon: <Briefcase style={{ width: 20, height: 20 }} />,
+    navLink: "/useHomework",
+  },
+  {
+    id: "CourseGroup",
+    title: "بروزرسانی گروه هایه دوره",
+    icon: <Settings style={{ width: 20, height: 20 }} />,
+    navLink: "/CourseGroup",
+  },
 ];

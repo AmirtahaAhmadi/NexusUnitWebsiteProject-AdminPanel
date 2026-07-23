@@ -13,7 +13,9 @@ import { globalformData } from "../../../redux/zustan/formdata";
 // import { postCreatestep2call } from "../../../core/Interceptor/Courses/postCreatestep2call";
 import { postCreatestep2 } from "../../../core/Interceptor/Courses/postCreatestep2";
 import { generate12DigitNumber } from "../../../core/Interceptor/Courses/generate12digitnumber";
+import RichTextEditor from "./RichTextEditor";
 import { CCstep2id } from "../../../redux/zustan/CCstep2id";
+
 const PersonalInfo = ({ stepper, type }) => {
   const formData = globalformData((state) => state.formData);
   const updateformdata = globalformData((state) => state.updateformdata);
@@ -412,6 +414,7 @@ const PersonalInfo = ({ stepper, type }) => {
             }
           />
         </Col>
+        <RichTextEditor />
 
         <Col md="6" className="mb-1 t-w-full">
           <Label className="form-label" for={`Describe-${type}`}>
