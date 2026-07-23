@@ -15,7 +15,9 @@ import {
   PenTool,
   Users,
   Share2,
+  User,
   Settings,
+  Menu,
 } from "react-feather";
 
 export default [
@@ -24,6 +26,18 @@ export default [
     title: "داشبورد",
     icon: <Home size={20} />,
     navLink: "/ecommerce",
+  },
+  {
+    id: "userList",
+    title: "مدیریت کاربران",
+    icon: <User size={20} />,
+    navLink: "/user/list",
+  },
+  {
+    id: "commentsList",
+    title: "کامنت ها",
+    icon: <Bookmark size={20} />,
+    navLink: "/comments/list",
   },
   {
     id: "calendar",
@@ -131,7 +145,7 @@ export default [
     children: [
       {
         id: "AllCourses",
-        title: "تمام دوره ها",
+        title: "دوره ها",
         icon: <Circle size={12} />,
         navLink: "/AllCourses",
       },
@@ -165,6 +179,32 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/SocialGroup",
       },
+      {
+        id: "CourseGroup",
+        title: "بروزرسانی گروه هایه دوره",
+        icon: <Settings style={{ width: 20, height: 20 }} />,
+        navLink: "/CourseGroup",
+      },
+      {
+        id: "sessions",
+        title: "جلسه ها",
+        icon: <Menu style={{ width: 20, height: 20 }} />,
+        navLink: "/sessions",
+        children: [
+          {
+            id: "useHomework",
+            title: "لیست تکالیف کاربران",
+            icon: <Briefcase style={{ width: 20, height: 20 }} />,
+            navLink: "/useHomework",
+          },
+          {
+            id: "updatejobs",
+            title: "بروزرسانی مشاغل",
+            icon: <PenTool style={{ width: 20, height: 20 }} />,
+            navLink: "/updatejobs",
+          },
+        ],
+      },
     ],
   },
   {
@@ -186,22 +226,11 @@ export default [
       },
     ],
   },
-  {
-    id: "sessions",
-    title: "جلسه ها",
-    icon: <MessageSquare style={{ width: 20, height: 20 }} />,
-    navLink: "/sessions",
-  },
-  {
-    id: "useHomework",
-    title: "لیست تکالیف کاربران",
-    icon: <Briefcase style={{ width: 20, height: 20 }} />,
-    navLink: "/useHomework",
-  },
-  {
-    id: "CourseGroup",
-    title: "بروزرسانی گروه هایه دوره",
-    icon: <Settings style={{ width: 20, height: 20 }} />,
-    navLink: "/CourseGroup",
-  },
+
+  // {
+  //   id: "assistance",
+  //   title: "مشاوران",
+  //   icon: <PenTool style={{ width: 20, height: 20 }} />,
+  //   navLink: "/assistance",
+  // },
 ];
