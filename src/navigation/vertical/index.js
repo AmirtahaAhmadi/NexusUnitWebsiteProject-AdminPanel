@@ -16,6 +16,7 @@ import {
   Users,
   Share2,
   Menu,
+  Settings,
 } from "react-feather";
 
 export default [

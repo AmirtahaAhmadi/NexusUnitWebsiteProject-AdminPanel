@@ -15,6 +15,7 @@ import {
   PenTool,
   Users,
   Share2,
+  Settings,
 } from "react-feather";
 
 export default [
