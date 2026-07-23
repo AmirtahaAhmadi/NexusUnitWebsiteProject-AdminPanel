@@ -15,6 +15,7 @@ import {
   PenTool,
   Users,
   Share2,
+  Settings,
 } from "react-feather";
 
 export default [
@@ -185,11 +186,22 @@ export default [
       },
     ],
   },
-
-  // {
-  //   id: "assistance",
-  //   title: "مشاوران",
-  //   icon: <PenTool style={{ width: 20, height: 20 }} />,
-  //   navLink: "/assistance",
-  // },
+  {
+    id: "sessions",
+    title: "جلسه ها",
+    icon: <MessageSquare style={{ width: 20, height: 20 }} />,
+    navLink: "/sessions",
+  },
+  {
+    id: "useHomework",
+    title: "لیست تکالیف کاربران",
+    icon: <Briefcase style={{ width: 20, height: 20 }} />,
+    navLink: "/useHomework",
+  },
+  {
+    id: "CourseGroup",
+    title: "بروزرسانی گروه هایه دوره",
+    icon: <Settings style={{ width: 20, height: 20 }} />,
+    navLink: "/CourseGroup",
+  },
 ];

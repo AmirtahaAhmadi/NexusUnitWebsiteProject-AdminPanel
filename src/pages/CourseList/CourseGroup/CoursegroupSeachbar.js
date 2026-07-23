@@ -1,7 +1,5 @@
 // ** Icons Imports
 import { Search, ArrowUp, ArrowDown } from "react-feather";
-import { setSearchQuery } from "../../../redux/courseSlice";
-import { useDispatch } from "react-redux";
 // ** Reactstrap Imports
 import {
   Row,
@@ -9,24 +7,23 @@ import {
   InputGroup,
   Input,
   InputGroupText,
-  Badge,
   Button,
 } from "reactstrap";
 import { useState } from "react";
 
-const ProductsSearchbar = ({
-  getcourse = [],
+const CoursegroupSeachbar = ({
+  query,
+  setQuery,
   sortingcol,
   setsortingcol,
   SortType,
   setSortType,
 }) => {
-  const dispatch = useDispatch();
-  const [value, setvalue] = useState("");
-  const [ColorChange, setColorChange] = useState(true);
+  const [value, setvalue] = useState(query || "");
+
   const handleSearch = (searchValue) => {
-    const query = searchValue !== undefined ? searchValue : value;
-    dispatch(setSearchQuery(query));
+    const finalQuery = searchValue !== undefined ? searchValue : value;
+    setQuery(finalQuery);
   };
 
   const handleKeyDown = (e) => {
@@ -35,16 +32,11 @@ const ProductsSearchbar = ({
     }
   };
 
-  const selectCategory = (categoryName) => {
-    setvalue(categoryName);
-    handleSearch(categoryName);
-    setColorChange(false);
-  };
-
   const clearFilter = () => {
     setvalue("");
-    handleSearch("");
-    setColorChange(true);
+    setQuery("");
+    setsortingcol("groupCapacity");
+    setSortType("desc");
   };
 
   return (
@@ -57,7 +49,7 @@ const ProductsSearchbar = ({
           <InputGroup className="input-group-merge">
             <Input
               className="search-product"
-              placeholder="جست و جو..."
+              placeholder="جستجو..."
               value={value}
               onChange={(e) => setvalue(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -77,50 +69,35 @@ const ProductsSearchbar = ({
           className="d-flex flex-wrap align-items-center"
           style={{ gap: "10px" }}>
           <span style={{ fontSize: "13px" }}>مرتب‌سازی بر اساس:</span>
-          {/* 
-          <Button
-            size="sm"
-            color={ColorChange ? "outline-primary" : "outline-primary"}
-            style={{ cursor: "pointer", fontSize: "12px" }}
-            onClick={clearFilter}>
-            همه دوره‌ها
-          </Button> */}
 
           <Button
             size="sm"
-            color={sortingcol === "lastUpdate" ? "primary" : "outline-primary"}
-            onClick={() => setsortingcol("lastUpdate")}>
-            آخرین بروزرسانی
+            color={sortingcol === "groupName" ? "primary" : "outline-primary"}
+            onClick={() => setsortingcol("groupName")}>
+            نام گروه
           </Button>
 
           <Button
             size="sm"
-            color={sortingcol === "cost" ? "primary" : "outline-primary"}
-            onClick={() => setsortingcol("cost")}>
-            قیمت
-          </Button>
-
-          <Button
-            size="sm"
-            color={sortingcol === "capacity" ? "primary" : "outline-primary"}
-            onClick={() => setsortingcol("capacity")}>
-            ظرفیت
+            color={
+              sortingcol === "groupCapacity" ? "primary" : "outline-primary"
+            }
+            onClick={() => setsortingcol("groupCapacity")}>
+            ظرفیت گروه
           </Button>
 
           <Button
             size="sm"
             color="flat-secondary"
-            className="d-flex align-items-center ml-auto"
+            className="d-flex align-items-center me-auto"
             onClick={() => setSortType(SortType === "asc" ? "desc" : "asc")}>
             {SortType === "asc" ? (
               <>
-                {" "}
-                صعودی <ArrowUp size={14} className="ms-50" />{" "}
+                صعودی <ArrowUp size={14} className="ms-50" />
               </>
             ) : (
               <>
-                {" "}
-                نزولی <ArrowDown size={14} className="ms-50" />{" "}
+                نزولی <ArrowDown size={14} className="ms-50" />
               </>
             )}
           </Button>
@@ -130,4 +107,4 @@ const ProductsSearchbar = ({
   );
 };
 
-export default ProductsSearchbar;
+export default CoursegroupSeachbar;

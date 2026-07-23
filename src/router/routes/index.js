@@ -11,6 +11,7 @@ import BasicCards from "../../pages/basic";
 import Jobstitleanddata from "../../pages/basic/jobs/jobstitleanddata";
 import Alljobsmenu from "../../pages/basic/jobs/Alljobsmenu";
 import Updatejobsmenu from "../../pages/basic/jobs/updatejobsmenu";
+import UserSessionMenu from "../../pages/CourseList/UserSessionMenu";
 // ** Route Components
 import PublicRoute from "@components/routes/PublicRoute";
 // ** Utils
@@ -18,7 +19,7 @@ import { isObjEmpty } from "@utils";
 import Assistance from "../../pages/basic/jobs/assistance";
 import CourseSettingMenu from "../../pages/CourseSetting/CourseSettingMenu";
 import JobsTable from "../../pages/basic/jobs/JobsTable";
-
+import CourseGroupMenu from "../../pages/CourseList/CourseGroup/CourseGroupMenu";
 const getLayout = {
   blank: <BlankLayout />,
   vertical: <VerticalLayout />,
@@ -44,9 +45,9 @@ const DashboardEcommerce = lazy(() =>
 );
 const Calendar = lazy(() => import("../../views/apps/calendar"));
 const Chat = lazy(() => import("../../views/apps/chat"));
-const UserList = lazy(() => import('../../views/apps/user/list'))
-const UserView = lazy(() => import('../../views/apps/user/view'))
-const Comments = lazy(() => import('../../pages/Comments'))
+const UserList = lazy(() => import("../../views/apps/user/list"));
+const UserView = lazy(() => import("../../views/apps/user/view"));
+const Comments = lazy(() => import("../../pages/Comments"));
 
 const BlogList = lazy(() => import("../../views/blog/list"));
 const BlogDetails = lazy(() => import("../../views/blog/details"));
@@ -72,19 +73,19 @@ const Routes = [
   },
   {
     element: <UserList />,
-    path: '/user/list'
+    path: "/user/list",
   },
   {
-    path: '/apps/user/view',
-    element: <Navigate to='/user/view/1' />
+    path: "/apps/user/view",
+    element: <Navigate to="/user/view/1" />,
   },
   {
     element: <UserView />,
-    path: '/user/view/:id'
+    path: "/user/view/:id",
   },
   {
     element: <Comments />,
-    path: '/comments/list'
+    path: "/comments/list",
   },
   {
     element: <Calendar />,
@@ -198,10 +199,7 @@ const Routes = [
     path: "/updatejobs",
     element: <Updatejobsmenu />,
   },
-  // {
-  //   path: "/assistance",
-  //   element: <Assistance />,
-  // },
+
   {
     path: "/techupdate",
     element: <CourseSettingMenu />,
@@ -213,6 +211,14 @@ const Routes = [
   {
     path: "/CourseHelps",
     element: <CourseHelps />,
+    path: "/useHomework",
+    element: <UserSessionMenu />,
+  },
+
+  {
+    path: "/CourseGroup",
+
+    element: <CourseGroupMenu />,
   },
 ];
 
