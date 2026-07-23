@@ -211,6 +211,8 @@ const Routes = [
   {
     path: "/CourseHelps",
     element: <CourseHelps />,
+  },
+  {
     path: "/useHomework",
     element: <UserSessionMenu />,
   },

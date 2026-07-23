@@ -102,8 +102,12 @@ const CalendarComponent = () => {
 
       const list = response?.data?.data || response?.data || [];
 
-      console.log("دریافتی", list);
+      console.log("کل لیست:", list);
 
+      if (list.length > 0) {
+        const lastSchedule = list[list.length - 1];
+        console.log("آخرین جلسه ایجاد شده:", lastSchedule);
+      }
       const mappedEvents = list.map(mapScheduleToEvent);
 
       setEvents(mappedEvents);

@@ -182,25 +182,25 @@ export default [
       {
         id: "CourseGroup",
         title: "بروزرسانی گروه هایه دوره",
-        icon: <Settings style={{ width: 20, height: 20 }} />,
+        icon: <Circle />,
         navLink: "/CourseGroup",
       },
       {
         id: "sessions",
         title: "جلسه ها",
-        icon: <Menu style={{ width: 20, height: 20 }} />,
+        icon: <Menu />,
         navLink: "/sessions",
         children: [
           {
             id: "useHomework",
             title: "لیست تکالیف کاربران",
-            icon: <Briefcase style={{ width: 20, height: 20 }} />,
+            icon: <Circle />,
             navLink: "/useHomework",
           },
           {
             id: "updatejobs",
             title: "بروزرسانی مشاغل",
-            icon: <PenTool style={{ width: 20, height: 20 }} />,
+            icon: <Circle style={{ width: 20, height: 20 }} />,
             navLink: "/updatejobs",
           },
         ],
