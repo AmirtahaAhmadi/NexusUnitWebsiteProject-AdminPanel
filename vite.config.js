@@ -34,7 +34,6 @@ export default () => {
         ],
       },
     },
-
     resolve: {
       alias: [
         {
@@ -109,6 +108,7 @@ export default () => {
     },
     optimizeDeps: {
       esbuildOptions: {
+        target: "es2020",
         loader: {
           ".js": "jsx",
         },
@@ -130,6 +130,7 @@ export default () => {
       },
     },
     build: {
+      target: "es2020",
       rollupOptions: {
         plugins: [rollupNodePolyFill()],
       },
