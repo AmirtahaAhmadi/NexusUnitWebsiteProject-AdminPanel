@@ -88,12 +88,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/updateCourses",
       },
-      {
-        id: "reservedCourse",
-        title: "دوره های رزرو شده",
-        icon: <Circle size={12} />,
-        navLink: "/reservedCourse",
-      },
+      // {
+      //   id: "reservedCourse",
+      //   title: "دوره های رزرو شده",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/reservedCourse",
+      // },
       {
         id: "techupdate",
         title: "تنظیمات دوره",
