@@ -71,6 +71,75 @@ export default [
   //     },
   //   ],
   // },
+  {
+    id: "courses",
+    title: "دوره ها",
+    icon: <Archive style={{ width: 20, height: 20 }} />,
+    children: [
+      {
+        id: "AllCourses",
+        title: "دوره ها",
+        icon: <Circle size={12} />,
+        navLink: "/AllCourses",
+      },
+      {
+        id: "updateCourses",
+        title: "بروزرسانی دوره ها",
+        icon: <Circle size={12} />,
+        navLink: "/updateCourses",
+      },
+      {
+        id: "reservedCourse",
+        title: "دوره های رزرو شده",
+        icon: <Circle size={12} />,
+        navLink: "/reservedCourse",
+      },
+      {
+        id: "techupdate",
+        title: "تنظیمات دوره",
+        icon: <Circle size={12} />,
+        navLink: "/techupdate",
+      },
+      {
+        id: "CourseHelps",
+        title: "دوره های کمکی",
+        icon: <Circle size={12} />,
+        navLink: "/CourseHelps",
+      },
+      {
+        id: "SocialGroup",
+        title: "گروه های اجتماعی",
+        icon: <Circle size={12} />,
+        navLink: "/SocialGroup",
+      },
+      {
+        id: "CourseGroup",
+        title: "بروزرسانی گروه هایه دوره",
+        icon: <Circle />,
+        navLink: "/CourseGroup",
+      },
+      {
+        id: "sessions",
+        title: "جلسه ها",
+        icon: <Menu />,
+        navLink: "/sessions",
+        children: [
+          {
+            id: "useHomework",
+            title: "لیست تکالیف کاربران",
+            icon: <Circle />,
+            navLink: "/useHomework",
+          },
+          {
+            id: "updatejobs",
+            title: "بروزرسانی مشاغل",
+            icon: <Circle />,
+            navLink: "/updatejobs",
+          },
+        ],
+      },
+    ],
+  },
 
   {
     id: "blogList",
@@ -135,75 +204,6 @@ export default [
         title: "  مدیریت    ترم ها ",
         icon: <Circle size={12} />,
         navLink: "/pages/Buildings/TermManagement",
-      },
-    ],
-  },
-  {
-    id: "courses",
-    title: "دوره ها",
-    icon: <Archive style={{ width: 20, height: 20 }} />,
-    children: [
-      {
-        id: "AllCourses",
-        title: "دوره ها",
-        icon: <Circle size={12} />,
-        navLink: "/AllCourses",
-      },
-      {
-        id: "updateCourses",
-        title: "بروزرسانی دوره ها",
-        icon: <Circle size={12} />,
-        navLink: "/updateCourses",
-      },
-      {
-        id: "reservedCourse",
-        title: "دوره های رزرو شده",
-        icon: <Circle size={12} />,
-        navLink: "/reservedCourse",
-      },
-      {
-        id: "techupdate",
-        title: "تنظیمات دوره",
-        icon: <Circle size={12} />,
-        navLink: "/techupdate",
-      },
-      {
-        id: "CourseHelps",
-        title: "دوره های کمکی",
-        icon: <Circle size={12} />,
-        navLink: "/CourseHelps",
-      },
-      {
-        id: "SocialGroup",
-        title: "گروه های اجتماعی",
-        icon: <Circle size={12} />,
-        navLink: "/SocialGroup",
-      },
-      {
-        id: "CourseGroup",
-        title: "بروزرسانی گروه هایه دوره",
-        icon: <Settings style={{ width: 20, height: 20 }} />,
-        navLink: "/CourseGroup",
-      },
-      {
-        id: "sessions",
-        title: "جلسه ها",
-        icon: <Menu style={{ width: 20, height: 20 }} />,
-        navLink: "/sessions",
-        children: [
-          {
-            id: "useHomework",
-            title: "لیست تکالیف کاربران",
-            icon: <Briefcase style={{ width: 20, height: 20 }} />,
-            navLink: "/useHomework",
-          },
-          {
-            id: "updatejobs",
-            title: "بروزرسانی مشاغل",
-            icon: <PenTool style={{ width: 20, height: 20 }} />,
-            navLink: "/updatejobs",
-          },
-        ],
       },
     ],
   },
