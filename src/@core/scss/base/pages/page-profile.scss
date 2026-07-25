@@ -10,6 +10,15 @@
 @import '../bootstrap-extended/include'; // Bootstrap includes
 @import '../components/include'; // Components includes
 
+@font-face {
+  font-family: YekanBakh;
+  src: url("./assets/fonts/YekanBakh-VF.ttf");
+}
+
+* {
+  font-family: YekanBakh;
+}
+
 // User profile Scss
 #user-profile {
   /*-------------profile header section---------*/

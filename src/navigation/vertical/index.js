@@ -1,39 +1,140 @@
-import { Mail, Home, Airplay, Circle } from "react-feather";
-import { FileText } from "react-feather";
-import { FilePlus } from "react-feather";
-import { Book } from "react-feather";
-import { Bookmark } from "react-feather";
-import { Archive } from "react-feather";
-import { Tool } from "react-feather";
-import { PenTool } from "react-feather";
-import { Briefcase } from "react-feather";
-import { Settings } from "react-feather";
-import { MessageSquare } from "react-feather";
-import { Menu } from "react-feather";
+import {
+  Mail,
+  Home,
+  MessageSquare,
+  Calendar,
+  Airplay,
+  Circle,
+  FileText,
+  Book,
+  FilePlus,
+  Archive,
+  Tool,
+  Bookmark,
+  Briefcase,
+  PenTool,
+  Users,
+  Share2,
+  User,
+  Settings,
+  Menu,
+} from "react-feather";
+
 export default [
   {
-    id: "home",
-    title: "Home",
+    id: "eCommerceDash",
+    title: "داشبورد",
     icon: <Home size={20} />,
-    navLink: "/home",
+    navLink: "/ecommerce",
   },
   {
-    id: "secondPage",
-    title: "Second Page",
-    icon: <Mail size={20} />,
-    navLink: "/second-page",
+    id: "userList",
+    title: "مدیریت کاربران",
+    icon: <User size={20} />,
+    navLink: "/user/list",
   },
   {
-    id: "smaplePage",
-    title: "Sample Page",
-    icon: <Airplay size={20} />,
-    // navLink: "/sample",
+    id: "commentsList",
+    title: "کامنت ها",
+    icon: <Bookmark size={20} />,
+    navLink: "/comments/list",
+  },
+  {
+    id: "calendar",
+    title: "تقویم",
+    icon: <Calendar />,
+    navLink: "/apps/calendar",
+  },
+  {
+    id: "chat",
+    title: "تیکت پشتیبانی",
+    icon: <MessageSquare />,
+    navLink: "/apps/chat",
+  },
+  // {
+  //   id: "secondPage",
+  //   title: "Second Page",
+  //   icon: <Mail size={20} />,
+  //   navLink: "/second-page",
+  // },
+  // {
+  //   id: "smaplePage",
+  //   title: "Sample Page",
+  //   icon: <Airplay size={20} />,
+  //   // navLink: "/sample",
+  //   children: [
+  //     {
+  //       id: "invoiceList",
+  //       title: "List",
+  //       icon: <Circle size={12} />,
+  //       navLink: "/apps/invoice/list",
+  //     },
+  //   ],
+  // },
+
+  {
+    id: "blogList",
+    title: " وبلاگ ها",
+    icon: <FileText size={20} />,
+    permissions: ["admin", "editor"],
+    navLink: "/pages/blog/list",
     children: [
       {
-        id: "invoiceList",
-        title: "List",
+        id: "blogList",
+        title: "لیست وبلاگ ها",
+        icon: <Circle />,
+        navLink: "/pages/blog/list",
+      },
+      {
+        id: "blogEdit",
+        title: "ایجاد وبلاگ ",
+        icon: <Circle />,
+        navLink: "/pages/blog/edit",
+      },
+      {
+        id: "category",
+        title: "لیست  دسته بندی ها",
         icon: <Circle size={12} />,
-        navLink: "/apps/invoice/list",
+        navLink: "/pages/blog/category",
+      },
+      {
+        id: "categoryEdit",
+        title: "ایجاد دسته بندی جدید ",
+        icon: <Circle />,
+        navLink: "/pages/blog/add",
+      },
+    ],
+  },
+  {
+    id: "Buildings",
+    title: "  ساختمان ها و دپارتمان ها",
+    icon: <Home size={20} />,
+    permissions: ["admin", "editor"],
+    navLink: "/pages/Buildings",
+    children: [
+      {
+        id: "Buildings",
+        title: "  مدیریت ساختمان ها  ",
+        icon: <Circle size={20} />,
+        navLink: "/pages/Buildings/list",
+      },
+      {
+        id: "department",
+        title: "  مدیریت  دپارتمان ها ",
+        icon: <Circle size={12} />,
+        navLink: "/pages/Buildings/department",
+      },
+      {
+        id: "classroomManagement",
+        title: "  مدیریت  کلاس  ها ",
+        icon: <Circle size={12} />,
+        navLink: "/pages/Buildings/ClassroomManagement",
+      },
+      {
+        id: "TermManagement",
+        title: "  مدیریت    ترم ها ",
+        icon: <Circle size={12} />,
+        navLink: "/pages/Buildings/TermManagement",
       },
     ],
   },
@@ -41,54 +142,65 @@ export default [
     id: "courses",
     title: "دوره ها",
     icon: <Archive style={{ width: 20, height: 20 }} />,
-
     children: [
       {
         id: "AllCourses",
-        title: "تمام دوره ها",
-        icon: <Book style={{ width: 20, height: 20 }} />,
+        title: "دوره ها",
+        icon: <Circle size={12} />,
         navLink: "/AllCourses",
       },
       {
         id: "updateCourses",
         title: "بروزرسانی دوره ها",
-        icon: <Tool style={{ width: 20, height: 20 }} />,
+        icon: <Circle size={12} />,
         navLink: "/updateCourses",
       },
       {
         id: "reservedCourse",
-        title: "دوره هایه رزرو شده",
-        icon: <Bookmark style={{ width: 20, height: 20 }} />,
+        title: "دوره های رزرو شده",
+        icon: <Circle size={12} />,
         navLink: "/reservedCourse",
       },
       {
         id: "techupdate",
-        title: "تنظیمات  دوره",
-        icon: <Settings style={{ width: 20, height: 20 }} />,
+        title: "تنظیمات دوره",
+        icon: <Circle size={12} />,
         navLink: "/techupdate",
+      },
+      {
+        id: "CourseHelps",
+        title: "دوره های کمکی",
+        icon: <Circle size={12} />,
+        navLink: "/CourseHelps",
+      },
+      {
+        id: "SocialGroup",
+        title: "گروه های اجتماعی",
+        icon: <Circle size={12} />,
+        navLink: "/SocialGroup",
       },
       {
         id: "CourseGroup",
         title: "بروزرسانی گروه هایه دوره",
-        icon: <Settings style={{ width: 20, height: 20 }} />,
+        icon: <Circle />,
         navLink: "/CourseGroup",
       },
       {
         id: "sessions",
         title: "جلسه ها",
-        icon: <Menu style={{ width: 20, height: 20 }} />,
+        icon: <Menu />,
         navLink: "/sessions",
         children: [
           {
             id: "useHomework",
             title: "لیست تکالیف کاربران",
-            icon: <Briefcase style={{ width: 20, height: 20 }} />,
+            icon: <Circle />,
             navLink: "/useHomework",
           },
           {
             id: "updatejobs",
             title: "بروزرسانی مشاغل",
-            icon: <PenTool style={{ width: 20, height: 20 }} />,
+            icon: <Circle style={{ width: 20, height: 20 }} />,
             navLink: "/updatejobs",
           },
         ],
@@ -97,29 +209,28 @@ export default [
   },
   {
     id: "jobs",
-    title: "مشاغل کمکی",
-    icon: <Briefcase style={{ width: 20, height: 20 }} />,
-
+    title: "مشاغل",
+    icon: <Briefcase size={20} />,
     children: [
       {
         id: "jobs",
         title: "تمام مشاغل",
-        icon: <Briefcase style={{ width: 20, height: 20 }} />,
+        icon: <Circle size={12} />,
         navLink: "/jobs",
       },
       {
         id: "updatejobs",
         title: "بروزرسانی مشاغل",
-        icon: <PenTool style={{ width: 20, height: 20 }} />,
+        icon: <Circle size={12} />,
         navLink: "/updatejobs",
       },
-
-      // {
-      //   id: "assistance",
-      //   title: "مشاوران",
-      //   icon: <PenTool style={{ width: 20, height: 20 }} />,
-      //   navLink: "/assistance",
-      // },
     ],
   },
+
+  // {
+  //   id: "assistance",
+  //   title: "مشاوران",
+  //   icon: <PenTool style={{ width: 20, height: 20 }} />,
+  //   navLink: "/assistance",
+  // },
 ];

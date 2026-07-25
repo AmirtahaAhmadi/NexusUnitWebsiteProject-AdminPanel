@@ -1,6 +1,5 @@
 // ** React Imports
-import { Fragment, useEffect } from "react";
-
+import { Fragment, useEffect, useRef, useState } from "react";
 // ** Third Party Components
 import { ArrowLeft, ArrowRight } from "react-feather";
 
@@ -13,15 +12,61 @@ import { globalformData } from "../../../redux/zustan/formdata";
 // import { postCreatestep2call } from "../../../core/Interceptor/Courses/postCreatestep2call";
 import { postCreatestep2 } from "../../../core/Interceptor/Courses/postCreatestep2";
 import { generate12DigitNumber } from "../../../core/Interceptor/Courses/generate12digitnumber";
-import RichTextEditor from "./RichTextEditor";
+
+// ** Editor.js
+import EditorJS from "@editorjs/editorjs";
+import Header from "@editorjs/header";
+import ListTool from "@editorjs/list";
+import Paragraph from "@editorjs/paragraph";
+import RawTool from "@editorjs/raw";
+import edjsHTML from "editorjs-html";
 import { CCstep2id } from "../../../redux/zustan/CCstep2id";
+
+const edjsParser = edjsHTML({
+  raw: (block) => block.data.html ?? "",
+});
+
+const editorOutputToHtml = (outputData) => {
+  try {
+    const htmlArray = edjsParser.parse(outputData);
+    return Array.isArray(htmlArray)
+      ? htmlArray.join("")
+      : String(htmlArray ?? "");
+  } catch (error) {
+    console.error("خطا در تبدیل خروجی ادیتور به HTML:", error);
+    return "";
+  }
+};
+
+const htmlToEditorData = (html) => {
+  if (!html || typeof html !== "string" || html.trim() === "") {
+    return { blocks: [] };
+  }
+  return {
+    blocks: [
+      {
+        type: "raw",
+        data: {
+          html,
+        },
+      },
+    ],
+  };
+};
 
 const PersonalInfo = ({ stepper, type }) => {
   const formData = globalformData((state) => state.formData);
   const updateformdata = globalformData((state) => state.updateformdata);
   const updatetheid = CCstep2id((state) => state.updatetheid);
   const theid = CCstep2id((state) => state.theid);
-  const resetFormData = globalformData((state) => state.resetFormData);
+
+  const editorRef = useRef(null);
+  const editorHolderRef = useRef(null);
+  const isEditorReadyRef = useRef(false);
+
+  const [initialEditorData, setInitialEditorData] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+
   useEffect(() => {
     console.log("formData", formData);
   }, [formData]);
@@ -37,9 +82,46 @@ const PersonalInfo = ({ stepper, type }) => {
     },
   };
 
+  const destroyEditor = () => {
+    if (editorRef.current && typeof editorRef.current.destroy === "function") {
+      editorRef.current.destroy();
+    }
+    editorRef.current = null;
+    isEditorReadyRef.current = false;
+  };
+
   useEffect(() => {
-    console.log("this is the id", theid);
-  }, [theid]);
+    setInitialEditorData(htmlToEditorData(formData.Describe));
+  }, []);
+
+  useEffect(() => {
+    if (initialEditorData === null) return;
+    if (isEditorReadyRef.current) return;
+
+    const editor = new EditorJS({
+      holder: editorHolderRef.current,
+      placeholder: "توضیحات دوره را وارد کنید...",
+      data: initialEditorData,
+      tools: {
+        header: Header,
+        list: ListTool,
+        paragraph: {
+          class: Paragraph,
+          inlineToolbar: true,
+        },
+        raw: RawTool,
+      },
+      onReady: () => {
+        isEditorReadyRef.current = true;
+      },
+    });
+
+    editorRef.current = editor;
+
+    return () => {
+      destroyEditor();
+    };
+  }, [initialEditorData]);
 
   const handleSubmit = async () => {
     // const required = [
@@ -64,29 +146,38 @@ const PersonalInfo = ({ stepper, type }) => {
     // updateformdata({
     //   GoogleSchema: JSON.stringify(schema),
     // });
+
+    setIsSaving(true);
     try {
-      const response = await postCreatestep2(formData);
-      console.log("course created bjhbjhb:", response.data);
+      let htmlContent = "";
+
+      if (editorRef.current) {
+        const outputData = await editorRef.current.save();
+        htmlContent = editorOutputToHtml(outputData);
+      }
+
+      const newFormData = {
+        ...formData,
+        Describe: htmlContent,
+      };
+
+      updateformdata({
+        Describe: htmlContent,
+      });
+
+      const response = await postCreatestep2(newFormData);
+      console.log("course created:", response.data);
       if (response.data.id) {
         updatetheid({ id: response.data.id });
-        resetFormData();
         stepper?.next();
       }
     } catch (error) {
       console.error("submit error:", error);
+      toast.error("خطا در ارسال اطلاعات");
+    } finally {
+      setIsSaving(false);
     }
   };
-
-  //   {id: '1ee1e4b2-0c11-44cc-8444-fcc99747ebd7', success: true, message: 'دوره شما ساخته شد'}
-  // id
-  // :
-  // "1ee1e4b2-0c11-44cc-8444-fcc99747ebd7"
-  // message
-  // :
-  // "دوره شما ساخته شد"
-  // success
-  // :
-  // true
 
   return (
     <Fragment>
@@ -156,7 +247,8 @@ const PersonalInfo = ({ stepper, type }) => {
           <Col md="6" className="mb-1">
             <Label
               className="form-label"
-              for={`CurrentCoursePaymentNumber-${type}`}>
+              for={`CurrentCoursePaymentNumber-${type}`}
+            >
               تعداد پرداخت فعلی
             </Label>
             <Input
@@ -173,44 +265,6 @@ const PersonalInfo = ({ stepper, type }) => {
               }
             />
           </Col>
-
-          {/* <Col md="6" className="mb-1">
-            <Label className="form-label" for={`ClassId-${type}`}>
-              ای دی کلاس
-            </Label>
-            <Input
-              type="text"
-              name="ClassId"
-              className=""
-              id={`ClassId-${type}`}
-              placeholder="ای کلاس را وارد کنید"
-              value={formData.ClassId}
-              onChange={(e) =>
-                updateformdata({
-                  ClassId: e.target.value,
-                })
-              }
-            />
-          </Col> */}
-          {/* 
-          <Col md="6" className="mb-1">
-            <Label className="form-label" for={`TeacherId-${type}`}>
-              ای دی مدرس
-            </Label>
-            <Input
-              type="text"
-              name="TeacherId"
-              className=""
-              id={`TeacherId-${type}`}
-              placeholder="تعداد پرداخت فعلی"
-              value={formData.ClassId}
-              onChange={(e) =>
-                updateformdata({
-                  TeacherId: e.target.value,
-                })
-              }
-            />
-          </Col> */}
 
           <Col md="6" className="mb-1">
             <Label className="form-label" for={`StartTime-${type}`}>
@@ -414,42 +468,36 @@ const PersonalInfo = ({ stepper, type }) => {
             }
           />
         </Col>
-        <RichTextEditor />
 
-        <Col md="6" className="mb-1 t-w-full">
-          <Label className="form-label" for={`Describe-${type}`}>
-            توضیجات
-          </Label>
-          <Input
-            type="textarea"
-            name="Describe"
-            className="t-w-full"
-            id={`Describe-${type}`}
-            placeholder="توضیحات"
-            value={formData.Describe}
-            onChange={(e) =>
-              updateformdata({
-                Describe: e.target.value,
-              })
-            }
+        <Col sm="12" className="mb-2">
+          <Label className="form-label">توضیحات</Label>
+
+          <div
+            ref={editorHolderRef}
+            id={`Describe-editorjs-${type}`}
+            className="border rounded p-1"
+            style={{ minHeight: "250px" }}
           />
         </Col>
+
         <div className="d-flex justify-content-between mt-2">
           <Button
             color="primary"
             className="btn-prev"
-            onClick={() => stepper?.previous()}>
+            onClick={() => stepper?.previous()}
+          >
             <ArrowLeft size={14} className="align-middle me-sm-25 me-0" />
             <span className="align-middle d-sm-inline-block d-none">قبلی</span>
           </Button>
 
-          <Button color="primary" className="btn-next">
-            <span
-              onClick={() => {
-                handleSubmit();
-              }}
-              className="align-middle d-sm-inline-block d-none">
-              ارسال اطلاعات
+          <Button
+            color="primary"
+            className="btn-next"
+            disabled={isSaving}
+            onClick={handleSubmit}
+          >
+            <span className="align-middle d-sm-inline-block d-none">
+              {isSaving ? "در حال ارسال..." : "ارسال اطلاعات"}
             </span>
             <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
           </Button>

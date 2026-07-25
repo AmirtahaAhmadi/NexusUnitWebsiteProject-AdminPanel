@@ -11,3 +11,12 @@
 
 // React Specific
 @import 'react/index';
+
+@font-face {
+  font-family: YekanBakh;
+  src: url("./assets/fonts/YekanBakh-VF.ttf");
+}
+
+* {
+  font-family: YekanBakh;
+}

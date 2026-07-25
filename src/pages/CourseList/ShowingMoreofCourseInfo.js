@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 // ** Custom Components
 import { getcoursebyidAdminTeacherCall } from "../../core/Interceptor/Courses/getcoursebyidAdminTeacherCall";
@@ -22,6 +22,46 @@ import { ActiveDeactiveCourse } from "../../core/Interceptor/Courses/ActiveDeact
 import { getCourseCreateDataCall } from "../../core/Interceptor/Courses/getCreateStep1Call";
 import Select from "react-select";
 import { UpdateCourseCall } from "../../core/Interceptor/Courses/EditCourse";
+
+// ** Editor.js
+import EditorJS from "@editorjs/editorjs";
+import Header from "@editorjs/header";
+import ListTool from "@editorjs/list";
+import Paragraph from "@editorjs/paragraph";
+import RawTool from "@editorjs/raw";
+import edjsHTML from "editorjs-html";
+
+const edjsParser = edjsHTML({
+  raw: (block) => block.data.html ?? "",
+});
+
+const editorOutputToHtml = (outputData) => {
+  try {
+    const htmlArray = edjsParser.parse(outputData);
+    return Array.isArray(htmlArray)
+      ? htmlArray.join("")
+      : String(htmlArray ?? "");
+  } catch (error) {
+    console.error("خطا در تبدیل خروجی ادیتور به HTML:", error);
+    return "";
+  }
+};
+
+const htmlToEditorData = (html) => {
+  if (!html || typeof html !== "string" || html.trim() === "") {
+    return { blocks: [] };
+  }
+  return {
+    blocks: [
+      {
+        type: "raw",
+        data: {
+          html,
+        },
+      },
+    ],
+  };
+};
 
 const ShowingMoreOfcourseinfo = ({ array }) => {
   const [show, setShow] = useState(false);
@@ -57,6 +97,20 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
     teacherName: "",
     courseStatusId: "",
   });
+
+  // ** EditorJS refs/state برای فیلد describe **
+  const editorRef = useRef(null);
+  const editorHolderRef = useRef(null);
+  const isEditorReadyRef = useRef(false);
+  const [initialEditorData, setInitialEditorData] = useState(null);
+
+  const destroyEditor = () => {
+    if (editorRef.current && typeof editorRef.current.destroy === "function") {
+      editorRef.current.destroy();
+    }
+    editorRef.current = null;
+    isEditorReadyRef.current = false;
+  };
 
   const getChoose = async () => {
     try {
@@ -157,6 +211,54 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
     run();
   }, [array, refresh]);
 
+  useEffect(() => {
+    if (showedit) {
+      setInitialEditorData(htmlToEditorData(newvalue.describe));
+    } else {
+      destroyEditor();
+      setInitialEditorData(null);
+    }
+  }, [showedit]);
+
+  useEffect(() => {
+    if (!showedit) return;
+    if (initialEditorData === null) return;
+    if (isEditorReadyRef.current) return;
+    if (!editorHolderRef.current) return;
+
+    const editor = new EditorJS({
+      holder: editorHolderRef.current,
+      placeholder: "توضیحات کامل دوره را وارد کنید...",
+      data: initialEditorData,
+      tools: {
+        header: Header,
+        list: ListTool,
+        paragraph: {
+          class: Paragraph,
+          inlineToolbar: true,
+        },
+        raw: RawTool,
+      },
+      onReady: () => {
+        isEditorReadyRef.current = true;
+      },
+    });
+
+    editorRef.current = editor;
+
+    return () => {
+      destroyEditor();
+    };
+  }, [showedit, initialEditorData]);
+
+  useEffect(() => {
+    if (!show) {
+      destroyEditor();
+      setshowedit(false);
+      setInitialEditorData(null);
+    }
+  }, [show]);
+
   const handleChange = (field, value) => {
     setnewvalue((prev) => ({
       ...prev,
@@ -165,11 +267,22 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
   };
 
   const handleSubmit = async () => {
+    let htmlDescribe = newvalue.describe;
+
+    if (editorRef.current) {
+      try {
+        const outputData = await editorRef.current.save();
+        htmlDescribe = editorOutputToHtml(outputData);
+      } catch (error) {
+        console.error("خطا در خواندن محتوای ادیتور:", error);
+      }
+    }
+
     const schema = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Course",
       name: newvalue.title,
-      description: newvalue.describe,
+      description: htmlDescribe,
       instructor: {
         "@type": "Person",
         name: newvalue.teacherName,
@@ -179,7 +292,7 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
     const payload = {
       Id: newvalue.courseId,
       Title: newvalue.title,
-      Describe: newvalue.describe,
+      Describe: htmlDescribe,
       MiniDescribe: newvalue.miniDescribe,
       Capacity: newvalue.capacity,
       CourseTypeId: newvalue.courseTypeId || 1,
@@ -206,6 +319,7 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
 
     try {
       await UpdateCourseCall(payload);
+      handleChange("describe", htmlDescribe);
       toast.success("تغییرات اعمال شد");
       setshowedit(false);
       setrefresh((prev) => !prev);
@@ -237,17 +351,20 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
     <Fragment>
       <div
         className="text-truncate fw-bolder t-p-3 t-cursor-pointer t-bg-[#f3f2f7] t-rounded-[8px] hover:t-bg-[#6256e2] hover:t-text-[#f8f8f8] t-duration-300 t-transition-all"
-        onClick={() => setShow(true)}>
+        onClick={() => setShow(true)}
+      >
         مشاهده
       </div>
 
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
-        className="modal-dialog-centered modal-lg">
+        className="modal-dialog-centered modal-lg"
+      >
         <ModalHeader
           className="bg-transparent"
-          toggle={() => setShow(!show)}></ModalHeader>
+          toggle={() => setShow(!show)}
+        ></ModalHeader>
 
         <ModalBody className="px-sm-5 mx-50 pb-4">
           <h1 className="text-center mb-1">
@@ -284,12 +401,11 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
 
               <div>
                 <Label for="describe">توضیحات کامل</Label>
-                <Input
-                  type="textarea"
-                  id="describe"
-                  rows="4"
-                  value={newvalue.describe}
-                  onChange={(e) => handleChange("describe", e.target.value)}
+                <div
+                  ref={editorHolderRef}
+                  id="describe-editorjs"
+                  className="border rounded p-1"
+                  style={{ minHeight: "200px" }}
                 />
               </div>
 
@@ -560,7 +676,8 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
               <Button
                 className="ms-1 bg-success t-text-white"
                 color="success"
-                onClick={handleSubmit}>
+                onClick={handleSubmit}
+              >
                 ارسال
               </Button>
             )}
@@ -568,7 +685,8 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
             <Button
               onClick={() => setshowedit(!showedit)}
               className="ms-1"
-              color="primary">
+              color="primary"
+            >
               {showedit ? "انصراف" : "اصلاح"}
             </Button>
 
@@ -582,14 +700,16 @@ const ShowingMoreOfcourseinfo = ({ array }) => {
                   <Button
                     onClick={ActiveOrDeactive}
                     color="success"
-                    className="ms-1 bg-success t-text-white ">
+                    className="ms-1 bg-success t-text-white "
+                  >
                     فعال
                   </Button>
                 ) : (
                   <Button
                     onClick={ActiveOrDeactive}
                     color="danger"
-                    className="ms-1 bg-danger t-text-white">
+                    className="ms-1 bg-danger t-text-white"
+                  >
                     غیر فعال
                   </Button>
                 )}
