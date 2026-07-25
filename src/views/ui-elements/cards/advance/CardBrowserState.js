@@ -1,67 +1,101 @@
 import { useMemo } from "react";
-import { Card, CardBody, CardText, CardTitle, CardHeader } from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardText,
+  CardTitle,
+  CardHeader,
+  Badge,
+} from "reactstrap";
 
-import { Users, UserCheck, UserX } from "react-feather";
+import { Users, Shield, BookOpen, User } from "react-feather";
 
-const CardBrowserState = ({ courseUsers = [] }) => {
-  const totalUsers = courseUsers.length;
-
-  const activeUsers = courseUsers.filter(
-    (user) => user.currentPictureAddress,
-  ).length;
-
-  const incompleteUsers = totalUsers - activeUsers;
+const CardBrowserState = ({ counts = [] }) => {
+  const totalUsers = counts[0] ?? 0;
+  const admins = counts[1] ?? 0;
+  const teachers = counts[2] ?? 0;
+  const students = counts[3] ?? 0;
 
   const statesArr = useMemo(
     () => [
       {
         title: "کل کاربران",
-        value: `${totalUsers} نفر`,
+        value: totalUsers,
+        color: "primary",
         icon: <Users size={18} />,
       },
-
       {
-        title: "پروفایل تکمیل شده",
-        value: `${activeUsers} نفر`,
-        icon: <UserCheck size={18} />,
+        title: "مدیران",
+        value: admins,
+        color: "danger",
+        icon: <Shield size={18} />,
       },
-
       {
-        title: "پروفایل ناقص",
-        value: `${incompleteUsers} نفر`,
-        icon: <UserX size={18} />,
+        title: "اساتید",
+        value: teachers,
+        color: "warning",
+        icon: <BookOpen size={18} />,
+      },
+      {
+        title: "دانشجویان",
+        value: students,
+        color: "success",
+        icon: <User size={18} />,
       },
     ],
-    [totalUsers, activeUsers, incompleteUsers],
+    [totalUsers, admins, teachers, students],
   );
 
   return (
-    <Card className="card-browser-states">
-      <CardHeader>
+    <Card className="card-browser-states shadow-sm border-0">
+      <CardHeader className="border-bottom">
         <div>
-          <CardTitle tag="h4">آمار کاربران</CardTitle>
+          <CardTitle tag="h4" className="mb-25">
+            آمار کاربران
+          </CardTitle>
 
-          <CardText className="font-small-2">وضعیت کاربران سیستم</CardText>
+          <CardText className="text-muted mb-0">وضعیت کاربران سیستم</CardText>
         </div>
       </CardHeader>
 
-      <CardBody>
+      <CardBody className="pt-2">
         {statesArr.map((item) => (
           <div
             key={item.title}
-            className="
-              d-flex
-              justify-content-between
-              align-items-center
-              mb-2"
+            className="d-flex justify-content-between align-items-center py-1"
           >
             <div className="d-flex align-items-center">
-              <span className="me-1">{item.icon}</span>
+              <div
+                className={`avatar bg-light-${item.color} me-1`}
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {item.icon}
+              </div>
 
-              <span>{item.title}</span>
+              <div>
+                <h6 className="mb-0">{item.title}</h6>
+                <small className="text-muted">تعداد {item.title}</small>
+              </div>
             </div>
 
-            <strong>{item.value}</strong>
+            <Badge
+              color={item.color}
+              pill
+              style={{
+                minWidth: 55,
+                fontSize: "15px",
+                padding: "8px 12px",
+              }}
+            >
+              {item.value}
+            </Badge>
           </div>
         ))}
       </CardBody>

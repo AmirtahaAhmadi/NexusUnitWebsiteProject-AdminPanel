@@ -1,6 +1,5 @@
 import React from "react";
 import Chart from "react-apexcharts";
-
 import {
   Row,
   Col,
@@ -11,17 +10,18 @@ import {
   CardHeader,
 } from "reactstrap";
 
-const SupportTracker2 = ({
-  primary,
-  danger,
-  courseUsers = [],
-}) => {
+const SupportTracker2 = ({ primary, danger, counts = [] }) => {
+  const [totalUsers = 0, activeUsers = 0, teachers = 0, students = 0] = counts;
 
-  const totalUsers = courseUsers.length;
-
-  const progress = totalUsers > 0 ? 100 : 0;
+  const progress =
+    totalUsers > 0 ? Math.round((activeUsers / totalUsers) * 100) : 0;
 
   const options = {
+    chart: {
+      toolbar: {
+        show: false,
+      },
+    },
     plotOptions: {
       radialBar: {
         size: 150,
@@ -45,6 +45,7 @@ const SupportTracker2 = ({
             offsetY: 15,
             fontFamily: "Montserrat",
             fontSize: "1.714rem",
+            formatter: (val) => `${Math.round(val)}%`,
           },
         },
       },
@@ -66,7 +67,7 @@ const SupportTracker2 = ({
     stroke: {
       dashArray: 8,
     },
-    labels: ["کاربران"],
+    labels: ["کاربران فعال"],
   };
 
   return (
@@ -78,9 +79,7 @@ const SupportTracker2 = ({
       <CardBody>
         <Row>
           <Col sm="3" className="text-center">
-            <h1 className="font-large-2 fw-bolder">
-              {totalUsers}
-            </h1>
+            <h1 className="font-large-2 fw-bolder">{totalUsers}</h1>
             <CardText>کل کاربران</CardText>
           </Col>
 
@@ -95,34 +94,20 @@ const SupportTracker2 = ({
         </Row>
 
         <div className="d-flex justify-content-between mt-2">
-
           <div className="text-center">
-            <CardText className="mb-50">
-              کاربران
-            </CardText>
-            <span className="font-large-1 fw-bold">
-              {totalUsers}
-            </span>
+            <CardText className="mb-50">کاربران فعال</CardText>
+            <span className="font-large-1 fw-bold">{activeUsers}</span>
           </div>
 
           <div className="text-center">
-            <CardText className="mb-50">
-              ثبت‌نام‌ها
-            </CardText>
-            <span className="font-large-1 fw-bold">
-              {courseUsers.length}
-            </span>
+            <CardText className="mb-50">اساتید</CardText>
+            <span className="font-large-1 fw-bold">{teachers}</span>
           </div>
 
           <div className="text-center">
-            <CardText className="mb-50">
-              وضعیت
-            </CardText>
-            <span className="font-large-1 fw-bold">
-              فعال
-            </span>
+            <CardText className="mb-50">دانشجویان</CardText>
+            <span className="font-large-1 fw-bold">{students}</span>
           </div>
-
         </div>
       </CardBody>
     </Card>

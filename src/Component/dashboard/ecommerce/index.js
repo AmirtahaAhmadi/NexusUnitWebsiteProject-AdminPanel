@@ -24,16 +24,19 @@ import {
   getMyFavoriteCourses,
   getMyFavoriteNews,
   getUserProfileInfo,
-  getCourseUserList,
 } from "../../../core/Interceptor/Services/DashboardServices/get";
+import { getAllUsers } from "../../../core/Interceptor/Services/UserServices/get";
 
 const EcommerceDashboard = () => {
   const [myCourses, setMyCourses] = useState([]);
   const [favoriteCourses, setFavoriteCourses] = useState([]);
   const [favoriteNews, setFavoriteNews] = useState([]);
   const [comments, setComments] = useState([]);
-  const [courseUsers, setCourseUsers] = useState([]);
   const [profile, setProfile] = useState(null);
+
+  const [counts, setCounts] = useState([]);
+
+  const paramValues = [{}, { roleId: 1 }, { roleId: 2 }, { roleId: 3 }];
 
   const fetchData = async () => {
     try {
@@ -43,31 +46,26 @@ const EcommerceDashboard = () => {
         favoriteCourseRes,
         favoriteNewsRes,
         commentsRes,
-        usersRes,
       ] = await Promise.all([
         getUserProfileInfo(),
         getMyCourses(),
         getMyFavoriteCourses(),
         getMyFavoriteNews(),
         getMyCoursesComments(),
-        getCourseUserList(),
       ]);
 
+      const userResponses = await Promise.all(
+        paramValues.map((params) => getAllUsers(params)),
+      );
+      console.log("User Responses:", userResponses);
+
+      setCounts(userResponses.map((res) => res.data.totalCount));
+
       setProfile(profileRes?.data || null);
-
       setMyCourses(coursesRes?.data?.listOfMyCourses || []);
-
       setFavoriteCourses(favoriteCourseRes?.data?.favoriteCourseDto || []);
-
       setFavoriteNews(favoriteNewsRes?.data?.myFavoriteNews || []);
-
       setComments(commentsRes?.data?.myCommentsDtos || []);
-
-      setCourseUsers(usersRes?.data || []);
-
-      console.log("My Courses:", coursesRes?.data?.listOfMyCourses);
-
-      console.log("Dashboard Users:", usersRes?.data);
     } catch (error) {
       console.log(error);
     }
@@ -114,18 +112,17 @@ const EcommerceDashboard = () => {
           <SupportTracker2
             primary={colors.primary.main}
             danger={colors.danger.main}
-            courseUsers={courseUsers}
+            counts={counts}
           />
         </Col>
       </Row>
-
 
       <Row className="match-height">
         <Col lg="6" md="12">
           <CardBrowserStates
             colors={colors}
             trackBgColor={trackBgColor}
-            courseUsers={courseUsers}
+            counts={counts}
           />
         </Col>
 
@@ -134,12 +131,11 @@ const EcommerceDashboard = () => {
         </Col>
       </Row>
 
-
-      <Row className="match-height">
+      {/* <Row className="match-height">
         <Col lg="12">
           <CompanyTable courses={myCourses} />
         </Col>
-      </Row>
+      </Row> */}
     </div>
   );
 };
