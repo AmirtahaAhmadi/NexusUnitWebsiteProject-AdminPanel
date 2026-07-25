@@ -6,17 +6,18 @@ const Footer = () => {
     <p className="clearfix mb-0">
       <span className="float-md-start d-block d-md-inline-block mt-25">
         COPYRIGHT © {new Date().getFullYear()}{" "}
-        <a
+        {/* <a
           href="https://1.envato.market/pixinvent_portfolio"
           target="_blank"
           rel="noopener noreferrer"
         >
           Pixinvent
-        </a>
-        <span className="d-none d-sm-inline-block">, All rights Reserved</span>
+        </a> */}
+        <span className="d-none d-sm-inline-block"> تمامی حقوق این سایت متعلق هست به: </span>{" "}
+        <p style={{ display: 'inline' }} className="text-primary">Nexus Unit</p>
       </span>
       <span className="float-md-end d-none d-md-block">
-        Hand-crafted & Made with
+        Nexus Unit
         <Heart size={14} />
       </span>
     </p>

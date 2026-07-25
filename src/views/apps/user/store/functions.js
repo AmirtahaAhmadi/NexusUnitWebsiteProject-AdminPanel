@@ -55,7 +55,7 @@ export const SendReserveToCourse = async (
       courseGroupId,
       studentId,
     );
-    console.log(response);
+    // console.log(response);
     if (response.data.success == true) {
       console.log(response.data.message);
       handleSuccess("رزرو دوره مورد نظر با موفقیت تایید شد!");

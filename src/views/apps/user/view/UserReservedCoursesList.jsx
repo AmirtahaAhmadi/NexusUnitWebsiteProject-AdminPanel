@@ -123,7 +123,7 @@ const UserReservedCoursesList = ({ currentUserDetails, setUserDetailsRenderCount
       // console.log(groupIdResponses)
       const groupIdMap = {};
       groupIdResponses.forEach((result) => {
-        groupIdMap[result.data[0].CourseId] = result.data[0].groupId;
+        groupIdMap[result.data[0]?.CourseId] = result.data[0]?.groupId || '';
       });
       setUserRCoursesGroupId(groupIdMap);
       // console.log(responses);

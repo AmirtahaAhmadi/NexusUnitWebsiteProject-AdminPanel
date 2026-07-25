@@ -18,6 +18,7 @@ import InputPasswordToggle from "@components/input-password-toggle";
 import { Button, Label, FormText, Form, Input } from "reactstrap";
 import { Check, X } from "react-feather";
 import { postCreateUser } from "../../../../core/Interceptor/Services/UserServices/post";
+import { handleSuccess } from "../../../extensions/sweet-alert/SweetAlerts";
 
 // ** Store & Actions
 // import { addUser } from '../store'
@@ -99,10 +100,11 @@ const SidebarNewUsers = ({ open, toggleSidebar, setRenderCount }) => {
         true,
       );
       if (response.data.success == true) {
-        toggleSidebar()
-        setRenderCount(prev => prev + 1)
+        toggleSidebar();
+        setRenderCount((prev) => prev + 1);
+        handleSuccess("کاربر جدید با موفقیت اضافه شد!");
       }
-      console.log(response.data)
+      console.log(response.data);
     } catch (error) {
       console.log("creatingUser error: ", error.response.data.message);
     }
@@ -136,7 +138,7 @@ const SidebarNewUsers = ({ open, toggleSidebar, setRenderCount }) => {
             render={({ field }) => (
               <Input
                 id="firstName"
-                placeholder="Amir"
+                placeholder="نام"
                 invalid={!!errors.firstName}
                 {...field}
               />
@@ -154,7 +156,7 @@ const SidebarNewUsers = ({ open, toggleSidebar, setRenderCount }) => {
             render={({ field }) => (
               <Input
                 id="lastName"
-                placeholder="Ahmadi"
+                placeholder="نام خانوادگی"
                 invalid={!!errors.lastName}
                 {...field}
               />
@@ -173,7 +175,7 @@ const SidebarNewUsers = ({ open, toggleSidebar, setRenderCount }) => {
               <Input
                 type="email"
                 id="gmail"
-                placeholder="amir.ahmadi@example.com"
+                placeholder="a@example.com"
                 invalid={!!errors.gmail}
                 {...field}
               />
