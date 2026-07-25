@@ -216,6 +216,14 @@ const Routes = [
     path: "/useHomework",
     element: <UserSessionMenu />,
   },
+  {
+    path: "/useHomework",
+    element: <UserSessionMenu />,
+  },
+  {
+    path: "/useHomework/:id",
+    element: <UserSessionMenu />,
+  },
 
   {
     path: "/CourseGroup",

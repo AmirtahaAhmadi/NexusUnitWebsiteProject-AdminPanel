@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState, useEffect, useCallback } from "react";
+import { Fragment, useState, useEffect, useCallback,  } from "react";
 
 // ** Third Party Components
 import toast from "react-hot-toast";
@@ -18,6 +18,7 @@ import { useRTL } from "@hooks/useRTL";
 
 // ** Styles
 import "@styles/react/apps/app-calendar.scss";
+import { useNavigate } from "react-router-dom";
 
 const getActiveFlag = (item) =>
   Boolean(
@@ -72,7 +73,10 @@ const CalendarComponent = () => {
   const [isRtl] = useRTL();
 
   const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen);
-
+  const navigate = useNavigate();
+  const handleEventClick = ({ event }) => {
+    navigate(`/useHomework/${event.id}`);
+  };
   const blankEvent = {
     title: "",
     start: "",
@@ -166,6 +170,7 @@ const CalendarComponent = () => {
             selectEvent={selectEvent}
             onDatesSet={handleDatesSet}
             handleAddEventSidebar={handleAddEventSidebar}
+            onEventClick={handleEventClick}
           />
         </div>
       </div>
