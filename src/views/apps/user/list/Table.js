@@ -138,10 +138,12 @@ const CustomHeader = ({
 
           <div className="d-flex align-items-center table-header-actions">
             <Button
-              className="add-new-user"
+              className="add-new-user d-flex"
+              style={{ alignItems: "center", gap: "3px" }}
               color="primary"
               onClick={toggleSidebar}
             >
+              <Plus size={16} />
               <span>افزودن کاربر</span>
             </Button>
           </div>

@@ -186,6 +186,7 @@ const AccountDetails = ({ stepper, type, data, onSubmit }) => {
                   type="radio"
                   id={`gender1-${type}`}
                   value={true}
+                  className="cursor-pointer"
                   innerRef={register("gender").ref}
                   name={register("gender").name}
                   onChange={register("gender").onChange}
@@ -200,6 +201,7 @@ const AccountDetails = ({ stepper, type, data, onSubmit }) => {
                   type="radio"
                   id={`gender2-${type}`}
                   value={false}
+                  className="cursor-pointer"
                   innerRef={register("gender").ref}
                   name={register("gender").name}
                   onChange={register("gender").onChange}
@@ -218,6 +220,7 @@ const AccountDetails = ({ stepper, type, data, onSubmit }) => {
               <Input
                 type="checkbox"
                 id={`twoStepAuth-${type}`}
+                className="cursor-pointer"
                 innerRef={register("twoStepAuth").ref}
                 name={register("twoStepAuth").name}
                 onChange={register("twoStepAuth").onChange}
@@ -231,6 +234,7 @@ const AccountDetails = ({ stepper, type, data, onSubmit }) => {
               <Input
                 type="checkbox"
                 id={`receiveMessageEvent-${type}`}
+                className="cursor-pointer"
                 innerRef={register("receiveMessageEvent").ref}
                 name={register("receiveMessageEvent").name}
                 onChange={register("receiveMessageEvent").onChange}

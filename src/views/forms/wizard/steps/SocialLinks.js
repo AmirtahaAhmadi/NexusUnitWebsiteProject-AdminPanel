@@ -41,6 +41,8 @@ const SocialLinks = ({
     onSubmit(myData);
     console.log(fullData);
     console.log(selectedUser);
+    // const isTeacher = selectedUser?.roles.includes("teacher");
+    // console.log(isTeacher)
     try {
       const response = await putUpdateUser(
         selectedUser.id,
@@ -51,9 +53,9 @@ const SocialLinks = ({
         fullData.accountDetails.phoneNumber,
         selectedUser.active,
         selectedUser.isDelete,
-        // isTeacher
+        // isTeacher,
         true,
-        // isStudent
+        // isStudent,
         true,
         selectedUser.recoveryEmail,
         fullData.accountDetails.twoStepAuth,
@@ -65,20 +67,20 @@ const SocialLinks = ({
         fullData.accountDetails.homeAdderess,
         fullData.accountDetails.nationalCode,
         Boolean(fullData.accountDetails.gender),
-        fullData.address.latitude,
-        fullData.address.longitude,
+        String(fullData.address.latitude),
+        String(fullData.address.longitude),
         selectedUser.insertDate,
         fullData.accountDetails.birthDay,
       );
       // console.log(response.data);
       if (response.data.success == true) {
+        handleSuccess("اطلاعات کاربر با موفقیت بروز شد!");
         setUserDetailsRenderCount((prev) => prev + 1);
         setShow(false);
-        handleSuccess("اطلاعات کاربر با موفقیت بروز شد!");
       }
     } catch (error) {
       console.log("updatingUserProfile error: ", error);
-      handleError("عملیات با مشکل روبرو شد!");
+      // handleError("عملیات با مشکل روبرو شد!");
     }
   };
 

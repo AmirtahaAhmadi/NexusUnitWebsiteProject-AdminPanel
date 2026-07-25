@@ -71,7 +71,7 @@ const UserDropdown = () => {
             />
           </DropdownToggle>
           <DropdownMenu end>
-            <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
+            {/* <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
               <User size={14} className="me-75" />
               <span className="align-middle">Profile</span>
             </DropdownItem>
@@ -86,8 +86,8 @@ const UserDropdown = () => {
             <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
               <MessageSquare size={14} className="me-75" />
               <span className="align-middle">Chats</span>
-            </DropdownItem>
-            <DropdownItem divider />
+            </DropdownItem> */}
+            {/* <DropdownItem divider />
             <DropdownItem
               tag={Link}
               to="/pages/"
@@ -103,7 +103,7 @@ const UserDropdown = () => {
             <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
               <HelpCircle size={14} className="me-75" />
               <span className="align-middle">FAQ</span>
-            </DropdownItem>
+            </DropdownItem> */}
             <DropdownItem tag={Link} to="/login">
               <Power size={14} className="me-75" />
               <span
@@ -112,7 +112,7 @@ const UserDropdown = () => {
                   localStorage.removeItem("token");
                 }}
               >
-                Logout
+                خروج از حساب
               </span>
             </DropdownItem>
           </DropdownMenu>

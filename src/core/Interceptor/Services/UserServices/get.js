@@ -52,11 +52,11 @@ export const getUserCourseReserve = (courseId) => {
   });
 };
 
-export const getUserPayments = ({ courseId }) => {
-  return apiClient.get("/CoursePayment", {
+export const getUserPayments = ({ courseId, studentId }) => {
+  return apiClient.get("/CoursePayment/UserPayList", {
     params: {
       CourseId: courseId,
-      // StudentId: studentId,
+      StudentId: studentId,
     },
   });
 };
