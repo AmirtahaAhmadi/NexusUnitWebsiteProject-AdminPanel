@@ -304,7 +304,10 @@ const BlogList = () => {
           {totalPages > 1 && (
             <Row className="mt-2">
               <Col sm="12">
-                <Pagination className="d-flex justify-content-center flex-wrap">
+                <Pagination
+                  className="d-flex justify-content-center flex-wrap"
+                  style={{ direction: "ltr" }}
+                >
                   <PaginationItem disabled={currentPage === 1}>
                     <PaginationLink
                       previous

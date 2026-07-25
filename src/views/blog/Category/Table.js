@@ -168,7 +168,9 @@ const Table = () => {
     const count = Number(Math.ceil(total / rowsPerPage));
 
     return (
+      
       <ReactPaginate
+        style={{ direction: "lrt" }}
         previousLabel={""}
         nextLabel={""}
         pageCount={count || 1}
@@ -181,7 +183,7 @@ const Table = () => {
         previousLinkClassName={"page-link"}
         pageLinkClassName={"page-link"}
         containerClassName={
-          "pagination react-paginate justify-content-end my-2 pe-1"
+          "pagination react-paginate justify-content-end my-2 pe-1 "
         }
       />
     );
