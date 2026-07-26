@@ -95,7 +95,7 @@ const SupportTracker2 = ({ primary, danger, counts = [] }) => {
 
         <div className="d-flex justify-content-between mt-2">
           <div className="text-center">
-            <CardText className="mb-50">کاربران فعال</CardText>
+            <CardText className="mb-50">مدیران </CardText>
             <span className="font-large-1 fw-bold">{activeUsers}</span>
           </div>
 
