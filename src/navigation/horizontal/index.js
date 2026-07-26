@@ -130,12 +130,12 @@ export default [
             icon: <Circle />,
             navLink: "/useHomework",
           },
-          {
-            id: "updatejobs",
-            title: "بروزرسانی مشاغل",
-            icon: <Circle />,
-            navLink: "/updatejobs",
-          },
+          // {
+          //   id: "updatejobs",
+          //   title: "بروزرسانی مشاغل",
+          //   icon: <Circle />,
+          //   navLink: "/updatejobs",
+          // },
         ],
       },
     ],

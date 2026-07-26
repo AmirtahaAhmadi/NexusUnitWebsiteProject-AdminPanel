@@ -12,9 +12,9 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 
 @font-face {
   font-family: YekanBakh;
-  src: url("./assets/fonts/YekanBakh-VF.ttf");
+  src: url("../../@core/assets/fonts/feather/fonts/Yekan Bakh Variable/YekanBakh-VF.ttf");
 }
 
 * {
-  font-family: YekanBakh;
+  font-family: YekanBakh !important;
 }
