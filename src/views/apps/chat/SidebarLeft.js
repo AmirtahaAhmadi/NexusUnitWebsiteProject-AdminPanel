@@ -214,23 +214,12 @@ const SidebarLeft = (props) => {
     }, 400);
   };
 
-  const handleClearSearch = () => {
-    setQuery("");
-    if (searchDebounce.current) clearTimeout(searchDebounce.current);
-    onSearch?.("");
-  };
-
   return chatData ? (
     <div className="sidebar-left" style={{ overflowX: "hidden" }}>
       <div className="sidebar">
         <div
           className={classnames("sidebar-content", { show: sidebar === true })}
-          style={{
-            overflowX: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-          }}
+          style={{ overflowX: "hidden" }}
         >
           <div className="sidebar-close-icon" onClick={handleSidebar}>
             <X size={14} />
@@ -238,15 +227,11 @@ const SidebarLeft = (props) => {
           <div
             className="chat-fixed-search"
             style={{
-              position: "sticky",
-              top: 0,
-              zIndex: 5,
-              flex: "0 0 auto",
-              background: "var(--bs-card-bg, #fff)",
-              padding: "1rem",
-              borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
+              paddingRight: "12px",
+              paddingLeft: "12px",
             }}
           >
+            {" "}
             <div className="d-flex align-items-center w-100">
               <div
                 className="sidebar-profile-toggle"
@@ -264,7 +249,13 @@ const SidebarLeft = (props) => {
                   />
                 ) : null}
               </div>
-              <InputGroup className="input-group-merge ms-1 w-100">
+              <InputGroup
+                className="input-group-merge ms-1"
+                style={{
+                  width: "calc(100% - 54px)",
+                }}
+              >
+                {" "}
                 <InputGroupText className="round">
                   <Search className="text-muted" size={14} />
                 </InputGroupText>
@@ -274,15 +265,6 @@ const SidebarLeft = (props) => {
                   placeholder="جستجوی تیکت"
                   onChange={handleFilter}
                 />
-                {query.length ? (
-                  <InputGroupText
-                    className="round"
-                    style={{ cursor: "pointer" }}
-                    onClick={handleClearSearch}
-                  >
-                    <X className="text-muted" size={14} />
-                  </InputGroupText>
-                ) : null}
               </InputGroup>
             </div>
             {duplicateWarning ? (
@@ -294,7 +276,7 @@ const SidebarLeft = (props) => {
           <PerfectScrollbar
             className="chat-user-list-wrapper list-group"
             options={{ wheelPropagation: false, suppressScrollX: true }}
-            style={{ overflowX: "hidden", flex: "1 1 auto", minHeight: 0 }}
+            style={{ overflowX: "hidden" }}
           >
             <h4 className="chat-list-title">
               تیکت‌ها {isLoading ? "(در حال بارگذاری...)" : ""}
