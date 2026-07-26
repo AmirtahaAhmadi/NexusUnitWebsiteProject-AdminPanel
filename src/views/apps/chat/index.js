@@ -44,7 +44,6 @@ const mapTicketToChatItem = (ticket) => {
   const displayName =
     ticket.userFullName || ticket.problem || `تیکت #${ticket.id}`;
 
-  // اینجا باشد
   const isAccepted = !!ticket.supporterId;
 
   return {
