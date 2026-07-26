@@ -1,5 +1,5 @@
 import { useEffect, useState, Fragment } from "react";
-
+import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { columns } from "./columns";
 import { createBuilding } from "../../core/Interceptor/Services/BildingPageServices/post";
@@ -215,15 +215,15 @@ const Table = () => {
 
       await fetchBuildings();
 
-      Swal.fire({
-        title: selected
-          ? "ساختمان با موفقیت ویرایش شد."
-          : "ساختمان با موفقیت ایجاد شد.",
-        icon: "success",
-        draggable: true,
-        timer: 2000,
-        showConfirmButton: false,
-      });
+  Swal.fire({
+  title: row.active
+    ? "ساختمان با موفقیت غیرفعال شد."
+    : "ساختمان با موفقیت فعال شد.",
+  icon: "success",
+  draggable: true,
+  timer: 2000,
+  showConfirmButton: false,
+});
     } catch (err) {
       Swal.fire({
         icon: "error",
