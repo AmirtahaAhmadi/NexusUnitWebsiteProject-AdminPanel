@@ -14,7 +14,7 @@ const SupportTracker2 = ({ primary, danger, counts = [] }) => {
   const [totalUsers = 0, activeUsers = 0, teachers = 0, students = 0] = counts;
 
   const progress =
-    totalUsers > 0 ? Math.round((activeUsers / totalUsers) * 100) : 0;
+    totalUsers > 0 ? Math.round((99 / totalUsers) * 100) : 0;
 
   const options = {
     chart: {

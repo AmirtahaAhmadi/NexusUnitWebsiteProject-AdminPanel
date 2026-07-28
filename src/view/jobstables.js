@@ -76,9 +76,9 @@ export const columns = [
       return (
         <div className="d-flex justify-content-left align-items-center">
           <div className="d-flex flex-row t-gap-5">
-            <span className="text-truncate fw-bolder t-p-3 t-cursor-pointer t-bg-[#f3f2f7] t-rounded-[8px] hover:t-bg-[#6256e2] hover:t-text-[#f8f8f8] t-duration-300 t-transition-all">
+            {/* <span className="text-truncate fw-bolder t-p-3 t-cursor-pointer t-bg-[#f3f2f7] t-rounded-[8px] hover:t-bg-[#6256e2] hover:t-text-[#f8f8f8] t-duration-300 t-transition-all">
               اصلاح
-            </span>
+            </span> */}
             {row?.id && <Showjobstab array={row.id} />}
           </div>
         </div>

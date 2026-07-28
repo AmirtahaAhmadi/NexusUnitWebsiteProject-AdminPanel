@@ -114,7 +114,7 @@ export default [
       },
       {
         id: "CourseGroup",
-        title: "بروزرسانی گروه هایه دوره",
+        title: "بروزرسانی گروه  دوره",
         icon: <Circle />,
         navLink: "/CourseGroup",
       },
@@ -126,7 +126,7 @@ export default [
         children: [
           {
             id: "useHomework",
-            title: "لیست تکالیف کاربران",
+            title: "لیست تکالیف ",
             icon: <Circle />,
             navLink: "/useHomework",
           },

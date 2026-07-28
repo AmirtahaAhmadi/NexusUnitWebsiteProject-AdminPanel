@@ -6,7 +6,7 @@ import classnames from "classnames";
 import Select from "react-select";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-import { Edit2, X, Search, Plus, CheckCircle, XCircle } from "react-feather";
+import { Edit2, X, Search, Plus, CheckCircle, XCircle, AlertCircle } from "react-feather";
 
 // ** Custom Components
 import Breadcrumbs from "@components/breadcrumbs";
@@ -231,7 +231,7 @@ const BlogList = () => {
           ویرایش
         </UncontrolledTooltip>
 
-        <X
+        <AlertCircle
           id={cancelId}
           size={17}
           className="cursor-pointer text-warning"

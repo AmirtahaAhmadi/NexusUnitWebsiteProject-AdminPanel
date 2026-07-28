@@ -120,7 +120,7 @@ const UserReservedCoursesList = ({ currentUserDetails, setUserDetailsRenderCount
       setUserRCoursesImageAddress(imageAddresses);
       const groupIdRequests = responses.map((r) => getCourseGroupId(r.data.teacherId, r.data.courseId));
       const groupIdResponses = await Promise.all(groupIdRequests);
-      // console.log(groupIdResponses)
+      console.log(groupIdResponses)
       const groupIdMap = {};
       groupIdResponses.forEach((result) => {
         groupIdMap[result.data[0]?.CourseId] = result.data[0]?.groupId || '';

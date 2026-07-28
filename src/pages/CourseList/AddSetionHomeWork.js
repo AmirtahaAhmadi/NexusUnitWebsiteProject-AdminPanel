@@ -14,18 +14,18 @@ import {
 
 import { useRefresh } from "../../redux/zustan/refreshCourselvl";
 import toast from "react-hot-toast";
-
+import { useParams } from "react-router-dom";
 import { PostAddSessionHomeWorkcall } from "../../core/Interceptor/Courses/PostAddSessionHomeWork";
-const AddSetionHomeWork = () => {
-  // const getassist = async () => {
-  //   const result = await Getassistans();
-  //   console.log("GetallassistanceCall", result);
 
-  //   console.log("GetallassistanceCall", result);
-  // };
+const AddSetionHomeWork = () => {
+  const [exist, setExist] = useState(false);
+  const [getvalue, setgetvalue] = useState("");
+  const { id } = useParams();
+
   const [ezafeshod, setezafeshod] = useState(false);
   const refreshWatch = useRefresh((state) => state.refresh);
   const refreshValue = useRefresh((state) => state.setRefresh);
+
   const [newwork, setnewwork] = useState({
     sessionId: "",
     hwTitle: "",
@@ -33,12 +33,18 @@ const AddSetionHomeWork = () => {
   });
 
   const handleSubmit = async () => {
+    
+    if (!newwork.sessionId) {
+      toast.error("شناسه جلسه مشخص نیست");
+      return;
+    }
+
     const res = await PostAddSessionHomeWorkcall(newwork);
     if (res) {
       refreshValue();
       toast.success(" اضافه شد");
       setnewwork({
-        sessionId: "",
+        sessionId: exist ? id : "",
         hwTitle: "",
         hwDescribe: "",
       });
@@ -47,42 +53,65 @@ const AddSetionHomeWork = () => {
     }
   };
 
-  //   useEffect(() => {
-  //     // getassist();
-  //     console.log(refreshWatch, "refreshValue");
-  //   }, [refreshWatch]);
-
   useEffect(() => {
-    // getassist();
     console.log(newwork, "NEW WORK");
   }, [newwork]);
+
+  useEffect(() => {
+    if (id) {
+      setExist(true);
+      setgetvalue(id);
+      setnewwork((prev) => ({
+        ...prev,
+        sessionId: id,
+      }));
+    } else {
+      setExist(false);
+    }
+  }, [id]);
 
   return (
     <Card className="t-shadow-none">
       <CardBody>
         <Form className="t-p-6">
           <div tag="h4" className="t-my-5 t-text-[18px]">
-            اضافه کردن تسک
+            اضافه کردن تکلیف
           </div>
           <Row className="g-2">
-            <Col md="6">
-              <Label for="worktitle" className="mb-50">
-                شناسه جلسه
-              </Label>
-              <Input
-                type="text"
-                name="worktitle"
-                id="worktitle"
-                placeholder="شناسه جلسه "
-                value={newwork.sessionId}
-                onChange={(e) => {
-                  setnewwork((prev) => ({
-                    ...prev,
-                    sessionId: e.target.value,
-                  }));
-                }}
-              />
-            </Col>
+            {exist ? (
+              <Col md="6">
+                <Label for="worktitle" className="mb-50">
+                  شناسه جلسه
+                </Label>
+                <Input
+                  type="text"
+                  name="worktitle"
+                  id="worktitle"
+                  placeholder="شناسه جلسه "
+                  value={newwork.sessionId}
+                  disabled
+                />
+              </Col>
+            ) : (
+              <Col md="6">
+                <Label for="worktitle" className="mb-50">
+                  شناسه جلسه
+                </Label>
+                <Input
+                  type="text"
+                  name="worktitle"
+                  id="worktitle"
+                  placeholder="شناسه جلسه "
+                  value={newwork.sessionId}
+                  onChange={(e) => {
+                    setnewwork((prev) => ({
+                      ...prev,
+                      sessionId: e.target.value,
+                    }));
+                  }}
+                />
+              </Col>
+            )}
 
             <Col md="6">
               <Label for="workDescribe" className="mb-50">
@@ -102,14 +131,15 @@ const AddSetionHomeWork = () => {
                 }}
               />
             </Col>
+
             <Col md="6">
               <Label for="Describe" className="mb-50">
                 توضیح تکلیف را وارد کنید
               </Label>
               <Input
-                type="Text"
+                type="text"
                 name="Describe"
-                id="workDescribe "
+                id="Describe"
                 placeholder="توضیح راوارد کنید"
                 className="t-text-left"
                 value={newwork.hwDescribe}
@@ -131,8 +161,8 @@ const AddSetionHomeWork = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   handleSubmit();
-                  console.log(newwork);
-                }}>
+                }}
+              >
                 ارسال
               </Button>
 
@@ -140,12 +170,15 @@ const AddSetionHomeWork = () => {
                 outline={true}
                 color="secondary"
                 type="reset"
-                onClick={() =>
+                onClick={(e) => {
+                  e.preventDefault();
                   setnewwork({
-                    id: "",
-                    levelName: "",
-                  })
-                }>
+                    sessionId: exist ? id : "",
+                    hwTitle: "",
+                    hwDescribe: "",
+                  });
+                }}
+              >
                 پاک کردن
               </Button>
             </Col>

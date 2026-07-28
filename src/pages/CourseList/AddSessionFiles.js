@@ -14,21 +14,19 @@ import {
 
 import { useRefresh } from "../../redux/zustan/refreshCourselvl";
 import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
 import { postAddSessionFileCall } from "../../core/Interceptor/Courses/postAddSessionFileCall";
-import AddSetionHomeWork from "./AddSetionHomeWork";
 
 const AddSessionFiles = () => {
-  // const getassist = async () => {
-  //   const result = await Getassistans();
-  //   console.log("GetallassistanceCall", result);
+  const { id } = useParams();
+  const [exist, setExist] = useState(false);
 
-  //   console.log("GetallassistanceCall", result);
-  // };
   const refresh = useRefresh((state) => state.setRefresh);
 
   const [ezafeshod, setezafeshod] = useState(false);
   const refreshWatch = useRefresh((state) => state.refresh);
   const refreshValue = useRefresh((state) => state.setRefresh);
+
   const [newwork, setnewwork] = useState({
     sessionId: "",
     SessionFiles: null,
@@ -47,7 +45,7 @@ const AddSessionFiles = () => {
         refreshValue();
         toast.success("اضافه شد");
         setnewwork({
-          sessionId: "",
+          sessionId: exist ? id : "",
           SessionFiles: null,
         });
       } else {
@@ -59,15 +57,21 @@ const AddSessionFiles = () => {
     }
   };
 
-  //   useEffect(() => {
-  //     // getassist();
-  //     console.log(refreshWatch, "refreshValue");
-  //   }, [refreshWatch]);
-
   useEffect(() => {
-    // getassist();
     console.log(newwork, "NEW WORK");
   }, [newwork, refresh]);
+
+  useEffect(() => {
+    if (id) {
+      setExist(true);
+      setnewwork((prev) => ({
+        ...prev,
+        sessionId: id,
+      }));
+    } else {
+      setExist(false);
+    }
+  }, [id]);
 
   return (
     <Card className="t-shadow-none">
@@ -86,6 +90,7 @@ const AddSessionFiles = () => {
                   id="worktitle"
                   placeholder="شناسه جلسه "
                   value={newwork.sessionId}
+                  disabled={exist}
                   onChange={(e) => {
                     setnewwork((prev) => ({
                       ...prev,
@@ -95,7 +100,7 @@ const AddSessionFiles = () => {
                 />
               </div>
               <div>
-                <Label for="worktitle">ارسال فایل</Label>
+                <Label for="worktitle3">ارسال فایل</Label>
                 <Input
                   type="file"
                   name="sendfile"
@@ -120,8 +125,8 @@ const AddSessionFiles = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   handleSubmit();
-                  console.log(newwork);
-                }}>
+                }}
+              >
                 ارسال
               </Button>
 
@@ -129,12 +134,14 @@ const AddSessionFiles = () => {
                 outline={true}
                 color="secondary"
                 type="reset"
-                onClick={() =>
+                onClick={(e) => {
+                  e.preventDefault();
                   setnewwork({
-                    sessionId: "",
+                    sessionId: exist ? id : "",
                     SessionFiles: null,
-                  })
-                }>
+                  });
+                }}
+              >
                 پاک کردن
               </Button>
             </Col>

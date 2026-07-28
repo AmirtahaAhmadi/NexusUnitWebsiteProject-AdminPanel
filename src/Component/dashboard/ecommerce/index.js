@@ -36,7 +36,7 @@ const EcommerceDashboard = () => {
 
   const [counts, setCounts] = useState([]);
 
-  const paramValues = [{}, { roleId: 1 }, { roleId: 2 }, { roleId: 3 }];
+  const paramValues = [{}, { roleId: 1 }, { roleId: 2 }, { roleId: 3 }, {isActive: true}];
 
   const fetchData = async () => {
     try {
@@ -131,11 +131,11 @@ const EcommerceDashboard = () => {
         </Col>
       </Row>
 
-      {/* <Row className="match-height">
+      <Row className="match-height">
         <Col lg="12">
           <CompanyTable courses={myCourses} />
         </Col>
-      </Row> */}
+      </Row>
     </div>
   );
 };

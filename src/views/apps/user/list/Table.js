@@ -158,7 +158,9 @@ const UsersList = ({ renderCount, setRenderCount }) => {
   const [users, setUsers] = useState([]);
   const [totalCount, setTotalCount] = useState();
 
-  const [selectedUserForRoleAccess, setSelectedUserForRoleAccess] = useState({});
+  const [selectedUserForRoleAccess, setSelectedUserForRoleAccess] = useState(
+    {},
+  );
   const [addUserAccessModalShow, setAddUserAccessModalShow] = useState(false);
 
   const [sort, setSort] = useState("desc");
@@ -370,11 +372,15 @@ const UsersList = ({ renderCount, setRenderCount }) => {
             <button
               style={{ background: "none", border: "none" }}
               onClick={() => {
-                setSelectedUserForRoleAccess(row)
-                setAddUserAccessModalShow(true)
+                setSelectedUserForRoleAccess(row);
+                setAddUserAccessModalShow(true);
               }}
             >
-              <Badge style={{ height: "25px" }} className="cursor-pointer" color="primary">
+              <Badge
+                style={{ height: "25px" }}
+                className="cursor-pointer"
+                color="primary"
+              >
                 <span style={{ fontSize: "13.5px" }}>دسترسی</span>
               </Badge>
             </button>
@@ -418,23 +424,23 @@ const UsersList = ({ renderCount, setRenderCount }) => {
   // ** Custom Pagination
   const CustomPagination = () => {
     return (
-      <ReactPaginate
-        previousLabel={""}
-        nextLabel={""}
-        pageCount={totalPages}
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={handlePagination}
-        pageClassName={"page-item"}
-        activeClassName="active"
-        nextLinkClassName={"page-link"}
-        nextClassName={"page-item next"}
-        previousClassName={"page-item prev"}
-        previousLinkClassName={"page-link"}
-        pageLinkClassName={"page-link"}
-        containerClassName={
-          "pagination react-paginate justify-content-center my-2 pe-1"
-        }
-      />
+      <div dir="ltr">
+        <ReactPaginate
+          previousLabel={""}
+          nextLabel={""}
+          pageCount={totalPages}
+          forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+          onPageChange={handlePagination}
+          pageClassName="page-item"
+          activeClassName="active"
+          nextLinkClassName="page-link"
+          nextClassName="page-item next"
+          previousClassName="page-item prev"
+          previousLinkClassName="page-link"
+          pageLinkClassName="page-link"
+          containerClassName="pagination react-paginate justify-content-center my-2 pe-1 pagination-ltr"
+        />
+      </div>
     );
   };
 
@@ -541,7 +547,7 @@ const UsersList = ({ renderCount, setRenderCount }) => {
 
       <AddUserAccessModal
         selectedUser={selectedUserForRoleAccess}
-        locationUsing={'userList'}
+        locationUsing={"userList"}
         roleAccessModalShow={addUserAccessModalShow}
         setRoleAccessModalShow={setAddUserAccessModalShow}
         setUserDetailsRenderCount={setRenderCount}

@@ -27,7 +27,7 @@ import classnames from "classnames";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import { useForm, Controller } from "react-hook-form";
-import { ChevronDown, Edit, X } from "react-feather";
+import { ChevronDown, Edit, X, AlertCircle } from "react-feather";
 
 // ** Styles
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -297,7 +297,7 @@ const Table = () => {
               className="btn btn-icon"
               onClick={() => handleDeleteClick(row)}
             >
-              <X className="font-medium-2 text-danger" />
+              <AlertCircle className="font-medium-2 text-danger" />
             </Button>
           </div>
         );
